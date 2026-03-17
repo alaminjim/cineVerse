@@ -1,0 +1,37 @@
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ReviewStatus {
+  PENDING    
+  APPROVED   
+  REJECTED   
+}
+
+enum PricingType {
+  FREE
+  PREMIUM
+}
+
+enum PurchaseType {
+  BUY       
+  RENT       
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum SubscriptionPlan {
+  MONTHLY
+  YEARLY
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+  SUSPENDED
+}
