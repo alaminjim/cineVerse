@@ -62,7 +62,8 @@ export type SubscriptionPlan = (typeof SubscriptionPlan)[keyof typeof Subscripti
 export const UserStatus = {
   ACTIVE: 'ACTIVE',
   BANNED: 'BANNED',
-  SUSPENDED: 'SUSPENDED'
+  SUSPENDED: 'SUSPENDED',
+  DELETED: 'DELETED'
 } as const
 
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]

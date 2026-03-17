@@ -1,5 +1,6 @@
+import { UserStatus } from "../../../generated/prisma/enums";
 import { auth } from "../../lib/auth";
-import { IRegister } from "./auth.interface";
+import { ILogin, IRegister } from "./auth.interface";
 
 const authRegister = async (payload: IRegister) => {
   const { name, email, password } = payload;
@@ -28,6 +29,32 @@ const authRegister = async (payload: IRegister) => {
   }
 };
 
+const authLogin = async (payload: ILogin) => {
+  const { email, password } = payload;
+
+  const data = await auth.api.signInEmail({
+    body: {
+      email,
+      password,
+    },
+  });
+
+  if (data.user.status === UserStatus.BANNED) {
+    throw new Error("User Banned");
+  }
+
+  if (data.user.status === UserStatus.SUSPENDED) {
+    throw new Error("user has been suspended");
+  }
+
+  if (data.user.status === UserStatus.DELETED) {
+    throw new Error("User Deleted");
+  }
+
+  return data;
+};
+
 export const authService = {
   authRegister,
+  authLogin,
 };

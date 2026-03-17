@@ -14,6 +14,18 @@ const authRegister = catchFunction(async (req: Request, res: Response) => {
   });
 });
 
+const authLogin = catchFunction(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const authLogin = await authService.authLogin(payload);
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    data: authLogin,
+    message: "Login successful",
+  });
+});
+
 export const authController = {
   authRegister,
+  authLogin,
 };
