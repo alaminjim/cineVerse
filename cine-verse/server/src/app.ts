@@ -3,6 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { envConfig } from "./app/config/env";
 import { indexRouter } from "./app/routes";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./app/lib/auth";
 
 const app: Application = express();
 
@@ -22,6 +24,8 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/api/auth", toNodeHandler(auth));
 
 app.use("/api/v1", indexRouter);
 
