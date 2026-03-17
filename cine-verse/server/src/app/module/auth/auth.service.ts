@@ -1,6 +1,9 @@
 import { UserStatus } from "../../../generated/prisma/enums";
 import { auth } from "../../lib/auth";
 import { ILogin, IRegister } from "./auth.interface";
+import { IRequestUser } from "../../interface/requestUser.interface";
+import { prisma } from "../../lib/prisma";
+import { tokenUtils } from "../../utils/token";
 
 const authRegister = async (payload: IRegister) => {
   const { name, email, password } = payload;
@@ -18,10 +21,26 @@ const authRegister = async (payload: IRegister) => {
       throw new Error("User registration failed");
     }
 
+    const accessToken = tokenUtils.accessToken({
+      userId: data.user.id,
+      name: data.user.name,
+      email: data.user.email,
+      role: data.user.role,
+      status: data.user.status,
+    });
+
+    const refreshToken = tokenUtils.refreshToken({
+      userId: data.user.id,
+      name: data.user.name,
+      email: data.user.email,
+      role: data.user.role,
+      status: data.user.status,
+    });
+
     return {
-      success: true,
-      message: "User registered successfully",
-      data: data.user,
+      ...data,
+      accessToken,
+      refreshToken,
     };
   } catch (error) {
     console.log(error);
@@ -51,10 +70,47 @@ const authLogin = async (payload: ILogin) => {
     throw new Error("User Deleted");
   }
 
-  return data;
+  const accessToken = tokenUtils.accessToken({
+    userId: data.user.id,
+    name: data.user.name,
+    email: data.user.email,
+    role: data.user.role,
+    status: data.user.status,
+  });
+
+  const refreshToken = tokenUtils.refreshToken({
+    userId: data.user.id,
+    name: data.user.name,
+    email: data.user.email,
+    role: data.user.role,
+    status: data.user.status,
+  });
+
+  return {
+    ...data,
+    accessToken,
+    refreshToken,
+  };
+};
+
+const authMe = async (user: IRequestUser) => {
+  const userExists = await prisma.user.findUnique({
+    where: {
+      id: user.userId,
+    },
+    include: {
+      comments: true,
+    },
+  });
+  if (!userExists) {
+    throw new Error("User not found");
+  }
+
+  return userExists;
 };
 
 export const authService = {
   authRegister,
   authLogin,
+  authMe,
 };

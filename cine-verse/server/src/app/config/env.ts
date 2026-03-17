@@ -9,6 +9,10 @@ interface EnvConfig {
   BETTER_AUTH_SECRET: string;
   BETTER_AUTH_URL: string;
   FRONTEND_URL: string;
+  ACCESS_TOKEN: string;
+  REFRESH_TOKEN: string;
+  ACCESS_TOKEN_IN: string;
+  REFRESH_TOKEN_IN: string;
 }
 
 const envVariables = (): EnvConfig => {
@@ -19,6 +23,10 @@ const envVariables = (): EnvConfig => {
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",
     "FRONTEND_URL",
+    "ACCESS_TOKEN",
+    "REFRESH_TOKEN",
+    "ACCESS_TOKEN_IN",
+    "REFRESH_TOKEN_IN",
   ];
 
   requireEnv.forEach((variable) => {
@@ -34,6 +42,10 @@ const envVariables = (): EnvConfig => {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET as string,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL as string,
     FRONTEND_URL: process.env.FRONTEND_URL as string,
+    ACCESS_TOKEN: process.env.ACCESS_TOKEN as string,
+    REFRESH_TOKEN: process.env.REFRESH_TOKEN as string,
+    ACCESS_TOKEN_IN: process.env.ACCESS_TOKEN_IN as string,
+    REFRESH_TOKEN_IN: process.env.REFRESH_TOKEN_IN as string,
   };
 };
 
