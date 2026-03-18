@@ -2,12 +2,25 @@ import { Router } from "express";
 import { authController } from "./auth.controller";
 import { authMiddleware } from "../../middleware/authMiddleware";
 import { UserRole } from "../../../generated/prisma/enums";
+import { zodValidation } from "../../middleware/zod.validation";
+import {
+  authLoginValidationSchema,
+  authRegisterValidationSchema,
+} from "./auth.validation";
 
 const router = Router();
 
-router.post("/register", authController.authRegister);
+router.post(
+  "/register",
+  zodValidation(authRegisterValidationSchema),
+  authController.authRegister,
+);
 
-router.post("/login", authController.authLogin);
+router.post(
+  "/login",
+  zodValidation(authLoginValidationSchema),
+  authController.authLogin,
+);
 
 router.get(
   "/me",
