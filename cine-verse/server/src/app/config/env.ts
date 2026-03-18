@@ -15,6 +15,11 @@ interface EnvConfig {
   REFRESH_TOKEN_IN: string;
   ADMIN_EMAIL: string;
   ADMIN_PASSWORD: string;
+  CLOUDINARY: {
+    CLOUDINARY_CLOUD_NAME: string;
+    CLOUDINARY_API_KEY: string;
+    CLOUDINARY_API_SECRET: string;
+  };
 }
 
 const envVariables = (): EnvConfig => {
@@ -31,6 +36,9 @@ const envVariables = (): EnvConfig => {
     "REFRESH_TOKEN_IN",
     "ADMIN_EMAIL",
     "ADMIN_PASSWORD",
+    "CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
   ];
 
   requireEnv.forEach((variable) => {
@@ -52,6 +60,11 @@ const envVariables = (): EnvConfig => {
     REFRESH_TOKEN_IN: process.env.REFRESH_TOKEN_IN as string,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
+    CLOUDINARY: {
+      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+      CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+      CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+    },
   };
 };
 
