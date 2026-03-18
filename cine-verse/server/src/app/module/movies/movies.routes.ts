@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../../middleware/authMiddleware";
 import { UserRole } from "../../../generated/prisma/enums";
-import { adminMovieController } from "./movies.controller";
+import { movieController } from "./movies.controller";
 import { upload } from "../../config/multer";
 import { zodValidation } from "../../middleware/zod.validation";
 import {
@@ -16,21 +16,26 @@ router.post(
   authMiddleware(UserRole.ADMIN),
   upload.single("file"),
   zodValidation(createMovieValidationSchema),
-  adminMovieController.createMovie,
+  movieController.createMovie,
 );
+
+router.get("/new-releases", movieController.getNewReleases);
+router.get("/featured", movieController.getFeaturedMovies);
+router.get("/", movieController.getAllMovies);
+router.get("/:id", movieController.getMovieById);
 
 router.put(
   "/:id",
   authMiddleware(UserRole.ADMIN),
   upload.single("file"),
   zodValidation(updateMovieValidationSchema),
-  adminMovieController.updateMovie,
+  movieController.updateMovie,
 );
 
 router.delete(
   "/:id",
   authMiddleware(UserRole.ADMIN),
-  adminMovieController.deleteMovie,
+  movieController.deleteMovie,
 );
 
 export const movieRouter = router;

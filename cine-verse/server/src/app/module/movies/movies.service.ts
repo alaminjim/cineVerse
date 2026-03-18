@@ -32,6 +32,102 @@ const createMovie = async (
   return movie;
 };
 
+const getAllMovies = async () => {
+  const movies = await prisma.movie.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
+  return {
+    success: true,
+    data: movies,
+  };
+};
+
+const getMovieById = async (movieId: string) => {
+  const movie = await prisma.movie.findUnique({
+    where: { id: movieId },
+    include: {
+      reviews: {
+        where: { status: "APPROVED" },
+        select: {
+          id: true,
+          rating: true,
+          title: true,
+          content: true,
+          tags: true,
+          hasSpoiler: true,
+          likesCount: true,
+          commentCount: true,
+          createdAt: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
+      _count: {
+        select: {
+          reviews: true,
+          watchlists: true,
+        },
+      },
+    },
+  });
+
+  if (!movie) {
+    throw new Error("Movie not found");
+  }
+
+  return {
+    success: true,
+    data: movie,
+  };
+};
+
+const getNewReleases = async () => {
+  const newReleases = await prisma.movie.findMany({
+    select: {
+      id: true,
+      title: true,
+      synopsis: true,
+      thumbnail: true,
+      releaseYear: true,
+      genre: true,
+      avgRating: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return {
+    success: true,
+    data: newReleases,
+  };
+};
+
+const getFeaturedMovies = async () => {
+  const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+
+  const featured = await prisma.movie.findMany({
+    where: {
+      reviews: {
+        some: {
+          createdAt: { gte: threeDaysAgo },
+          status: "APPROVED",
+        },
+      },
+    },
+
+    orderBy: [{ avgRating: "desc" }, { reviewCount: "desc" }],
+  });
+
+  return featured;
+};
+
 const updateMovie = async (
   movieId: string,
   payload: IUpdateMovie,
@@ -82,8 +178,12 @@ const deleteMovie = async (movieId: string, user: IRequestUser) => {
   });
 };
 
-export const adminMovieService = {
+export const movieService = {
   createMovie,
+  getAllMovies,
+  getMovieById,
+  getNewReleases,
+  getFeaturedMovies,
   updateMovie,
   deleteMovie,
 };
