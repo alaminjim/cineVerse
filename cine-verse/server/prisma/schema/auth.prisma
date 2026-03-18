@@ -17,6 +17,7 @@ model User {
   watchlist     Watchlist[]
   subscriptions Subscription[]
   purchases     Purchase[]
+  admin         Admin?
 
   role          UserRole  @default(USER)
   status        UserStatus @default(ACTIVE)

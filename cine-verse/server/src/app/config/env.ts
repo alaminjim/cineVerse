@@ -13,6 +13,8 @@ interface EnvConfig {
   REFRESH_TOKEN: string;
   ACCESS_TOKEN_IN: string;
   REFRESH_TOKEN_IN: string;
+  ADMIN_EMAIL: string;
+  ADMIN_PASSWORD: string;
 }
 
 const envVariables = (): EnvConfig => {
@@ -27,6 +29,8 @@ const envVariables = (): EnvConfig => {
     "REFRESH_TOKEN",
     "ACCESS_TOKEN_IN",
     "REFRESH_TOKEN_IN",
+    "ADMIN_EMAIL",
+    "ADMIN_PASSWORD",
   ];
 
   requireEnv.forEach((variable) => {
@@ -46,6 +50,8 @@ const envVariables = (): EnvConfig => {
     REFRESH_TOKEN: process.env.REFRESH_TOKEN as string,
     ACCESS_TOKEN_IN: process.env.ACCESS_TOKEN_IN as string,
     REFRESH_TOKEN_IN: process.env.REFRESH_TOKEN_IN as string,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
   };
 };
 
