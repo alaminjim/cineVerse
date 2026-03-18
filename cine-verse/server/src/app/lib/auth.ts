@@ -25,6 +25,15 @@ export const auth = betterAuth({
         required: true,
         defaultValue: UserStatus.ACTIVE,
       },
+      isDeleted: {
+        type: "boolean",
+        required: true,
+        defaultValue: false,
+      },
+      deletedAt: {
+        type: "date",
+        required: false,
+      },
     },
   },
   session: {

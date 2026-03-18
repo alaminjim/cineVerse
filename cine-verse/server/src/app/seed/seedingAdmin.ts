@@ -43,7 +43,7 @@ export const Admin = async () => {
         },
       });
     });
-    const admin = await prisma.admin.findFirst({
+    await prisma.admin.findFirst({
       where: {
         email: envConfig.ADMIN_EMAIL,
       },
@@ -51,8 +51,6 @@ export const Admin = async () => {
         user: true,
       },
     });
-
-    console.log("Admin Created ", admin);
   } catch (error) {
     console.error("Error seeding  admin: ", error);
   }
