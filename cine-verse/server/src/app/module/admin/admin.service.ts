@@ -54,6 +54,31 @@ const updateAdmin = async (payload: IAdminUpdate, id: string) => {
   return update;
 };
 
+const updateStatus = async (payload: IAdminUpdate, statusId: string) => {
+  const isExists = await prisma.user.findFirst({
+    where: {
+      id: statusId,
+    },
+  });
+
+  if (!isExists) {
+    throw new Error("This user can not found");
+  }
+
+  if (isExists.role !== "ADMIN") {
+    throw new Error("Status only changed by admin");
+  }
+
+  return await prisma.user.update({
+    where: {
+      id: statusId,
+    },
+    data: {
+      status: payload.status,
+    },
+  });
+};
+
 const adminDeleted = async (id: string, user: IRequestUser) => {
   const adminExists = await prisma.admin.findUnique({
     where: {
@@ -114,5 +139,6 @@ export const adminService = {
   getAllAdmin,
   getIdByAdmin,
   updateAdmin,
+  updateStatus,
   adminDeleted,
 };

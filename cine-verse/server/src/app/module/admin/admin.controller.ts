@@ -21,6 +21,14 @@ const updateAdmin = catchFunction(async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({ success: true, data: result });
 });
 
+const updateStatus = catchFunction(async (req: Request, res: Response) => {
+  const { statusId } = req.params;
+  const payload = req.body;
+
+  const result = await adminService.updateStatus(payload, statusId as string);
+  res.status(StatusCodes.OK).json({ success: true, data: result });
+});
+
 const deleteAdmin = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -38,5 +46,6 @@ export const adminController = {
   getAllAdmin,
   getIdByAdmin,
   updateAdmin,
+  updateStatus,
   deleteAdmin,
 };

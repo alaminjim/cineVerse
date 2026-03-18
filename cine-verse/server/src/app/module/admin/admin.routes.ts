@@ -22,6 +22,12 @@ router.patch(
   adminController.updateAdmin,
 );
 
+router.put(
+  "/:statusId",
+  authMiddleware(UserRole.ADMIN),
+  adminController.updateStatus,
+);
+
 router.delete(
   "/:id",
   authMiddleware(UserRole.ADMIN),
