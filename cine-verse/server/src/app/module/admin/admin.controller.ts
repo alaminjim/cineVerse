@@ -24,7 +24,6 @@ const updateAdmin = catchFunction(async (req: Request, res: Response) => {
 const updateStatus = catchFunction(async (req: Request, res: Response) => {
   const { statusId } = req.params;
   const payload = req.body;
-
   const result = await adminService.updateStatus(payload, statusId as string);
   res.status(StatusCodes.OK).json({ success: true, data: result });
 });
