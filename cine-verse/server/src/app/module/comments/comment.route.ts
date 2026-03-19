@@ -21,6 +21,8 @@ router.get("/review/:reviewId", commentController.getCommentsByReview);
 
 router.get("/:id", commentController.getCommentById);
 
+router.get("/", commentController.getAllComments);
+
 router.put(
   "/:id",
   authMiddleware(UserRole.ADMIN, UserRole.USER),

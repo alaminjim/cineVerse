@@ -49,6 +49,27 @@ const getCommentsByReview = async (reviewId: string) => {
   return comments;
 };
 
+const getAllComments = async () => {
+  const comments = await prisma.comment.findMany({
+    include: {
+      user: {
+        select: { id: true, name: true },
+      },
+      replies: {
+        include: {
+          user: {
+            select: { id: true, name: true },
+          },
+        },
+        orderBy: { createdAt: "asc" },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return comments;
+};
+
 const getCommentById = async (commentId: string) => {
   const comment = await prisma.comment.findUnique({
     where: { id: commentId },
@@ -140,6 +161,7 @@ export const commentService = {
   createComment,
   getCommentsByReview,
   getCommentById,
+  getAllComments,
   updateComment,
   deleteComment,
 };
