@@ -41,13 +41,13 @@ router.get(
 );
 
 router.put(
-  "/:id/approve",
+  "/approved/:id",
   authMiddleware(UserRole.ADMIN),
   reviewController.approveReview,
 );
 
 router.put(
-  "/:id/reject",
+  "/rejected/:id",
   authMiddleware(UserRole.ADMIN),
   reviewController.rejectReview,
 );
