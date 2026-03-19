@@ -6,6 +6,7 @@ import { reviewRoute } from "../module/review/review.routes";
 import { commentRoute } from "../module/comments/comment.route";
 import { likeRoute } from "../module/likes/likes.route";
 import { watchListRoute } from "../module/watchList/watchList.route";
+import { subscriptionRoute } from "../module/subscription/subcription.route";
 
 const router = Router();
 
@@ -22,5 +23,7 @@ router.use("/comments", commentRoute);
 router.use("/likes", likeRoute);
 
 router.use("/watchList", watchListRoute);
+
+router.use("/subscription", subscriptionRoute);
 
 export const indexRouter = router;

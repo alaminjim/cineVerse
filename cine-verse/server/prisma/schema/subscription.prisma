@@ -1,7 +1,7 @@
 model Subscription {
   id        String                @id @default(uuid())
   userId    String
-  planType  String  
+  planType  SubscriptionPlan
   status    SubscriptionStatus    @default(ACTIVE) 
   stripeId  String?
   startDate DateTime              @default(now())
