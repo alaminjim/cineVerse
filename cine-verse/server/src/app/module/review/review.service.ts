@@ -64,6 +64,23 @@ const getAllReviews = async () => {
       user: {
         select: { id: true, name: true, image: true },
       },
+      comments: {
+        include: {
+          user: {
+            select: { id: true, name: true, image: true },
+          },
+          replies: {
+            include: {
+              user: {
+                select: { id: true, name: true, image: true },
+              },
+            },
+            orderBy: { createdAt: "asc" },
+          },
+        },
+        where: { parentCommentId: null },
+        orderBy: { createdAt: "desc" },
+      },
       _count: {
         select: { comments: true, likes: true },
       },
@@ -71,7 +88,10 @@ const getAllReviews = async () => {
     orderBy: { createdAt: "desc" },
   });
 
-  return reviews;
+  return {
+    success: true,
+    data: reviews,
+  };
 };
 
 const updateReview = async (

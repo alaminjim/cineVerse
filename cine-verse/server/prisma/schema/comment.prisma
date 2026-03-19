@@ -14,7 +14,7 @@ model Comment {
   replies         Comment[]  @relation("CommentReplies")
   parentComment   Comment?   @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
 
-  // Indexes
+
   @@index([reviewId])
   @@index([userId])
   @@index([parentCommentId])
