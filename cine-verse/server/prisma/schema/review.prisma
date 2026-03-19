@@ -2,7 +2,7 @@ model Review {
   id            String      @id @default(uuid())
   userId        String
   movieId       String
-  rating        Int     
+  rating        Float     
   title         String
   content       String   @db.Text
   tags          String[] 

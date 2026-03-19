@@ -34,6 +34,9 @@ const createMovie = async (
 
 const getAllMovies = async () => {
   const movies = await prisma.movie.findMany({
+    include: {
+      reviews: true,
+    },
     orderBy: { createdAt: "desc" },
   });
 
@@ -48,7 +51,6 @@ const getMovieById = async (movieId: string) => {
     where: { id: movieId },
     include: {
       reviews: {
-        where: { status: "APPROVED" },
         select: {
           id: true,
           rating: true,
@@ -117,7 +119,6 @@ const getFeaturedMovies = async () => {
       reviews: {
         some: {
           createdAt: { gte: threeDaysAgo },
-          status: "APPROVED",
         },
       },
     },

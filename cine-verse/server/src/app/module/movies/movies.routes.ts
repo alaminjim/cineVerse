@@ -11,6 +11,11 @@ import {
 
 const router = Router();
 
+router.get("/new-releases", movieController.getNewReleases);
+router.get("/featured", movieController.getFeaturedMovies);
+router.get("/", movieController.getAllMovies);
+router.get("/:id", movieController.getMovieById);
+
 router.post(
   "/",
   authMiddleware(UserRole.ADMIN),
@@ -18,11 +23,6 @@ router.post(
   zodValidation(createMovieValidationSchema),
   movieController.createMovie,
 );
-
-router.get("/new-releases", movieController.getNewReleases);
-router.get("/featured", movieController.getFeaturedMovies);
-router.get("/", movieController.getAllMovies);
-router.get("/:id", movieController.getMovieById);
 
 router.put(
   "/:id",
