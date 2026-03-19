@@ -1,5 +1,3 @@
-// src/app/modules/like/like.validation.ts
-
 import { z } from "zod";
 
 export const likeValidationSchema = z.object({
