@@ -1,32 +1,35 @@
 import { Request, Response } from "express";
 import catchFunction from "../../shared/catchFunction";
 import { movieService } from "./movies.service";
+import { StatusCodes } from "http-status-codes";
 
 const createMovie = catchFunction(async (req: Request, res: Response) => {
   const user = req.user;
   const result = await movieService.createMovie(req.body, user, req.file);
-  res.status(201).json(result);
+  res
+    .status(StatusCodes.CREATED)
+    .json({ success: true, message: "Movie Upload Successful", data: result });
 });
 
 const getAllMovies = catchFunction(async (req: Request, res: Response) => {
   const result = await movieService.getAllMovies();
-  res.json(result);
+  res.status(StatusCodes.OK).json({ success: true, data: result });
 });
 
 const getMovieById = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await movieService.getMovieById(id as string);
-  res.json(result);
+  res.status(StatusCodes.OK).json({ success: true, data: result });
 });
 
 const getNewReleases = catchFunction(async (req: Request, res: Response) => {
   const result = await movieService.getNewReleases();
-  res.json(result);
+  res.status(StatusCodes.OK).json({ success: true, data: result });
 });
 
 const getFeaturedMovies = catchFunction(async (req: Request, res: Response) => {
   const result = await movieService.getFeaturedMovies();
-  res.json(result);
+  res.status(StatusCodes.OK).json({ success: true, data: result });
 });
 
 const updateMovie = catchFunction(async (req: Request, res: Response) => {
@@ -38,14 +41,18 @@ const updateMovie = catchFunction(async (req: Request, res: Response) => {
     user,
     req.file,
   );
-  res.json(result);
+  res
+    .status(StatusCodes.OK)
+    .json({ success: true, message: "Update Successful", data: result });
 });
 
 const deleteMovie = catchFunction(async (req: Request, res: Response) => {
   const user = req.user;
   const { id } = req.params;
-  const result = await movieService.deleteMovie(id as string, user);
-  res.json(result);
+  await movieService.deleteMovie(id as string, user);
+  res
+    .status(StatusCodes.OK)
+    .json({ success: true, message: "Delete Successful" });
 });
 
 export const movieController = {
