@@ -7,6 +7,7 @@ import {
   ReviewStatus,
   SubscriptionStatus,
   UserRole,
+  UserStatus,
 } from "../../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
 
@@ -15,6 +16,23 @@ const getAnalyticsStats = async () => {
   const totalUsers = await prisma.user.count({
     where: { role: UserRole.USER },
   });
+
+  const totalAdmin = await prisma.user.count({
+    where: { role: UserRole.ADMIN },
+  });
+
+  const totalStatus = await prisma.user.count({
+    where: { status: UserStatus.ACTIVE },
+  });
+
+  const totalStatus1 = await prisma.user.count({
+    where: { status: UserStatus.BANNED },
+  });
+
+  const totalStatus2 = await prisma.user.count({
+    where: { status: UserStatus.DELETED },
+  });
+
   const totalReviews = await prisma.review.count();
 
   const totalSubscriptions = await prisma.subscription.count({
@@ -70,6 +88,10 @@ const getAnalyticsStats = async () => {
     data: {
       totalMovies,
       totalUsers,
+      totalAdmin,
+      totalStatus,
+      totalStatus1,
+      totalStatus2,
       totalReviews,
       totalSubscriptions,
       totalPurchases,
