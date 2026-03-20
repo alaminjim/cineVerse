@@ -8,6 +8,7 @@ import { likeRoute } from "../module/likes/likes.route";
 import { watchListRoute } from "../module/watchList/watchList.route";
 import { subscriptionRoute } from "../module/subscription/subcription.route";
 import { purchaseRoute } from "../module/purchase/purchase.route";
+import { adminAnalytics } from "../module/admin/analytics/analytics.routes";
 
 const router = Router();
 
@@ -28,5 +29,7 @@ router.use("/watchList", watchListRoute);
 router.use("/subscription", subscriptionRoute);
 
 router.use("/purchase", purchaseRoute);
+
+router.use("/admin-analytics", adminAnalytics);
 
 export const indexRouter = router;
