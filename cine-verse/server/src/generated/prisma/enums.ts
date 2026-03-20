@@ -42,6 +42,15 @@ export const PurchaseType = {
 export type PurchaseType = (typeof PurchaseType)[keyof typeof PurchaseType]
 
 
+export const PurchaseStatus = {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PurchaseStatus = (typeof PurchaseStatus)[keyof typeof PurchaseStatus]
+
+
 export const SubscriptionStatus = {
   ACTIVE: 'ACTIVE',
   EXPIRED: 'EXPIRED',

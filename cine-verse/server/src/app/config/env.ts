@@ -23,7 +23,6 @@ interface EnvConfig {
   STRIPE_SECRET_KEY: string;
   STRIPE_MONTHLY_PRICE_ID: string;
   STRIPE_YEARLY_PRICE_ID: string;
-  STRIPE_WEBHOOK_SECRET: string;
 }
 
 const envVariables = (): EnvConfig => {
@@ -46,7 +45,6 @@ const envVariables = (): EnvConfig => {
     "STRIPE_SECRET_KEY",
     "STRIPE_MONTHLY_PRICE_ID",
     "STRIPE_YEARLY_PRICE_ID",
-    "STRIPE_WEBHOOK_SECRET",
   ];
 
   requireEnv.forEach((variable) => {
@@ -76,7 +74,6 @@ const envVariables = (): EnvConfig => {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
     STRIPE_MONTHLY_PRICE_ID: process.env.STRIPE_MONTHLY_PRICE_ID as string,
     STRIPE_YEARLY_PRICE_ID: process.env.STRIPE_YEARLY_PRICE_ID as string,
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
   };
 };
 

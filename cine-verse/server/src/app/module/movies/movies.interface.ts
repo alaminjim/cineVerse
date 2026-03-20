@@ -10,6 +10,8 @@ export interface ICreateMovie {
   cast: string[];
   streamingPlatform: string[];
   pricing: PricingType;
+  buyPrice?: number;
+  rentPrice?: number;
 }
 
 export interface IUpdateMovie {

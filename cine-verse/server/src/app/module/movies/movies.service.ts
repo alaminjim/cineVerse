@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { uploadImage } from "../../config/cloudinary.config";
+import { stripe } from "../../config/stripe";
 import { IRequestUser } from "../../interface/requestUser.interface";
 import { prisma } from "../../lib/prisma";
 import { ICreateMovie, IUpdateMovie } from "./movies.interface";
@@ -9,7 +11,7 @@ const createMovie = async (
   file?: Express.Multer.File,
 ) => {
   if (user.role !== "ADMIN") {
-    throw new Error("Only Admin can create this movies");
+    throw new Error("Only Admin can create movies");
   }
 
   let thumbnail: string | undefined;
@@ -17,10 +19,64 @@ const createMovie = async (
     thumbnail = await uploadImage(file);
   }
 
+  let stripeBuyPriceId: string | null = null;
+  let stripeRentPriceId: string | null = null;
+
+  if (payload.pricing === "PREMIUM") {
+    try {
+      const buyPrice = payload.buyPrice || 299;
+      const rentPrice = payload.rentPrice || 499;
+
+      const product = await stripe.products.create({
+        name: payload.title,
+        images: thumbnail ? [thumbnail] : [],
+        metadata: {
+          title: payload.title,
+          genre: payload.genre?.join(",") || "Unknown",
+          director: payload.director || "Unknown",
+        },
+      });
+
+      const buyPriceObj = await stripe.prices.create({
+        product: product.id,
+        unit_amount: Math.round(buyPrice * 100),
+        currency: "bdt",
+        metadata: {
+          type: "BUY",
+          title: payload.title,
+        },
+      });
+      stripeBuyPriceId = buyPriceObj.id;
+
+      const rentPriceObj = await stripe.prices.create({
+        product: product.id,
+        unit_amount: Math.round(rentPrice * 100),
+        currency: "usd",
+        metadata: {
+          type: "RENT",
+          duration: "7_days",
+          title: payload.title,
+        },
+      });
+      stripeRentPriceId = rentPriceObj.id;
+    } catch (error) {
+      console.error("Stripe product creation error:", error);
+    }
+  }
+
   const movie = await prisma.movie.create({
     data: {
-      ...payload,
+      title: payload.title,
+      synopsis: payload.synopsis,
       thumbnail,
+      genre: payload.genre,
+      releaseYear: payload.releaseYear,
+      director: payload.director,
+      cast: payload.cast,
+      streamingPlatform: payload.streamingPlatform,
+      pricing: payload.pricing,
+      stripeBuyPriceId,
+      stripeRentPriceId,
     },
     include: {
       _count: {
@@ -159,6 +215,55 @@ const updateMovie = async (
   return movie;
 };
 
+const updateMovieBuyPrice = async (movieId: string, newBuyPrice: number) => {
+  const movie = await prisma.movie.findUnique({
+    where: { id: movieId },
+  });
+
+  if (!movie) {
+    throw new Error("Movie not found");
+  }
+
+  if (movie.pricing !== "PREMIUM") {
+    throw new Error("Only PREMIUM movies have buy price");
+  }
+
+  if (!movie.stripeBuyPriceId) {
+    throw new Error("Movie does not have buy price configured");
+  }
+
+  const currentPrice = await stripe.prices.retrieve(movie.stripeBuyPriceId);
+  const productId = currentPrice.product as string;
+
+  const newPriceObj = await stripe.prices.create({
+    product: productId,
+    unit_amount: Math.round(newBuyPrice * 100),
+    currency: "bdt",
+    metadata: {
+      type: "BUY",
+      title: movie.title,
+      updatedAt: new Date().toISOString(),
+    },
+  });
+
+  const updated = await prisma.movie.update({
+    where: { id: movieId },
+    data: {
+      stripeBuyPriceId: newPriceObj.id,
+    },
+  });
+
+  return {
+    success: true,
+    message: "Buy price updated successfully",
+    data: {
+      movieId,
+      newPrice: newBuyPrice,
+      stripeBuyPriceId: newPriceObj.id,
+    },
+  };
+};
+
 const deleteMovie = async (movieId: string, user: IRequestUser) => {
   const isExists = await prisma.movie.findFirst({
     where: {
@@ -186,5 +291,6 @@ export const movieService = {
   getNewReleases,
   getFeaturedMovies,
   updateMovie,
+  updateMovieBuyPrice,
   deleteMovie,
 };

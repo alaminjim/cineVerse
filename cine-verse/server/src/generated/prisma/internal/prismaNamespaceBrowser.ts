@@ -197,7 +197,9 @@ export const MovieScalarFieldEnum = {
   avgRating: 'avgRating',
   reviewCount: 'reviewCount',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  stripeBuyPriceId: 'stripeBuyPriceId',
+  stripeRentPriceId: 'stripeRentPriceId'
 } as const
 
 export type MovieScalarFieldEnum = (typeof MovieScalarFieldEnum)[keyof typeof MovieScalarFieldEnum]
@@ -208,6 +210,7 @@ export const PurchaseScalarFieldEnum = {
   userId: 'userId',
   movieId: 'movieId',
   purchaseType: 'purchaseType',
+  status: 'status',
   amount: 'amount',
   stripeTransactionId: 'stripeTransactionId',
   expiresAt: 'expiresAt',

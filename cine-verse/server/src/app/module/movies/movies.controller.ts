@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import catchFunction from "../../shared/catchFunction";
 import { movieService } from "./movies.service";
 import { StatusCodes } from "http-status-codes";
+import { IRequestUser } from "../../interface/requestUser.interface";
 
 const createMovie = catchFunction(async (req: Request, res: Response) => {
   const user = req.user;
@@ -46,6 +47,43 @@ const updateMovie = catchFunction(async (req: Request, res: Response) => {
     .json({ success: true, message: "Update Successful", data: result });
 });
 
+const updateMovieBuyPrice = catchFunction(
+  async (req: Request, res: Response) => {
+    const user = req.user as IRequestUser;
+
+    if (user.role !== "ADMIN") {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        success: false,
+        message: "Only Admin can update prices",
+      });
+    }
+
+    const { id } = req.params;
+    const { buyPrice } = req.body;
+
+    if (!buyPrice || typeof buyPrice !== "number") {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Valid buyPrice is required",
+      });
+    }
+
+    if (buyPrice <= 0) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Price must be greater than 0",
+      });
+    }
+
+    const result = await movieService.updateMovieBuyPrice(
+      id as string,
+      buyPrice,
+    );
+
+    res.status(StatusCodes.OK).json(result);
+  },
+);
+
 const deleteMovie = catchFunction(async (req: Request, res: Response) => {
   const user = req.user;
   const { id } = req.params;
@@ -63,4 +101,5 @@ export const movieController = {
   getMovieById,
   getNewReleases,
   getFeaturedMovies,
+  updateMovieBuyPrice,
 };

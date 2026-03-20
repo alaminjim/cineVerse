@@ -2,7 +2,8 @@ model Purchase {
   id                  String      @id @default(uuid())
   userId              String
   movieId             String
-  purchaseType        String   
+  purchaseType        PurchaseType   
+  status              PurchaseStatus  @default(ACTIVE)
   amount              Float
   stripeTransactionId String?
   expiresAt           DateTime? 
@@ -14,8 +15,10 @@ model Purchase {
   movie               Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
 
+  @@unique([userId, movieId, purchaseType])
   @@index([userId])
   @@index([movieId])
   @@index([purchaseType])
+  @@index([status])
   @@map("purchase")
 }

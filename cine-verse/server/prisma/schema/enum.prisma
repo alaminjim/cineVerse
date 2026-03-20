@@ -19,6 +19,12 @@ enum PurchaseType {
   RENT       
 }
 
+enum PurchaseStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
 enum SubscriptionStatus {
   ACTIVE
   EXPIRED

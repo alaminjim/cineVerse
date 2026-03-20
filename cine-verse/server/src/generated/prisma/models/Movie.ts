@@ -50,6 +50,8 @@ export type MovieMinAggregateOutputType = {
   reviewCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  stripeBuyPriceId: string | null
+  stripeRentPriceId: string | null
 }
 
 export type MovieMaxAggregateOutputType = {
@@ -64,6 +66,8 @@ export type MovieMaxAggregateOutputType = {
   reviewCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  stripeBuyPriceId: string | null
+  stripeRentPriceId: string | null
 }
 
 export type MovieCountAggregateOutputType = {
@@ -81,6 +85,8 @@ export type MovieCountAggregateOutputType = {
   reviewCount: number
   createdAt: number
   updatedAt: number
+  stripeBuyPriceId: number
+  stripeRentPriceId: number
   _all: number
 }
 
@@ -109,6 +115,8 @@ export type MovieMinAggregateInputType = {
   reviewCount?: true
   createdAt?: true
   updatedAt?: true
+  stripeBuyPriceId?: true
+  stripeRentPriceId?: true
 }
 
 export type MovieMaxAggregateInputType = {
@@ -123,6 +131,8 @@ export type MovieMaxAggregateInputType = {
   reviewCount?: true
   createdAt?: true
   updatedAt?: true
+  stripeBuyPriceId?: true
+  stripeRentPriceId?: true
 }
 
 export type MovieCountAggregateInputType = {
@@ -140,6 +150,8 @@ export type MovieCountAggregateInputType = {
   reviewCount?: true
   createdAt?: true
   updatedAt?: true
+  stripeBuyPriceId?: true
+  stripeRentPriceId?: true
   _all?: true
 }
 
@@ -244,6 +256,8 @@ export type MovieGroupByOutputType = {
   reviewCount: number
   createdAt: Date
   updatedAt: Date
+  stripeBuyPriceId: string | null
+  stripeRentPriceId: string | null
   _count: MovieCountAggregateOutputType | null
   _avg: MovieAvgAggregateOutputType | null
   _sum: MovieSumAggregateOutputType | null
@@ -284,6 +298,8 @@ export type MovieWhereInput = {
   reviewCount?: Prisma.IntFilter<"Movie"> | number
   createdAt?: Prisma.DateTimeFilter<"Movie"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Movie"> | Date | string
+  stripeBuyPriceId?: Prisma.StringNullableFilter<"Movie"> | string | null
+  stripeRentPriceId?: Prisma.StringNullableFilter<"Movie"> | string | null
   reviews?: Prisma.ReviewListRelationFilter
   watchlists?: Prisma.WatchlistListRelationFilter
   purchases?: Prisma.PurchaseListRelationFilter
@@ -304,6 +320,8 @@ export type MovieOrderByWithRelationInput = {
   reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeBuyPriceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeRentPriceId?: Prisma.SortOrderInput | Prisma.SortOrder
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   watchlists?: Prisma.WatchlistOrderByRelationAggregateInput
   purchases?: Prisma.PurchaseOrderByRelationAggregateInput
@@ -327,6 +345,8 @@ export type MovieWhereUniqueInput = Prisma.AtLeast<{
   reviewCount?: Prisma.IntFilter<"Movie"> | number
   createdAt?: Prisma.DateTimeFilter<"Movie"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Movie"> | Date | string
+  stripeBuyPriceId?: Prisma.StringNullableFilter<"Movie"> | string | null
+  stripeRentPriceId?: Prisma.StringNullableFilter<"Movie"> | string | null
   reviews?: Prisma.ReviewListRelationFilter
   watchlists?: Prisma.WatchlistListRelationFilter
   purchases?: Prisma.PurchaseListRelationFilter
@@ -347,6 +367,8 @@ export type MovieOrderByWithAggregationInput = {
   reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeBuyPriceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeRentPriceId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MovieCountOrderByAggregateInput
   _avg?: Prisma.MovieAvgOrderByAggregateInput
   _max?: Prisma.MovieMaxOrderByAggregateInput
@@ -372,6 +394,8 @@ export type MovieScalarWhereWithAggregatesInput = {
   reviewCount?: Prisma.IntWithAggregatesFilter<"Movie"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Movie"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Movie"> | Date | string
+  stripeBuyPriceId?: Prisma.StringNullableWithAggregatesFilter<"Movie"> | string | null
+  stripeRentPriceId?: Prisma.StringNullableWithAggregatesFilter<"Movie"> | string | null
 }
 
 export type MovieCreateInput = {
@@ -389,6 +413,8 @@ export type MovieCreateInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
   reviews?: Prisma.ReviewCreateNestedManyWithoutMovieInput
   watchlists?: Prisma.WatchlistCreateNestedManyWithoutMovieInput
   purchases?: Prisma.PurchaseCreateNestedManyWithoutMovieInput
@@ -409,6 +435,8 @@ export type MovieUncheckedCreateInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMovieInput
   watchlists?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMovieInput
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutMovieInput
@@ -429,6 +457,8 @@ export type MovieUpdateInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviews?: Prisma.ReviewUpdateManyWithoutMovieNestedInput
   watchlists?: Prisma.WatchlistUpdateManyWithoutMovieNestedInput
   purchases?: Prisma.PurchaseUpdateManyWithoutMovieNestedInput
@@ -449,6 +479,8 @@ export type MovieUncheckedUpdateInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMovieNestedInput
   watchlists?: Prisma.WatchlistUncheckedUpdateManyWithoutMovieNestedInput
   purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutMovieNestedInput
@@ -469,6 +501,8 @@ export type MovieCreateManyInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
 }
 
 export type MovieUpdateManyMutationInput = {
@@ -486,6 +520,8 @@ export type MovieUpdateManyMutationInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MovieUncheckedUpdateManyInput = {
@@ -503,6 +539,8 @@ export type MovieUncheckedUpdateManyInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -528,6 +566,8 @@ export type MovieCountOrderByAggregateInput = {
   reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeBuyPriceId?: Prisma.SortOrder
+  stripeRentPriceId?: Prisma.SortOrder
 }
 
 export type MovieAvgOrderByAggregateInput = {
@@ -548,6 +588,8 @@ export type MovieMaxOrderByAggregateInput = {
   reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeBuyPriceId?: Prisma.SortOrder
+  stripeRentPriceId?: Prisma.SortOrder
 }
 
 export type MovieMinOrderByAggregateInput = {
@@ -562,6 +604,8 @@ export type MovieMinOrderByAggregateInput = {
   reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  stripeBuyPriceId?: Prisma.SortOrder
+  stripeRentPriceId?: Prisma.SortOrder
 }
 
 export type MovieSumOrderByAggregateInput = {
@@ -671,6 +715,8 @@ export type MovieCreateWithoutPurchasesInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
   reviews?: Prisma.ReviewCreateNestedManyWithoutMovieInput
   watchlists?: Prisma.WatchlistCreateNestedManyWithoutMovieInput
 }
@@ -690,6 +736,8 @@ export type MovieUncheckedCreateWithoutPurchasesInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMovieInput
   watchlists?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMovieInput
 }
@@ -725,6 +773,8 @@ export type MovieUpdateWithoutPurchasesInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviews?: Prisma.ReviewUpdateManyWithoutMovieNestedInput
   watchlists?: Prisma.WatchlistUpdateManyWithoutMovieNestedInput
 }
@@ -744,6 +794,8 @@ export type MovieUncheckedUpdateWithoutPurchasesInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMovieNestedInput
   watchlists?: Prisma.WatchlistUncheckedUpdateManyWithoutMovieNestedInput
 }
@@ -763,6 +815,8 @@ export type MovieCreateWithoutReviewsInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
   watchlists?: Prisma.WatchlistCreateNestedManyWithoutMovieInput
   purchases?: Prisma.PurchaseCreateNestedManyWithoutMovieInput
 }
@@ -782,6 +836,8 @@ export type MovieUncheckedCreateWithoutReviewsInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
   watchlists?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMovieInput
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutMovieInput
 }
@@ -817,6 +873,8 @@ export type MovieUpdateWithoutReviewsInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   watchlists?: Prisma.WatchlistUpdateManyWithoutMovieNestedInput
   purchases?: Prisma.PurchaseUpdateManyWithoutMovieNestedInput
 }
@@ -836,6 +894,8 @@ export type MovieUncheckedUpdateWithoutReviewsInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   watchlists?: Prisma.WatchlistUncheckedUpdateManyWithoutMovieNestedInput
   purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutMovieNestedInput
 }
@@ -855,6 +915,8 @@ export type MovieCreateWithoutWatchlistsInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
   reviews?: Prisma.ReviewCreateNestedManyWithoutMovieInput
   purchases?: Prisma.PurchaseCreateNestedManyWithoutMovieInput
 }
@@ -874,6 +936,8 @@ export type MovieUncheckedCreateWithoutWatchlistsInput = {
   reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stripeBuyPriceId?: string | null
+  stripeRentPriceId?: string | null
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMovieInput
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutMovieInput
 }
@@ -909,6 +973,8 @@ export type MovieUpdateWithoutWatchlistsInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviews?: Prisma.ReviewUpdateManyWithoutMovieNestedInput
   purchases?: Prisma.PurchaseUpdateManyWithoutMovieNestedInput
 }
@@ -928,6 +994,8 @@ export type MovieUncheckedUpdateWithoutWatchlistsInput = {
   reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMovieNestedInput
   purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutMovieNestedInput
 }
@@ -996,6 +1064,8 @@ export type MovieSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reviewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  stripeBuyPriceId?: boolean
+  stripeRentPriceId?: boolean
   reviews?: boolean | Prisma.Movie$reviewsArgs<ExtArgs>
   watchlists?: boolean | Prisma.Movie$watchlistsArgs<ExtArgs>
   purchases?: boolean | Prisma.Movie$purchasesArgs<ExtArgs>
@@ -1017,6 +1087,8 @@ export type MovieSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   reviewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  stripeBuyPriceId?: boolean
+  stripeRentPriceId?: boolean
 }, ExtArgs["result"]["movie"]>
 
 export type MovieSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1034,6 +1106,8 @@ export type MovieSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   reviewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  stripeBuyPriceId?: boolean
+  stripeRentPriceId?: boolean
 }, ExtArgs["result"]["movie"]>
 
 export type MovieSelectScalar = {
@@ -1051,9 +1125,11 @@ export type MovieSelectScalar = {
   reviewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  stripeBuyPriceId?: boolean
+  stripeRentPriceId?: boolean
 }
 
-export type MovieOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "synopsis" | "thumbnail" | "genre" | "releaseYear" | "director" | "cast" | "streamingPlatform" | "pricing" | "avgRating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["movie"]>
+export type MovieOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "synopsis" | "thumbnail" | "genre" | "releaseYear" | "director" | "cast" | "streamingPlatform" | "pricing" | "avgRating" | "reviewCount" | "createdAt" | "updatedAt" | "stripeBuyPriceId" | "stripeRentPriceId", ExtArgs["result"]["movie"]>
 export type MovieInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviews?: boolean | Prisma.Movie$reviewsArgs<ExtArgs>
   watchlists?: boolean | Prisma.Movie$watchlistsArgs<ExtArgs>
@@ -1085,6 +1161,8 @@ export type $MoviePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     reviewCount: number
     createdAt: Date
     updatedAt: Date
+    stripeBuyPriceId: string | null
+    stripeRentPriceId: string | null
   }, ExtArgs["result"]["movie"]>
   composites: {}
 }
@@ -1525,6 +1603,8 @@ export interface MovieFieldRefs {
   readonly reviewCount: Prisma.FieldRef<"Movie", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Movie", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Movie", 'DateTime'>
+  readonly stripeBuyPriceId: Prisma.FieldRef<"Movie", 'String'>
+  readonly stripeRentPriceId: Prisma.FieldRef<"Movie", 'String'>
 }
     
 

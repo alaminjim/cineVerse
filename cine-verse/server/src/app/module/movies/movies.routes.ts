@@ -24,6 +24,12 @@ router.post(
   movieController.createMovie,
 );
 
+router.patch(
+  "/:id/buy-price",
+  authMiddleware(UserRole.ADMIN),
+  movieController.updateMovieBuyPrice,
+);
+
 router.put(
   "/:id",
   authMiddleware(UserRole.ADMIN),

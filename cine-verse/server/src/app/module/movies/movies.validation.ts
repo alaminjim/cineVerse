@@ -1,5 +1,3 @@
-// src/app/modules/movie/movies.validation.ts
-
 import { z } from "zod";
 
 export const createMovieValidationSchema = z.object({

@@ -20,7 +20,7 @@ router.get(
 
 router.post("/confirm", subscriptionController.confirmSubscription);
 
-router.put(
+router.post(
   "/:id",
   authMiddleware(UserRole.USER),
   subscriptionController.cancelSubscription,
