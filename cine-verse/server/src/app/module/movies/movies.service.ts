@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { uploadImage } from "../../config/cloudinary.config";
 import { stripe } from "../../config/stripe";
@@ -88,17 +90,106 @@ const createMovie = async (
   return movie;
 };
 
-const getAllMovies = async () => {
-  const movies = await prisma.movie.findMany({
-    include: {
-      reviews: true,
-    },
-    orderBy: { createdAt: "desc" },
-  });
+const getAllMovies = async (queryParams: any) => {
+  const {
+    searchTerms,
+    genre,
+    director,
+    releaseYear,
+    ratingFrom,
+    ratingTo,
+    popularity,
+    sortBy = "avgRating",
+    sortOrder = "desc",
+    page = 1,
+    limit = 10,
+  } = queryParams;
+
+  const where: any = {};
+
+  if (searchTerms) {
+    where.OR = [
+      { title: { contains: searchTerms, mode: "insensitive" } },
+      { director: { contains: searchTerms, mode: "insensitive" } },
+      { cast: { hasSome: [searchTerms] } },
+      { streamingPlatform: { hasSome: [searchTerms] } },
+    ];
+  }
+
+  if (genre) {
+    where.genre = { hasSome: [genre] };
+  }
+
+  if (director) {
+    where.director = {
+      contains: director,
+      mode: "insensitive",
+    };
+  }
+
+  if (releaseYear) {
+    where.releaseYear = parseInt(releaseYear);
+  }
+
+  if (ratingFrom || ratingTo) {
+    where.avgRating = {};
+    if (ratingFrom) where.avgRating.gte = parseFloat(ratingFrom);
+    if (ratingTo) where.avgRating.lte = parseFloat(ratingTo);
+  }
+
+  if (popularity) {
+    where.reviewCount = { gte: parseInt(popularity) };
+  }
+
+  let orderBy: any = {};
+  switch (sortBy) {
+    case "avgRating":
+      orderBy = { avgRating: sortOrder };
+      break;
+    case "reviewCount":
+      orderBy = { reviewCount: sortOrder };
+      break;
+    case "createdAt":
+      orderBy = { createdAt: sortOrder };
+      break;
+    case "releaseYear":
+      orderBy = { releaseYear: sortOrder };
+      break;
+    default:
+      orderBy = { avgRating: sortOrder };
+  }
+
+  const pageNum = parseInt(page) || 1;
+  const limitNum = parseInt(limit) || 10;
+  const skip = (pageNum - 1) * limitNum;
+
+  const [total, movies] = await Promise.all([
+    prisma.movie.count({ where }),
+    prisma.movie.findMany({
+      where,
+      orderBy,
+      skip,
+      take: limitNum,
+      include: {
+        reviews: true,
+        _count: {
+          select: { reviews: true, watchlists: true },
+        },
+      },
+    }),
+  ]);
+
+  const totalPages = Math.ceil(total / limitNum);
 
   return {
     success: true,
     data: movies,
+    meta: {
+      page: pageNum,
+      limit: limitNum,
+      total,
+      totalPages,
+    },
   };
 };
 
