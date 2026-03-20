@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { UserStatus } from "../../../generated/prisma/enums";
 import { auth } from "../../lib/auth";
 import { ILogin, IRegister } from "./auth.interface";
@@ -118,9 +120,40 @@ const logOut = async (sessionToken: string) => {
   return result;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const googleLoginSuccess = async (session: any) => {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email: session.user.email,
+    },
+  });
+
+  if (!existingUser) {
+    await prisma.user.create({
+      data: {
+        name: session.user.name,
+        email: session.user.email,
+      },
+    });
+  }
+
+  const accessToken = tokenUtils.accessToken({
+    userId: session.user.id,
+    role: session.user.role || "USER",
+  });
+
+  const refreshToken = tokenUtils.refreshToken({
+    userId: session.user.id,
+    role: session.user.role || "USER",
+  });
+
+  return { accessToken, refreshToken };
+};
+
 export const authService = {
   authRegister,
   authLogin,
   authMe,
   logOut,
+  googleLoginSuccess,
 };

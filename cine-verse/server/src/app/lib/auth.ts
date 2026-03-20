@@ -10,9 +10,27 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+
   emailAndPassword: {
     enabled: true,
   },
+
+  socialProviders: {
+    google: {
+      clientId: envConfig.GOOGLE_CLIENT_ID,
+      clientSecret: envConfig.GOOGLE_CLIENT_SECRET,
+
+      mapProfileToUser() {
+        return {
+          role: UserRole.USER,
+          status: UserStatus.ACTIVE,
+          emailVerified: true,
+          isDeleted: false,
+        };
+      },
+    },
+  },
+
   user: {
     additionalFields: {
       role: {
@@ -36,6 +54,16 @@ export const auth = betterAuth({
       },
     },
   },
+
+  redirectURLs: {
+    signIn: `${envConfig.BETTER_AUTH_URL}/api/v1/auth/google/success`,
+  },
+
+  trustedOrigins: [
+    process.env.BETTER_AUTH_URL || "http://localhost:5000",
+    envConfig.FRONTEND_URL,
+  ],
+
   session: {
     expiresIn: 60 * 60 * 60 * 24,
     updateAge: 60 * 60 * 60 * 24,
@@ -44,6 +72,7 @@ export const auth = betterAuth({
       maxAge: 60 * 60 * 60 * 24,
     },
   },
+
   advanced: {
     useSecureCookies: false,
     cookies: {

@@ -6,8 +6,12 @@ import { indexRouter } from "./app/routes";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./app/lib/auth";
 import notFound from "./app/middleware/notFound";
+import path from "path";
 
 const app: Application = express();
+
+app.set("view engine", "ejs");
+app.set("views", path.resolve(process.cwd(), "src/app/template"));
 
 app.use(
   cors({

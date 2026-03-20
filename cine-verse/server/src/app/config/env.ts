@@ -23,6 +23,10 @@ interface EnvConfig {
   STRIPE_SECRET_KEY: string;
   STRIPE_MONTHLY_PRICE_ID: string;
   STRIPE_YEARLY_PRICE_ID: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  GOOGLE_CALLBACK_URL: string;
+  BACKEND_URL: string;
 }
 
 const envVariables = (): EnvConfig => {
@@ -45,6 +49,10 @@ const envVariables = (): EnvConfig => {
     "STRIPE_SECRET_KEY",
     "STRIPE_MONTHLY_PRICE_ID",
     "STRIPE_YEARLY_PRICE_ID",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "GOOGLE_CALLBACK_URL",
+    "BACKEND_URL",
   ];
 
   requireEnv.forEach((variable) => {
@@ -74,6 +82,10 @@ const envVariables = (): EnvConfig => {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
     STRIPE_MONTHLY_PRICE_ID: process.env.STRIPE_MONTHLY_PRICE_ID as string,
     STRIPE_YEARLY_PRICE_ID: process.env.STRIPE_YEARLY_PRICE_ID as string,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
+    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
+    BACKEND_URL: process.env.BACKEND_URL as string,
   };
 };
 

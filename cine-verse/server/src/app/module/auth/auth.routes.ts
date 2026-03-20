@@ -34,4 +34,7 @@ router.post(
   authController.logOut,
 );
 
+router.get("/login/google", authController.googleLogin);
+router.get("/google/success", authController.googleLoginSuccess);
+
 export const authRoute = router;
