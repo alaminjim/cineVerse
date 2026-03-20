@@ -3,6 +3,7 @@ import catchFunction from "../../shared/catchFunction";
 import { StatusCodes } from "http-status-codes";
 import { authService } from "./auth.service";
 import { setCookieUtils } from "../../utils/cookiesSet";
+import { cookieUtils } from "../../utils/cookie";
 
 const authRegister = catchFunction(async (req: Request, res: Response) => {
   const payload = req.body;
@@ -54,8 +55,39 @@ const authMe = catchFunction(async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({ success: true, data: result });
 });
 
+const logOut = catchFunction(async (req: Request, res: Response) => {
+  const sessionToken = req.cookies["better-auth.session_token"];
+
+  await authService.logOut(sessionToken);
+
+  cookieUtils.clearCookies(res, "accessToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+
+  cookieUtils.clearCookies(res, "refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+
+  cookieUtils.clearCookies(res, "better-auth.session_token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: "logout SuccessFul",
+    data: null,
+  });
+});
+
 export const authController = {
   authRegister,
   authLogin,
   authMe,
+  logOut,
 };

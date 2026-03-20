@@ -28,4 +28,10 @@ router.get(
   authController.authMe,
 );
 
+router.post(
+  "/logout",
+  authMiddleware(UserRole.ADMIN, UserRole.USER),
+  authController.logOut,
+);
+
 export const authRoute = router;
