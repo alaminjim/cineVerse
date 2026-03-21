@@ -193,13 +193,18 @@ export const MovieScalarFieldEnum = {
   director: 'director',
   cast: 'cast',
   streamingPlatform: 'streamingPlatform',
+  type: 'type',
+  seasons: 'seasons',
+  episodes: 'episodes',
+  runtime: 'runtime',
+  streamingLink: 'streamingLink',
   pricing: 'pricing',
   avgRating: 'avgRating',
   reviewCount: 'reviewCount',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
   stripeBuyPriceId: 'stripeBuyPriceId',
-  stripeRentPriceId: 'stripeRentPriceId'
+  stripeRentPriceId: 'stripeRentPriceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type MovieScalarFieldEnum = (typeof MovieScalarFieldEnum)[keyof typeof MovieScalarFieldEnum]
@@ -223,17 +228,14 @@ export type PurchaseScalarFieldEnum = (typeof PurchaseScalarFieldEnum)[keyof typ
 
 export const ReviewScalarFieldEnum = {
   id: 'id',
+  title: 'title',
+  rating: 'rating',
+  content: 'content',
+  status: 'status',
+  hasSpoiler: 'hasSpoiler',
+  tags: 'tags',
   userId: 'userId',
   movieId: 'movieId',
-  rating: 'rating',
-  title: 'title',
-  content: 'content',
-  tags: 'tags',
-  hasSpoiler: 'hasSpoiler',
-  isApproved: 'isApproved',
-  status: 'status',
-  likesCount: 'likesCount',
-  commentCount: 'commentCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

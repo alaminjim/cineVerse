@@ -42,3 +42,8 @@ enum UserStatus {
   SUSPENDED
   DELETED
 }
+
+enum ContentType {
+  MOVIE
+  SERIES
+}

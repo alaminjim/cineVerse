@@ -76,3 +76,11 @@ export const UserStatus = {
 } as const
 
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const ContentType = {
+  MOVIE: 'MOVIE',
+  SERIES: 'SERIES'
+} as const
+
+export type ContentType = (typeof ContentType)[keyof typeof ContentType]

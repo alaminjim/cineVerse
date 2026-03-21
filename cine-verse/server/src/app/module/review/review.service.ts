@@ -1,104 +1,176 @@
-import { ReviewStatus } from "../../../generated/prisma/enums";
-import { IRequestUser } from "../../interface/requestUser.interface";
-import { prisma } from "../../lib/prisma";
-import { ICreateReview, IUpdateReview } from "./review.interface";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-const createReview = async (payload: ICreateReview, user: IRequestUser) => {
-  const userId = user.userId;
-  const existing = await prisma.review.findFirst({
+import { ReviewStatus } from "../../../generated/prisma/enums";
+import { prisma } from "../../lib/prisma";
+
+const createReview = async (userId: string, payload: any) => {
+  const { movieId, title, rating, content, hasSpoiler, tags } = payload;
+
+  if (!movieId || !title || !rating || !content) {
+    throw new Error("All fields are required");
+  }
+
+  if (rating < 1 || rating > 10) {
+    throw new Error("Rating must be between 1 and 10");
+  }
+
+  const existingReview = await prisma.review.findFirst({
     where: {
-      movieId: payload.movieId,
       userId,
+      movieId,
     },
   });
 
-  if (existing) {
+  if (existingReview) {
     throw new Error("You already reviewed this movie");
-  }
-
-  if (user.role !== "USER") {
-    throw new Error("Only Admin can create");
   }
 
   const review = await prisma.review.create({
     data: {
-      ...payload,
       userId,
+      movieId,
+      title,
+      rating,
+      content,
+      hasSpoiler: hasSpoiler || false,
+      tags: tags || [],
       status: ReviewStatus.PENDING,
-      tags: payload.tags || [],
-      hasSpoiler: payload.hasSpoiler || false,
     },
     include: {
       user: {
-        select: { id: true, name: true, image: true },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      },
+      movie: {
+        select: {
+          id: true,
+          title: true,
+        },
       },
     },
   });
+
+  await updateMovieRating(movieId);
 
   return review;
 };
 
-const getMovieReviews = async (movieId: string) => {
-  const reviews = await prisma.review.findMany({
-    where: {
-      movieId,
-      status: ReviewStatus.APPROVED,
-    },
-    include: {
-      user: {
-        select: { id: true, name: true, image: true },
-      },
-      _count: {
-        select: { comments: true, likes: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+const getReviewsByMovieId = async (movieId: string, queryParams: any) => {
+  const { page = 1, limit = 10 } = queryParams;
+  const skip = (parseInt(page) - 1) * parseInt(limit);
 
-  return reviews;
+  const [total, reviews] = await Promise.all([
+    prisma.review.count({
+      where: {
+        movieId,
+        status: "APPROVED",
+      },
+    }),
+    prisma.review.findMany({
+      where: {
+        movieId,
+        status: "APPROVED",
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            user: {
+              select: {
+                name: true,
+                image: true,
+              },
+            },
+          },
+        },
+        likes: {
+          select: {
+            id: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: parseInt(limit),
+    }),
+  ]);
+
+  return {
+    success: true,
+    data: reviews.map((review) => ({
+      ...review,
+      likesCount: review.likes.length,
+      commentsCount: review.comments.length,
+      likes: undefined,
+    })),
+    meta: {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      total,
+      totalPages: Math.ceil(total / parseInt(limit)),
+    },
+  };
 };
 
-const getAllReviews = async () => {
-  const reviews = await prisma.review.findMany({
+const getReviewById = async (reviewId: string) => {
+  const review = await prisma.review.findUnique({
+    where: { id: reviewId },
     include: {
       user: {
-        select: { id: true, name: true, image: true },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      },
+      movie: {
+        select: {
+          id: true,
+          title: true,
+          thumbnail: true,
+        },
       },
       comments: {
         include: {
           user: {
-            select: { id: true, name: true, image: true },
-          },
-          replies: {
-            include: {
-              user: {
-                select: { id: true, name: true, image: true },
-              },
+            select: {
+              name: true,
+              image: true,
             },
-            orderBy: { createdAt: "asc" },
           },
         },
-        where: { parentCommentId: null },
-        orderBy: { createdAt: "desc" },
       },
-      _count: {
-        select: { comments: true, likes: true },
-      },
+      likes: true,
     },
-    orderBy: { createdAt: "desc" },
   });
+
+  if (!review) {
+    throw new Error("Review not found");
+  }
 
   return {
     success: true,
-    data: reviews,
+    data: review,
   };
 };
 
-const updateReview = async (
-  reviewId: string,
-  payload: IUpdateReview,
-  userId: string,
-) => {
+const updateReview = async (reviewId: string, userId: string, payload: any) => {
   const review = await prisma.review.findUnique({
     where: { id: reviewId },
   });
@@ -108,24 +180,53 @@ const updateReview = async (
   }
 
   if (review.userId !== userId) {
-    throw new Error("Only review owner can edit");
+    throw new Error("You can only edit your own review");
   }
 
   if (review.status === "APPROVED") {
-    throw new Error("Cannot edit approved review");
+    throw new Error("Cannot edit approved reviews");
   }
+
+  const updateData: any = {};
+
+  if (payload.title) updateData.title = payload.title;
+  if (payload.rating) {
+    if (payload.rating < 1 || payload.rating > 10) {
+      throw new Error("Rating must be between 1 and 10");
+    }
+    updateData.rating = payload.rating;
+  }
+  if (payload.content) updateData.content = payload.content;
+
+  if (payload.hasSpoiler !== undefined) {
+    updateData.hasSpoiler = payload.hasSpoiler;
+  }
+
+  if (payload.tags) {
+    updateData.tags = payload.tags;
+  }
+
+  updateData.status = "PENDING";
 
   const updated = await prisma.review.update({
     where: { id: reviewId },
-    data: payload,
+    data: updateData,
     include: {
       user: {
-        select: { id: true, name: true, image: true },
+        select: {
+          name: true,
+          email: true,
+          image: true,
+        },
       },
     },
   });
 
-  return updated;
+  return {
+    success: true,
+    message: "Review updated. Pending admin approval.",
+    data: updated,
+  };
 };
 
 const deleteReview = async (reviewId: string, userId: string) => {
@@ -138,25 +239,29 @@ const deleteReview = async (reviewId: string, userId: string) => {
   }
 
   if (review.userId !== userId) {
-    throw new Error("Only review owner can delete");
+    throw new Error("You can only delete your own review");
   }
 
   await prisma.review.delete({
     where: { id: reviewId },
   });
 
-  await recalculateMovieRating(review.movieId);
+  await updateMovieRating(review.movieId);
 
-  return { success: true };
+  return {
+    success: true,
+  };
 };
 
-const recalculateMovieRating = async (movieId: string) => {
+const updateMovieRating = async (movieId: string) => {
   const reviews = await prisma.review.findMany({
     where: {
       movieId,
-      status: ReviewStatus.APPROVED,
+      status: "APPROVED",
     },
-    select: { rating: true },
+    select: {
+      rating: true,
+    },
   });
 
   const avgRating =
@@ -173,21 +278,49 @@ const recalculateMovieRating = async (movieId: string) => {
   });
 };
 
-const getPendingReviews = async () => {
-  const reviews = await prisma.review.findMany({
-    where: { status: ReviewStatus.PENDING },
-    include: {
-      user: {
-        select: { id: true, name: true, image: true },
-      },
-      movie: {
-        select: { id: true, title: true },
-      },
-    },
-    orderBy: { createdAt: "asc" },
-  });
+const getPendingReviews = async (queryParams: any) => {
+  const { page = 1, limit = 10 } = queryParams;
+  const skip = (parseInt(page) - 1) * parseInt(limit);
 
-  return reviews;
+  const [total, reviews] = await Promise.all([
+    prisma.review.count({
+      where: { status: "PENDING" },
+    }),
+    prisma.review.findMany({
+      where: { status: "PENDING" },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+        movie: {
+          select: {
+            id: true,
+            title: true,
+            thumbnail: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: parseInt(limit),
+    }),
+  ]);
+
+  return {
+    success: true,
+    data: reviews,
+    meta: {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      total,
+      totalPages: Math.ceil(total / parseInt(limit)),
+    },
+  };
 };
 
 const approveReview = async (reviewId: string) => {
@@ -199,17 +332,35 @@ const approveReview = async (reviewId: string) => {
     throw new Error("Review not found");
   }
 
-  const approved = await prisma.review.update({
+  if (review.status === "APPROVED") {
+    throw new Error("Review is already approved");
+  }
+
+  const updated = await prisma.review.update({
     where: { id: reviewId },
-    data: { status: ReviewStatus.APPROVED },
+    data: { status: "APPROVED" },
+    include: {
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+      movie: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
   });
 
-  await recalculateMovieRating(review.movieId);
+  await updateMovieRating(review.movieId);
 
-  return approved;
+  return updated;
 };
 
-const rejectReview = async (reviewId: string) => {
+const rejectReview = async (reviewId: string, reason?: string) => {
   const review = await prisma.review.findUnique({
     where: { id: reviewId },
   });
@@ -218,21 +369,49 @@ const rejectReview = async (reviewId: string) => {
     throw new Error("Review not found");
   }
 
-  await prisma.review.update({
+  if (review.status === "REJECTED") {
+    throw new Error("Review is already rejected");
+  }
+
+  const updated = await prisma.review.update({
     where: { id: reviewId },
-    data: { status: ReviewStatus.REJECTED },
+    data: { status: "REJECTED" },
+    include: {
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+      movie: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
   });
 
-  return { success: true };
+  if (review.status === "APPROVED") {
+    await updateMovieRating(review.movieId);
+  }
+
+  return updated;
+};
+
+const getAllReviews = async () => {
+  const reviews = await prisma.review.findMany();
+  return reviews;
 };
 
 export const reviewService = {
   createReview,
-  getMovieReviews,
+  getReviewsByMovieId,
+  getReviewById,
   updateReview,
   deleteReview,
+  getPendingReviews,
   approveReview,
   rejectReview,
   getAllReviews,
-  getPendingReviews,
 };

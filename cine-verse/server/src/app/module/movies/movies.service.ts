@@ -1,69 +1,60 @@
 /* eslint-disable no-useless-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { uploadImage } from "../../config/cloudinary.config";
 import { stripe } from "../../config/stripe";
-import { IRequestUser } from "../../interface/requestUser.interface";
 import { prisma } from "../../lib/prisma";
-import { ICreateMovie, IUpdateMovie } from "./movies.interface";
 
-const createMovie = async (
-  payload: ICreateMovie,
-  user: IRequestUser,
-  file?: Express.Multer.File,
-) => {
-  if (user.role !== "ADMIN") {
-    throw new Error("Only Admin can create movies");
-  }
+const createMovie = async (payload: any, file?: Express.Multer.File) => {
+  let thumbnail = null;
 
-  let thumbnail: string | undefined;
   if (file) {
     thumbnail = await uploadImage(file);
   }
 
-  let stripeBuyPriceId: string | null = null;
-  let stripeRentPriceId: string | null = null;
+  if (!payload.title || !payload.director) {
+    throw new Error("Title and director are required");
+  }
+
+  if (payload.type === "SERIES") {
+    if (!payload.seasons || !payload.episodes) {
+      throw new Error("Seasons and episodes required for series");
+    }
+  }
+
+  if (payload.type === "MOVIE") {
+    if (!payload.runtime) {
+      throw new Error("Runtime required for movies");
+    }
+  }
+
+  let stripeBuyPriceId = null;
+  let stripeRentPriceId = null;
 
   if (payload.pricing === "PREMIUM") {
-    try {
-      const buyPrice = payload.buyPrice || 299;
-      const rentPrice = payload.rentPrice || 499;
+    const buyPrice = payload.buyPrice || 14.99;
+    const rentPrice = payload.rentPrice || 4.99;
 
-      const product = await stripe.products.create({
-        name: payload.title,
-        images: thumbnail ? [thumbnail] : [],
-        metadata: {
-          title: payload.title,
-          genre: payload.genre?.join(",") || "Unknown",
-          director: payload.director || "Unknown",
-        },
-      });
+    const product = await stripe.products.create({
+      name: payload.title,
+      description: payload.synopsis,
+      images: thumbnail ? [thumbnail] : undefined,
+    });
 
-      const buyPriceObj = await stripe.prices.create({
-        product: product.id,
-        unit_amount: Math.round(buyPrice * 100),
-        currency: "bdt",
-        metadata: {
-          type: "BUY",
-          title: payload.title,
-        },
-      });
-      stripeBuyPriceId = buyPriceObj.id;
+    const buyPriceObj = await stripe.prices.create({
+      product: product.id,
+      unit_amount: Math.round(buyPrice * 100),
+      currency: "usd",
+    });
 
-      const rentPriceObj = await stripe.prices.create({
-        product: product.id,
-        unit_amount: Math.round(rentPrice * 100),
-        currency: "usd",
-        metadata: {
-          type: "RENT",
-          duration: "7_days",
-          title: payload.title,
-        },
-      });
-      stripeRentPriceId = rentPriceObj.id;
-    } catch (error) {
-      console.error("Stripe product creation error:", error);
-    }
+    const rentPriceObj = await stripe.prices.create({
+      product: product.id,
+      unit_amount: Math.round(rentPrice * 100),
+      currency: "usd",
+    });
+
+    stripeBuyPriceId = buyPriceObj.id;
+    stripeRentPriceId = rentPriceObj.id;
   }
 
   const movie = await prisma.movie.create({
@@ -71,19 +62,21 @@ const createMovie = async (
       title: payload.title,
       synopsis: payload.synopsis,
       thumbnail,
-      genre: payload.genre,
-      releaseYear: payload.releaseYear,
+      genre: payload.genre || [],
+      releaseYear: parseInt(payload.releaseYear),
       director: payload.director,
-      cast: payload.cast,
-      streamingPlatform: payload.streamingPlatform,
+      cast: payload.cast || [],
+      streamingPlatform: payload.streamingPlatform || [],
+
+      type: payload.type || "MOVIE",
+      seasons: payload.type === "SERIES" ? parseInt(payload.seasons) : null,
+      episodes: payload.type === "SERIES" ? parseInt(payload.episodes) : null,
+      runtime: payload.type === "MOVIE" ? parseInt(payload.runtime) : null,
+      streamingLink: payload.streamingLink || null,
+
       pricing: payload.pricing,
       stripeBuyPriceId,
       stripeRentPriceId,
-    },
-    include: {
-      _count: {
-        select: { reviews: true },
-      },
     },
   });
 
@@ -94,6 +87,7 @@ const getAllMovies = async (queryParams: any) => {
   const {
     searchTerms,
     genre,
+    type,
     director,
     releaseYear,
     ratingFrom,
@@ -107,29 +101,19 @@ const getAllMovies = async (queryParams: any) => {
 
   const where: any = {};
 
+  if (type) where.type = type;
+
   if (searchTerms) {
     where.OR = [
       { title: { contains: searchTerms, mode: "insensitive" } },
       { director: { contains: searchTerms, mode: "insensitive" } },
       { cast: { hasSome: [searchTerms] } },
-      { streamingPlatform: { hasSome: [searchTerms] } },
     ];
   }
 
-  if (genre) {
-    where.genre = { hasSome: [genre] };
-  }
-
-  if (director) {
-    where.director = {
-      contains: director,
-      mode: "insensitive",
-    };
-  }
-
-  if (releaseYear) {
-    where.releaseYear = parseInt(releaseYear);
-  }
+  if (genre) where.genre = { hasSome: [genre] };
+  if (director) where.director = { contains: director, mode: "insensitive" };
+  if (releaseYear) where.releaseYear = parseInt(releaseYear);
 
   if (ratingFrom || ratingTo) {
     where.avgRating = {};
@@ -137,9 +121,7 @@ const getAllMovies = async (queryParams: any) => {
     if (ratingTo) where.avgRating.lte = parseFloat(ratingTo);
   }
 
-  if (popularity) {
-    where.reviewCount = { gte: parseInt(popularity) };
-  }
+  if (popularity) where.reviewCount = { gte: parseInt(popularity) };
 
   let orderBy: any = {};
   switch (sortBy) {
@@ -151,9 +133,6 @@ const getAllMovies = async (queryParams: any) => {
       break;
     case "createdAt":
       orderBy = { createdAt: sortOrder };
-      break;
-    case "releaseYear":
-      orderBy = { releaseYear: sortOrder };
       break;
     default:
       orderBy = { avgRating: sortOrder };
@@ -170,16 +149,28 @@ const getAllMovies = async (queryParams: any) => {
       orderBy,
       skip,
       take: limitNum,
-      include: {
-        reviews: true,
+      select: {
+        id: true,
+        title: true,
+        synopsis: true,
+        thumbnail: true,
+        genre: true,
+        releaseYear: true,
+        type: true,
+        pricing: true,
+        avgRating: true,
+        reviewCount: true,
+        director: true,
+        streamingPlatform: true,
+        streamingLink: true,
         _count: {
-          select: { reviews: true, watchlists: true },
+          select: {
+            reviews: true,
+          },
         },
       },
     }),
   ]);
-
-  const totalPages = Math.ceil(total / limitNum);
 
   return {
     success: true,
@@ -188,43 +179,43 @@ const getAllMovies = async (queryParams: any) => {
       page: pageNum,
       limit: limitNum,
       total,
-      totalPages,
+      totalPages: Math.ceil(total / limitNum),
     },
   };
 };
 
-const getMovieById = async (movieId: string) => {
+const getMovieById = async (id: string) => {
   const movie = await prisma.movie.findUnique({
-    where: { id: movieId },
+    where: { id },
     include: {
       reviews: {
+        where: { status: "APPROVED" },
         select: {
           id: true,
-          rating: true,
           title: true,
+          rating: true,
           content: true,
-          tags: true,
           hasSpoiler: true,
-          likesCount: true,
-          commentCount: true,
+          tags: true,
           createdAt: true,
           user: {
             select: {
               id: true,
               name: true,
+              email: true,
               image: true,
+            },
+          },
+          _count: {
+            select: {
+              comments: true,
+              likes: true,
             },
           },
         },
         orderBy: { createdAt: "desc" },
         take: 10,
       },
-      _count: {
-        select: {
-          reviews: true,
-          watchlists: true,
-        },
-      },
     },
   });
 
@@ -234,154 +225,111 @@ const getMovieById = async (movieId: string) => {
 
   return {
     success: true,
-    data: movie,
+    data: {
+      ...movie,
+      reviews: movie.reviews.map((review) => ({
+        ...review,
+        likesCount: review._count.likes,
+        commentsCount: review._count.comments,
+        _count: undefined,
+      })),
+    },
   };
 };
 
-const getNewReleases = async () => {
-  const newReleases = await prisma.movie.findMany({
-    select: {
-      id: true,
-      title: true,
-      synopsis: true,
-      thumbnail: true,
-      releaseYear: true,
-      genre: true,
-      avgRating: true,
-    },
-    orderBy: { createdAt: "desc" },
+const updateMovie = async (id: string, payload: any) => {
+  const movie = await prisma.movie.findUnique({
+    where: { id },
   });
 
-  return {
-    success: true,
-    data: newReleases,
-  };
+  if (!movie) {
+    throw new Error("Movie not found");
+  }
+
+  const updateData: any = {};
+
+  if (payload.title) updateData.title = payload.title;
+  if (payload.synopsis) updateData.synopsis = payload.synopsis;
+  if (payload.genre) updateData.genre = payload.genre;
+  if (payload.director) updateData.director = payload.director;
+  if (payload.cast) updateData.cast = payload.cast;
+  if (payload.streamingPlatform)
+    updateData.streamingPlatform = payload.streamingPlatform;
+  if (payload.streamingLink) updateData.streamingLink = payload.streamingLink;
+
+  if (payload.type === "SERIES") {
+    if (payload.seasons) updateData.seasons = parseInt(payload.seasons);
+    if (payload.episodes) updateData.episodes = parseInt(payload.episodes);
+    updateData.runtime = null;
+  }
+
+  if (payload.type === "MOVIE") {
+    if (payload.runtime) updateData.runtime = parseInt(payload.runtime);
+    updateData.seasons = null;
+    updateData.episodes = null;
+  }
+
+  const updated = await prisma.movie.update({
+    where: { id },
+    data: updateData,
+  });
+
+  return updated;
 };
 
 const getFeaturedMovies = async () => {
-  const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
-
-  const featured = await prisma.movie.findMany({
-    where: {
-      reviews: {
-        some: {
-          createdAt: { gte: threeDaysAgo },
-        },
-      },
-    },
-
-    orderBy: [{ avgRating: "desc" }, { reviewCount: "desc" }],
+  const movies = await prisma.movie.findMany({
+    where: { avgRating: { gte: 8 } },
+    orderBy: { avgRating: "desc" },
+    take: 10,
   });
 
-  return featured;
+  return movies;
 };
 
-const updateMovie = async (
-  movieId: string,
-  payload: IUpdateMovie,
-  user: IRequestUser,
-  file?: Express.Multer.File,
-) => {
-  if (!(await prisma.movie.findFirst({ where: { id: movieId } }))) {
-    throw new Error("Movie not found");
-  }
-
-  if (user.role !== "ADMIN") {
-    throw new Error("Only Admin can update movies");
-  }
-
-  let thumbnail: string | undefined;
-
-  if (file) {
-    thumbnail = await uploadImage(file);
-  }
-
-  const data = thumbnail ? { ...payload, thumbnail } : payload;
-
-  const movie = await prisma.movie.update({
-    where: { id: movieId },
-    data,
+const getNewReleases = async () => {
+  const movies = await prisma.movie.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 10,
   });
 
-  return movie;
+  return movies;
 };
 
-const updateMovieBuyPrice = async (movieId: string, newBuyPrice: number) => {
+const deleteMovie = async (id: string) => {
   const movie = await prisma.movie.findUnique({
-    where: { id: movieId },
+    where: { id },
   });
 
   if (!movie) {
     throw new Error("Movie not found");
   }
 
-  if (movie.pricing !== "PREMIUM") {
-    throw new Error("Only PREMIUM movies have buy price");
+  if (movie.stripeBuyPriceId) {
+    await stripe.prices.update(movie.stripeBuyPriceId, {
+      active: false,
+    });
   }
 
-  if (!movie.stripeBuyPriceId) {
-    throw new Error("Movie does not have buy price configured");
+  if (movie.stripeRentPriceId) {
+    await stripe.prices.update(movie.stripeRentPriceId, {
+      active: false,
+    });
   }
 
-  const currentPrice = await stripe.prices.retrieve(movie.stripeBuyPriceId);
-  const productId = currentPrice.product as string;
-
-  const newPriceObj = await stripe.prices.create({
-    product: productId,
-    unit_amount: Math.round(newBuyPrice * 100),
-    currency: "bdt",
-    metadata: {
-      type: "BUY",
-      title: movie.title,
-      updatedAt: new Date().toISOString(),
-    },
+  const deleted = await prisma.movie.delete({
+    where: { id },
   });
 
-  const updated = await prisma.movie.update({
-    where: { id: movieId },
-    data: {
-      stripeBuyPriceId: newPriceObj.id,
-    },
-  });
-
-  return {
-    success: true,
-    message: "Buy price updated successfully",
-    data: {
-      movieId,
-      newPrice: newBuyPrice,
-      stripeBuyPriceId: newPriceObj.id,
-    },
-  };
-};
-
-const deleteMovie = async (movieId: string, user: IRequestUser) => {
-  const isExists = await prisma.movie.findFirst({
-    where: {
-      id: movieId,
-    },
-  });
-
-  if (!isExists) {
-    throw new Error("This Movie Does not exists");
-  }
-
-  if (user.role !== "ADMIN") {
-    throw new Error("Only Admin can delete this movies");
-  }
-
-  return await prisma.movie.delete({
-    where: { id: movieId },
-  });
+  return deleted;
 };
 
 export const movieService = {
   createMovie,
   getAllMovies,
   getMovieById,
-  getNewReleases,
-  getFeaturedMovies,
   updateMovie,
-  updateMovieBuyPrice,
+  getFeaturedMovies,
+  getNewReleases,
   deleteMovie,
 };

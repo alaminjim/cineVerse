@@ -1,95 +1,119 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { reviewService } from "./review.service";
 import catchFunction from "../../shared/catchFunction";
-import { StatusCodes } from "http-status-codes";
 
 const createReview = catchFunction(async (req: Request, res: Response) => {
-  const user = req.user;
-  const result = await reviewService.createReview(req.body, user);
-  res.status(StatusCodes.CREATED).json({
-    success: true,
-    message: "Review created (pending approval)",
-    data: result,
+  const user = req.user as any;
+  const { movieId, title, rating, content, hasSpoiler, tags } = req.body;
+
+  if (!movieId || !title || !rating || !content) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: "All fields are required",
+    });
+  }
+
+  const result = await reviewService.createReview(user.userId, {
+    movieId,
+    title,
+    rating,
+    content,
+    hasSpoiler,
+    tags,
   });
+
+  res.status(StatusCodes.CREATED).json(result);
 });
 
-const getMovieReviews = catchFunction(async (req: Request, res: Response) => {
+const getReviewsByMovieId = catchFunction(
+  async (req: Request, res: Response) => {
+    const { movieId } = req.params;
+    const result = await reviewService.getReviewsByMovieId(
+      movieId as string,
+      req.query,
+    );
+
+    res.status(StatusCodes.OK).json(result);
+  },
+);
+
+const getReviewById = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await reviewService.getMovieReviews(id as string);
-  res.status(StatusCodes.OK).json({
-    success: true,
-    data: result,
-  });
+  const result = await reviewService.getReviewById(id as string);
+
+  res.status(StatusCodes.OK).json(result);
+});
+
+const updateReview = catchFunction(async (req: Request, res: Response) => {
+  const user = req.user as any;
+  const { id } = req.params;
+  const result = await reviewService.updateReview(
+    id as string,
+    user.userId,
+    req.body,
+  );
+
+  res.status(StatusCodes.OK).json(result);
+});
+
+const deleteReview = catchFunction(async (req: Request, res: Response) => {
+  const user = req.user as any;
+  const { id } = req.params;
+  const result = await reviewService.deleteReview(id as string, user.userId);
+
+  res.status(StatusCodes.OK).json(result);
+});
+
+const getPendingReviews = catchFunction(async (req: Request, res: Response) => {
+  const result = await reviewService.getPendingReviews(req.query);
+  res.status(StatusCodes.OK).json(result);
 });
 
 const getAllReviews = catchFunction(async (req: Request, res: Response) => {
   const result = await reviewService.getAllReviews();
-  res.status(StatusCodes.OK).json({
-    success: true,
-    data: result,
-  });
-});
-
-const updateReview = catchFunction(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await reviewService.updateReview(
-    id as string,
-    req.body,
-    req.user.userId,
-  );
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: "Update Successful",
-    data: result,
-  });
-});
-
-const deleteReview = catchFunction(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  await reviewService.deleteReview(id as string, req.user.userId);
-
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: "Delete Successful",
-  });
-});
-
-const getPendingReviews = catchFunction(async (req: Request, res: Response) => {
-  const result = await reviewService.getPendingReviews();
-
-  res.status(StatusCodes.OK).json({
-    success: true,
-    data: result,
-  });
+  res.status(StatusCodes.OK).json(result);
 });
 
 const approveReview = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await reviewService.approveReview(id as string);
 
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: "Review approved",
-    data: result,
-  });
+  if (!id) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: "Review ID is required",
+    });
+  }
+
+  const result = await reviewService.approveReview(id as string);
+  res.status(StatusCodes.OK).json(result);
 });
 
 const rejectReview = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
-  await reviewService.rejectReview(id as string);
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: "Review rejected",
-  });
+  const { reason } = req.body;
+
+  if (!id) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      message: "Review ID is required",
+    });
+  }
+
+  const result = await reviewService.rejectReview(id as string, reason);
+  res.status(StatusCodes.OK).json(result);
 });
 
 export const reviewController = {
   createReview,
-  getMovieReviews,
+  getReviewsByMovieId,
+  getReviewById,
   updateReview,
   deleteReview,
   getPendingReviews,
-  getAllReviews,
   approveReview,
   rejectReview,
+  getAllReviews,
 };

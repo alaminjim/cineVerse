@@ -27,7 +27,7 @@ router.post(
 router.patch(
   "/:id/buy-price",
   authMiddleware(UserRole.ADMIN),
-  movieController.updateMovieBuyPrice,
+  movieController.updateMovie,
 );
 
 router.put(

@@ -17,8 +17,6 @@ router.post(
   reviewController.createReview,
 );
 
-router.get("/movie/:id", reviewController.getMovieReviews);
-
 router.get("/", reviewController.getAllReviews);
 
 router.put(
