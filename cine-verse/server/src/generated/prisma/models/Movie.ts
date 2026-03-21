@@ -31,6 +31,8 @@ export type MovieAvgAggregateOutputType = {
   seasons: number | null
   episodes: number | null
   runtime: number | null
+  buyPrice: number | null
+  rentPrice: number | null
   avgRating: number | null
   reviewCount: number | null
 }
@@ -40,6 +42,8 @@ export type MovieSumAggregateOutputType = {
   seasons: number | null
   episodes: number | null
   runtime: number | null
+  buyPrice: number | null
+  rentPrice: number | null
   avgRating: number | null
   reviewCount: number | null
 }
@@ -57,10 +61,12 @@ export type MovieMinAggregateOutputType = {
   runtime: number | null
   streamingLink: string | null
   pricing: $Enums.PricingType | null
-  avgRating: number | null
-  reviewCount: number | null
+  buyPrice: number | null
+  rentPrice: number | null
   stripeBuyPriceId: string | null
   stripeRentPriceId: string | null
+  avgRating: number | null
+  reviewCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -78,10 +84,12 @@ export type MovieMaxAggregateOutputType = {
   runtime: number | null
   streamingLink: string | null
   pricing: $Enums.PricingType | null
-  avgRating: number | null
-  reviewCount: number | null
+  buyPrice: number | null
+  rentPrice: number | null
   stripeBuyPriceId: string | null
   stripeRentPriceId: string | null
+  avgRating: number | null
+  reviewCount: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -102,10 +110,12 @@ export type MovieCountAggregateOutputType = {
   runtime: number
   streamingLink: number
   pricing: number
-  avgRating: number
-  reviewCount: number
+  buyPrice: number
+  rentPrice: number
   stripeBuyPriceId: number
   stripeRentPriceId: number
+  avgRating: number
+  reviewCount: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -117,6 +127,8 @@ export type MovieAvgAggregateInputType = {
   seasons?: true
   episodes?: true
   runtime?: true
+  buyPrice?: true
+  rentPrice?: true
   avgRating?: true
   reviewCount?: true
 }
@@ -126,6 +138,8 @@ export type MovieSumAggregateInputType = {
   seasons?: true
   episodes?: true
   runtime?: true
+  buyPrice?: true
+  rentPrice?: true
   avgRating?: true
   reviewCount?: true
 }
@@ -143,10 +157,12 @@ export type MovieMinAggregateInputType = {
   runtime?: true
   streamingLink?: true
   pricing?: true
-  avgRating?: true
-  reviewCount?: true
+  buyPrice?: true
+  rentPrice?: true
   stripeBuyPriceId?: true
   stripeRentPriceId?: true
+  avgRating?: true
+  reviewCount?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -164,10 +180,12 @@ export type MovieMaxAggregateInputType = {
   runtime?: true
   streamingLink?: true
   pricing?: true
-  avgRating?: true
-  reviewCount?: true
+  buyPrice?: true
+  rentPrice?: true
   stripeBuyPriceId?: true
   stripeRentPriceId?: true
+  avgRating?: true
+  reviewCount?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -188,10 +206,12 @@ export type MovieCountAggregateInputType = {
   runtime?: true
   streamingLink?: true
   pricing?: true
-  avgRating?: true
-  reviewCount?: true
+  buyPrice?: true
+  rentPrice?: true
   stripeBuyPriceId?: true
   stripeRentPriceId?: true
+  avgRating?: true
+  reviewCount?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -299,10 +319,12 @@ export type MovieGroupByOutputType = {
   runtime: number | null
   streamingLink: string | null
   pricing: $Enums.PricingType
-  avgRating: number
-  reviewCount: number
+  buyPrice: number | null
+  rentPrice: number | null
   stripeBuyPriceId: string | null
   stripeRentPriceId: string | null
+  avgRating: number
+  reviewCount: number
   createdAt: Date
   updatedAt: Date
   _count: MovieCountAggregateOutputType | null
@@ -346,10 +368,12 @@ export type MovieWhereInput = {
   runtime?: Prisma.IntNullableFilter<"Movie"> | number | null
   streamingLink?: Prisma.StringNullableFilter<"Movie"> | string | null
   pricing?: Prisma.EnumPricingTypeFilter<"Movie"> | $Enums.PricingType
-  avgRating?: Prisma.FloatFilter<"Movie"> | number
-  reviewCount?: Prisma.IntFilter<"Movie"> | number
+  buyPrice?: Prisma.FloatNullableFilter<"Movie"> | number | null
+  rentPrice?: Prisma.FloatNullableFilter<"Movie"> | number | null
   stripeBuyPriceId?: Prisma.StringNullableFilter<"Movie"> | string | null
   stripeRentPriceId?: Prisma.StringNullableFilter<"Movie"> | string | null
+  avgRating?: Prisma.FloatFilter<"Movie"> | number
+  reviewCount?: Prisma.IntFilter<"Movie"> | number
   createdAt?: Prisma.DateTimeFilter<"Movie"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Movie"> | Date | string
   reviews?: Prisma.ReviewListRelationFilter
@@ -373,10 +397,12 @@ export type MovieOrderByWithRelationInput = {
   runtime?: Prisma.SortOrderInput | Prisma.SortOrder
   streamingLink?: Prisma.SortOrderInput | Prisma.SortOrder
   pricing?: Prisma.SortOrder
-  avgRating?: Prisma.SortOrder
-  reviewCount?: Prisma.SortOrder
+  buyPrice?: Prisma.SortOrderInput | Prisma.SortOrder
+  rentPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeBuyPriceId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeRentPriceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  avgRating?: Prisma.SortOrder
+  reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
@@ -403,10 +429,12 @@ export type MovieWhereUniqueInput = Prisma.AtLeast<{
   runtime?: Prisma.IntNullableFilter<"Movie"> | number | null
   streamingLink?: Prisma.StringNullableFilter<"Movie"> | string | null
   pricing?: Prisma.EnumPricingTypeFilter<"Movie"> | $Enums.PricingType
-  avgRating?: Prisma.FloatFilter<"Movie"> | number
-  reviewCount?: Prisma.IntFilter<"Movie"> | number
+  buyPrice?: Prisma.FloatNullableFilter<"Movie"> | number | null
+  rentPrice?: Prisma.FloatNullableFilter<"Movie"> | number | null
   stripeBuyPriceId?: Prisma.StringNullableFilter<"Movie"> | string | null
   stripeRentPriceId?: Prisma.StringNullableFilter<"Movie"> | string | null
+  avgRating?: Prisma.FloatFilter<"Movie"> | number
+  reviewCount?: Prisma.IntFilter<"Movie"> | number
   createdAt?: Prisma.DateTimeFilter<"Movie"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Movie"> | Date | string
   reviews?: Prisma.ReviewListRelationFilter
@@ -430,10 +458,12 @@ export type MovieOrderByWithAggregationInput = {
   runtime?: Prisma.SortOrderInput | Prisma.SortOrder
   streamingLink?: Prisma.SortOrderInput | Prisma.SortOrder
   pricing?: Prisma.SortOrder
-  avgRating?: Prisma.SortOrder
-  reviewCount?: Prisma.SortOrder
+  buyPrice?: Prisma.SortOrderInput | Prisma.SortOrder
+  rentPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeBuyPriceId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeRentPriceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  avgRating?: Prisma.SortOrder
+  reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MovieCountOrderByAggregateInput
@@ -462,10 +492,12 @@ export type MovieScalarWhereWithAggregatesInput = {
   runtime?: Prisma.IntNullableWithAggregatesFilter<"Movie"> | number | null
   streamingLink?: Prisma.StringNullableWithAggregatesFilter<"Movie"> | string | null
   pricing?: Prisma.EnumPricingTypeWithAggregatesFilter<"Movie"> | $Enums.PricingType
-  avgRating?: Prisma.FloatWithAggregatesFilter<"Movie"> | number
-  reviewCount?: Prisma.IntWithAggregatesFilter<"Movie"> | number
+  buyPrice?: Prisma.FloatNullableWithAggregatesFilter<"Movie"> | number | null
+  rentPrice?: Prisma.FloatNullableWithAggregatesFilter<"Movie"> | number | null
   stripeBuyPriceId?: Prisma.StringNullableWithAggregatesFilter<"Movie"> | string | null
   stripeRentPriceId?: Prisma.StringNullableWithAggregatesFilter<"Movie"> | string | null
+  avgRating?: Prisma.FloatWithAggregatesFilter<"Movie"> | number
+  reviewCount?: Prisma.IntWithAggregatesFilter<"Movie"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Movie"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Movie"> | Date | string
 }
@@ -486,10 +518,12 @@ export type MovieCreateInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutMovieInput
@@ -513,10 +547,12 @@ export type MovieUncheckedCreateInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMovieInput
@@ -540,10 +576,12 @@ export type MovieUpdateInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutMovieNestedInput
@@ -567,10 +605,12 @@ export type MovieUncheckedUpdateInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMovieNestedInput
@@ -594,10 +634,12 @@ export type MovieCreateManyInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -618,10 +660,12 @@ export type MovieUpdateManyMutationInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -642,10 +686,12 @@ export type MovieUncheckedUpdateManyInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -674,10 +720,12 @@ export type MovieCountOrderByAggregateInput = {
   runtime?: Prisma.SortOrder
   streamingLink?: Prisma.SortOrder
   pricing?: Prisma.SortOrder
-  avgRating?: Prisma.SortOrder
-  reviewCount?: Prisma.SortOrder
+  buyPrice?: Prisma.SortOrder
+  rentPrice?: Prisma.SortOrder
   stripeBuyPriceId?: Prisma.SortOrder
   stripeRentPriceId?: Prisma.SortOrder
+  avgRating?: Prisma.SortOrder
+  reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -687,6 +735,8 @@ export type MovieAvgOrderByAggregateInput = {
   seasons?: Prisma.SortOrder
   episodes?: Prisma.SortOrder
   runtime?: Prisma.SortOrder
+  buyPrice?: Prisma.SortOrder
+  rentPrice?: Prisma.SortOrder
   avgRating?: Prisma.SortOrder
   reviewCount?: Prisma.SortOrder
 }
@@ -704,10 +754,12 @@ export type MovieMaxOrderByAggregateInput = {
   runtime?: Prisma.SortOrder
   streamingLink?: Prisma.SortOrder
   pricing?: Prisma.SortOrder
-  avgRating?: Prisma.SortOrder
-  reviewCount?: Prisma.SortOrder
+  buyPrice?: Prisma.SortOrder
+  rentPrice?: Prisma.SortOrder
   stripeBuyPriceId?: Prisma.SortOrder
   stripeRentPriceId?: Prisma.SortOrder
+  avgRating?: Prisma.SortOrder
+  reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -725,10 +777,12 @@ export type MovieMinOrderByAggregateInput = {
   runtime?: Prisma.SortOrder
   streamingLink?: Prisma.SortOrder
   pricing?: Prisma.SortOrder
-  avgRating?: Prisma.SortOrder
-  reviewCount?: Prisma.SortOrder
+  buyPrice?: Prisma.SortOrder
+  rentPrice?: Prisma.SortOrder
   stripeBuyPriceId?: Prisma.SortOrder
   stripeRentPriceId?: Prisma.SortOrder
+  avgRating?: Prisma.SortOrder
+  reviewCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -738,6 +792,8 @@ export type MovieSumOrderByAggregateInput = {
   seasons?: Prisma.SortOrder
   episodes?: Prisma.SortOrder
   runtime?: Prisma.SortOrder
+  buyPrice?: Prisma.SortOrder
+  rentPrice?: Prisma.SortOrder
   avgRating?: Prisma.SortOrder
   reviewCount?: Prisma.SortOrder
 }
@@ -788,6 +844,14 @@ export type NullableIntFieldUpdateOperationsInput = {
 
 export type EnumPricingTypeFieldUpdateOperationsInput = {
   set?: $Enums.PricingType
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type FloatFieldUpdateOperationsInput = {
@@ -856,10 +920,12 @@ export type MovieCreateWithoutPurchasesInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutMovieInput
@@ -882,10 +948,12 @@ export type MovieUncheckedCreateWithoutPurchasesInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMovieInput
@@ -924,10 +992,12 @@ export type MovieUpdateWithoutPurchasesInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutMovieNestedInput
@@ -950,10 +1020,12 @@ export type MovieUncheckedUpdateWithoutPurchasesInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMovieNestedInput
@@ -976,10 +1048,12 @@ export type MovieCreateWithoutReviewsInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   watchlists?: Prisma.WatchlistCreateNestedManyWithoutMovieInput
@@ -1002,10 +1076,12 @@ export type MovieUncheckedCreateWithoutReviewsInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   watchlists?: Prisma.WatchlistUncheckedCreateNestedManyWithoutMovieInput
@@ -1044,10 +1120,12 @@ export type MovieUpdateWithoutReviewsInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   watchlists?: Prisma.WatchlistUpdateManyWithoutMovieNestedInput
@@ -1070,10 +1148,12 @@ export type MovieUncheckedUpdateWithoutReviewsInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   watchlists?: Prisma.WatchlistUncheckedUpdateManyWithoutMovieNestedInput
@@ -1096,10 +1176,12 @@ export type MovieCreateWithoutWatchlistsInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutMovieInput
@@ -1122,10 +1204,12 @@ export type MovieUncheckedCreateWithoutWatchlistsInput = {
   runtime?: number | null
   streamingLink?: string | null
   pricing?: $Enums.PricingType
-  avgRating?: number
-  reviewCount?: number
+  buyPrice?: number | null
+  rentPrice?: number | null
   stripeBuyPriceId?: string | null
   stripeRentPriceId?: string | null
+  avgRating?: number
+  reviewCount?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMovieInput
@@ -1164,10 +1248,12 @@ export type MovieUpdateWithoutWatchlistsInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutMovieNestedInput
@@ -1190,10 +1276,12 @@ export type MovieUncheckedUpdateWithoutWatchlistsInput = {
   runtime?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   streamingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pricing?: Prisma.EnumPricingTypeFieldUpdateOperationsInput | $Enums.PricingType
-  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
-  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  buyPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  rentPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   stripeBuyPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeRentPriceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avgRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  reviewCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMovieNestedInput
@@ -1265,10 +1353,12 @@ export type MovieSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   runtime?: boolean
   streamingLink?: boolean
   pricing?: boolean
-  avgRating?: boolean
-  reviewCount?: boolean
+  buyPrice?: boolean
+  rentPrice?: boolean
   stripeBuyPriceId?: boolean
   stripeRentPriceId?: boolean
+  avgRating?: boolean
+  reviewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   reviews?: boolean | Prisma.Movie$reviewsArgs<ExtArgs>
@@ -1293,10 +1383,12 @@ export type MovieSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   runtime?: boolean
   streamingLink?: boolean
   pricing?: boolean
-  avgRating?: boolean
-  reviewCount?: boolean
+  buyPrice?: boolean
+  rentPrice?: boolean
   stripeBuyPriceId?: boolean
   stripeRentPriceId?: boolean
+  avgRating?: boolean
+  reviewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["movie"]>
@@ -1317,10 +1409,12 @@ export type MovieSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   runtime?: boolean
   streamingLink?: boolean
   pricing?: boolean
-  avgRating?: boolean
-  reviewCount?: boolean
+  buyPrice?: boolean
+  rentPrice?: boolean
   stripeBuyPriceId?: boolean
   stripeRentPriceId?: boolean
+  avgRating?: boolean
+  reviewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["movie"]>
@@ -1341,15 +1435,17 @@ export type MovieSelectScalar = {
   runtime?: boolean
   streamingLink?: boolean
   pricing?: boolean
-  avgRating?: boolean
-  reviewCount?: boolean
+  buyPrice?: boolean
+  rentPrice?: boolean
   stripeBuyPriceId?: boolean
   stripeRentPriceId?: boolean
+  avgRating?: boolean
+  reviewCount?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MovieOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "synopsis" | "thumbnail" | "genre" | "releaseYear" | "director" | "cast" | "streamingPlatform" | "type" | "seasons" | "episodes" | "runtime" | "streamingLink" | "pricing" | "avgRating" | "reviewCount" | "stripeBuyPriceId" | "stripeRentPriceId" | "createdAt" | "updatedAt", ExtArgs["result"]["movie"]>
+export type MovieOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "synopsis" | "thumbnail" | "genre" | "releaseYear" | "director" | "cast" | "streamingPlatform" | "type" | "seasons" | "episodes" | "runtime" | "streamingLink" | "pricing" | "buyPrice" | "rentPrice" | "stripeBuyPriceId" | "stripeRentPriceId" | "avgRating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["movie"]>
 export type MovieInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviews?: boolean | Prisma.Movie$reviewsArgs<ExtArgs>
   watchlists?: boolean | Prisma.Movie$watchlistsArgs<ExtArgs>
@@ -1382,10 +1478,12 @@ export type $MoviePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     runtime: number | null
     streamingLink: string | null
     pricing: $Enums.PricingType
-    avgRating: number
-    reviewCount: number
+    buyPrice: number | null
+    rentPrice: number | null
     stripeBuyPriceId: string | null
     stripeRentPriceId: string | null
+    avgRating: number
+    reviewCount: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["movie"]>
@@ -1829,10 +1927,12 @@ export interface MovieFieldRefs {
   readonly runtime: Prisma.FieldRef<"Movie", 'Int'>
   readonly streamingLink: Prisma.FieldRef<"Movie", 'String'>
   readonly pricing: Prisma.FieldRef<"Movie", 'PricingType'>
-  readonly avgRating: Prisma.FieldRef<"Movie", 'Float'>
-  readonly reviewCount: Prisma.FieldRef<"Movie", 'Int'>
+  readonly buyPrice: Prisma.FieldRef<"Movie", 'Float'>
+  readonly rentPrice: Prisma.FieldRef<"Movie", 'Float'>
   readonly stripeBuyPriceId: Prisma.FieldRef<"Movie", 'String'>
   readonly stripeRentPriceId: Prisma.FieldRef<"Movie", 'String'>
+  readonly avgRating: Prisma.FieldRef<"Movie", 'Float'>
+  readonly reviewCount: Prisma.FieldRef<"Movie", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Movie", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Movie", 'DateTime'>
 }

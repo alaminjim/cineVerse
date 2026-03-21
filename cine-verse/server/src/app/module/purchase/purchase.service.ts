@@ -112,21 +112,16 @@ const confirmPurchase = async (sessionId: string) => {
       : null;
 
   let amount = 0;
-  try {
-    if (purchaseType === "BUY" && movie.stripeBuyPriceId) {
-      const priceDetails = await stripe.prices.retrieve(movie.stripeBuyPriceId);
-      amount = (priceDetails.unit_amount || 0) / 100;
-    } else if (purchaseType === "RENT" && movie.stripeRentPriceId) {
-      const priceDetails = await stripe.prices.retrieve(
-        movie.stripeRentPriceId,
-      );
-      amount = (priceDetails.unit_amount || 0) / 100;
-    }
-  } catch (error) {
-    console.error("Error retrieving Stripe price:", error);
+
+  if (purchaseType === "BUY" && movie.stripeBuyPriceId) {
+    const priceDetails = await stripe.prices.retrieve(movie.stripeBuyPriceId);
+    amount = priceDetails.unit_amount || 0;
+  } else if (purchaseType === "RENT" && movie.stripeRentPriceId) {
+    const priceDetails = await stripe.prices.retrieve(movie.stripeRentPriceId);
+    amount = priceDetails.unit_amount || 0;
   }
 
-  if (amount === 0) {
+  if (amount <= 0) {
     throw new Error("Invalid price amount");
   }
 
@@ -135,7 +130,7 @@ const confirmPurchase = async (sessionId: string) => {
       userId,
       movieId,
       purchaseType,
-      status: "ACTIVE" as PurchaseStatus,
+      status: "ACTIVE",
       amount,
       stripeTransactionId: session.id,
       expiresAt,

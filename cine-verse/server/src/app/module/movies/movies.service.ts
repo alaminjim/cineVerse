@@ -12,8 +12,6 @@ const toNumber = (val: any) => {
 };
 
 const createMovie = async (payload: any, file?: Express.Multer.File) => {
-  console.log("FINAL PAYLOAD:", payload);
-
   let thumbnail = null;
 
   if (file) {
@@ -42,10 +40,12 @@ const createMovie = async (payload: any, file?: Express.Multer.File) => {
 
   let stripeBuyPriceId = null;
   let stripeRentPriceId = null;
+  let buyPrice = null;
+  let rentPrice = null;
 
   if (payload.pricing === "PREMIUM") {
-    const buyPrice = payload.buyPrice || 14.99;
-    const rentPrice = payload.rentPrice || 4.99;
+    buyPrice = payload.buyPrice || 1500;
+    rentPrice = payload.rentPrice || 500;
 
     const product = await stripe.products.create({
       name: payload.title,
@@ -55,13 +55,13 @@ const createMovie = async (payload: any, file?: Express.Multer.File) => {
 
     const buyPriceObj = await stripe.prices.create({
       product: product.id,
-      unit_amount: Math.round(buyPrice * 100),
+      unit_amount: Math.round(buyPrice),
       currency: "bdt",
     });
 
     const rentPriceObj = await stripe.prices.create({
       product: product.id,
-      unit_amount: Math.round(rentPrice * 100),
+      unit_amount: Math.round(rentPrice),
       currency: "bdt",
     });
 
@@ -89,6 +89,8 @@ const createMovie = async (payload: any, file?: Express.Multer.File) => {
       streamingLink: payload.streamingLink || null,
 
       pricing: payload.pricing,
+      buyPrice,
+      rentPrice,
       stripeBuyPriceId,
       stripeRentPriceId,
     },

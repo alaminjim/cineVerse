@@ -1460,10 +1460,12 @@ export const MovieScalarFieldEnum = {
   runtime: 'runtime',
   streamingLink: 'streamingLink',
   pricing: 'pricing',
-  avgRating: 'avgRating',
-  reviewCount: 'reviewCount',
+  buyPrice: 'buyPrice',
+  rentPrice: 'rentPrice',
   stripeBuyPriceId: 'stripeBuyPriceId',
   stripeRentPriceId: 'stripeRentPriceId',
+  avgRating: 'avgRating',
+  reviewCount: 'reviewCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

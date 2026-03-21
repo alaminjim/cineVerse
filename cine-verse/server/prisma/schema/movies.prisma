@@ -17,11 +17,15 @@ model Movie {
   streamingLink     String?
   
   pricing           PricingType    @default(FREE)  
-  avgRating         Float          @default(0)
-  reviewCount       Int            @default(0)
+
+  buyPrice          Float?         
+  rentPrice         Float?        
   
   stripeBuyPriceId  String?
   stripeRentPriceId String?
+  
+  avgRating         Float          @default(0)
+  reviewCount       Int            @default(0)
   
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
