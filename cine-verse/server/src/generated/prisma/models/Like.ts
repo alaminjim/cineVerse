@@ -20,14 +20,25 @@ export type LikeModel = runtime.Types.Result.DefaultSelection<Prisma.$LikePayloa
 
 export type AggregateLike = {
   _count: LikeCountAggregateOutputType | null
+  _avg: LikeAvgAggregateOutputType | null
+  _sum: LikeSumAggregateOutputType | null
   _min: LikeMinAggregateOutputType | null
   _max: LikeMaxAggregateOutputType | null
+}
+
+export type LikeAvgAggregateOutputType = {
+  likesCount: number | null
+}
+
+export type LikeSumAggregateOutputType = {
+  likesCount: number | null
 }
 
 export type LikeMinAggregateOutputType = {
   id: string | null
   userId: string | null
   reviewId: string | null
+  likesCount: number | null
   createdAt: Date | null
 }
 
@@ -35,6 +46,7 @@ export type LikeMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   reviewId: string | null
+  likesCount: number | null
   createdAt: Date | null
 }
 
@@ -42,15 +54,25 @@ export type LikeCountAggregateOutputType = {
   id: number
   userId: number
   reviewId: number
+  likesCount: number
   createdAt: number
   _all: number
 }
 
 
+export type LikeAvgAggregateInputType = {
+  likesCount?: true
+}
+
+export type LikeSumAggregateInputType = {
+  likesCount?: true
+}
+
 export type LikeMinAggregateInputType = {
   id?: true
   userId?: true
   reviewId?: true
+  likesCount?: true
   createdAt?: true
 }
 
@@ -58,6 +80,7 @@ export type LikeMaxAggregateInputType = {
   id?: true
   userId?: true
   reviewId?: true
+  likesCount?: true
   createdAt?: true
 }
 
@@ -65,6 +88,7 @@ export type LikeCountAggregateInputType = {
   id?: true
   userId?: true
   reviewId?: true
+  likesCount?: true
   createdAt?: true
   _all?: true
 }
@@ -107,6 +131,18 @@ export type LikeAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: LikeAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: LikeSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: LikeMinAggregateInputType
@@ -137,6 +173,8 @@ export type LikeGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: LikeCountAggregateInputType | true
+  _avg?: LikeAvgAggregateInputType
+  _sum?: LikeSumAggregateInputType
   _min?: LikeMinAggregateInputType
   _max?: LikeMaxAggregateInputType
 }
@@ -145,8 +183,11 @@ export type LikeGroupByOutputType = {
   id: string
   userId: string
   reviewId: string
+  likesCount: number
   createdAt: Date
   _count: LikeCountAggregateOutputType | null
+  _avg: LikeAvgAggregateOutputType | null
+  _sum: LikeSumAggregateOutputType | null
   _min: LikeMinAggregateOutputType | null
   _max: LikeMaxAggregateOutputType | null
 }
@@ -173,6 +214,7 @@ export type LikeWhereInput = {
   id?: Prisma.StringFilter<"Like"> | string
   userId?: Prisma.StringFilter<"Like"> | string
   reviewId?: Prisma.StringFilter<"Like"> | string
+  likesCount?: Prisma.IntFilter<"Like"> | number
   createdAt?: Prisma.DateTimeFilter<"Like"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   review?: Prisma.XOR<Prisma.ReviewScalarRelationFilter, Prisma.ReviewWhereInput>
@@ -182,6 +224,7 @@ export type LikeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   reviewId?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   review?: Prisma.ReviewOrderByWithRelationInput
@@ -195,6 +238,7 @@ export type LikeWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.LikeWhereInput | Prisma.LikeWhereInput[]
   userId?: Prisma.StringFilter<"Like"> | string
   reviewId?: Prisma.StringFilter<"Like"> | string
+  likesCount?: Prisma.IntFilter<"Like"> | number
   createdAt?: Prisma.DateTimeFilter<"Like"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   review?: Prisma.XOR<Prisma.ReviewScalarRelationFilter, Prisma.ReviewWhereInput>
@@ -204,10 +248,13 @@ export type LikeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   reviewId?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.LikeCountOrderByAggregateInput
+  _avg?: Prisma.LikeAvgOrderByAggregateInput
   _max?: Prisma.LikeMaxOrderByAggregateInput
   _min?: Prisma.LikeMinOrderByAggregateInput
+  _sum?: Prisma.LikeSumOrderByAggregateInput
 }
 
 export type LikeScalarWhereWithAggregatesInput = {
@@ -217,11 +264,13 @@ export type LikeScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Like"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Like"> | string
   reviewId?: Prisma.StringWithAggregatesFilter<"Like"> | string
+  likesCount?: Prisma.IntWithAggregatesFilter<"Like"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Like"> | Date | string
 }
 
 export type LikeCreateInput = {
   id?: string
+  likesCount?: number
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutLikesInput
   review: Prisma.ReviewCreateNestedOneWithoutLikesInput
@@ -231,11 +280,13 @@ export type LikeUncheckedCreateInput = {
   id?: string
   userId: string
   reviewId: string
+  likesCount?: number
   createdAt?: Date | string
 }
 
 export type LikeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutLikesNestedInput
   review?: Prisma.ReviewUpdateOneRequiredWithoutLikesNestedInput
@@ -245,6 +296,7 @@ export type LikeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   reviewId?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -252,11 +304,13 @@ export type LikeCreateManyInput = {
   id?: string
   userId: string
   reviewId: string
+  likesCount?: number
   createdAt?: Date | string
 }
 
 export type LikeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -264,6 +318,7 @@ export type LikeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   reviewId?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -286,13 +341,19 @@ export type LikeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   reviewId?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type LikeAvgOrderByAggregateInput = {
+  likesCount?: Prisma.SortOrder
 }
 
 export type LikeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   reviewId?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -300,7 +361,12 @@ export type LikeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   reviewId?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type LikeSumOrderByAggregateInput = {
+  likesCount?: Prisma.SortOrder
 }
 
 export type LikeCreateNestedManyWithoutUserInput = {
@@ -389,6 +455,7 @@ export type LikeUncheckedUpdateManyWithoutReviewNestedInput = {
 
 export type LikeCreateWithoutUserInput = {
   id?: string
+  likesCount?: number
   createdAt?: Date | string
   review: Prisma.ReviewCreateNestedOneWithoutLikesInput
 }
@@ -396,6 +463,7 @@ export type LikeCreateWithoutUserInput = {
 export type LikeUncheckedCreateWithoutUserInput = {
   id?: string
   reviewId: string
+  likesCount?: number
   createdAt?: Date | string
 }
 
@@ -432,11 +500,13 @@ export type LikeScalarWhereInput = {
   id?: Prisma.StringFilter<"Like"> | string
   userId?: Prisma.StringFilter<"Like"> | string
   reviewId?: Prisma.StringFilter<"Like"> | string
+  likesCount?: Prisma.IntFilter<"Like"> | number
   createdAt?: Prisma.DateTimeFilter<"Like"> | Date | string
 }
 
 export type LikeCreateWithoutReviewInput = {
   id?: string
+  likesCount?: number
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutLikesInput
 }
@@ -444,6 +514,7 @@ export type LikeCreateWithoutReviewInput = {
 export type LikeUncheckedCreateWithoutReviewInput = {
   id?: string
   userId: string
+  likesCount?: number
   createdAt?: Date | string
 }
 
@@ -476,11 +547,13 @@ export type LikeUpdateManyWithWhereWithoutReviewInput = {
 export type LikeCreateManyUserInput = {
   id?: string
   reviewId: string
+  likesCount?: number
   createdAt?: Date | string
 }
 
 export type LikeUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   review?: Prisma.ReviewUpdateOneRequiredWithoutLikesNestedInput
 }
@@ -488,23 +561,27 @@ export type LikeUpdateWithoutUserInput = {
 export type LikeUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reviewId?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type LikeUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reviewId?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type LikeCreateManyReviewInput = {
   id?: string
   userId: string
+  likesCount?: number
   createdAt?: Date | string
 }
 
 export type LikeUpdateWithoutReviewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutLikesNestedInput
 }
@@ -512,12 +589,14 @@ export type LikeUpdateWithoutReviewInput = {
 export type LikeUncheckedUpdateWithoutReviewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type LikeUncheckedUpdateManyWithoutReviewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -527,6 +606,7 @@ export type LikeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   userId?: boolean
   reviewId?: boolean
+  likesCount?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   review?: boolean | Prisma.ReviewDefaultArgs<ExtArgs>
@@ -536,6 +616,7 @@ export type LikeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   userId?: boolean
   reviewId?: boolean
+  likesCount?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   review?: boolean | Prisma.ReviewDefaultArgs<ExtArgs>
@@ -545,6 +626,7 @@ export type LikeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   userId?: boolean
   reviewId?: boolean
+  likesCount?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   review?: boolean | Prisma.ReviewDefaultArgs<ExtArgs>
@@ -554,10 +636,11 @@ export type LikeSelectScalar = {
   id?: boolean
   userId?: boolean
   reviewId?: boolean
+  likesCount?: boolean
   createdAt?: boolean
 }
 
-export type LikeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "reviewId" | "createdAt", ExtArgs["result"]["like"]>
+export type LikeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "reviewId" | "likesCount" | "createdAt", ExtArgs["result"]["like"]>
 export type LikeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   review?: boolean | Prisma.ReviewDefaultArgs<ExtArgs>
@@ -581,6 +664,7 @@ export type $LikePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     userId: string
     reviewId: string
+    likesCount: number
     createdAt: Date
   }, ExtArgs["result"]["like"]>
   composites: {}
@@ -1010,6 +1094,7 @@ export interface LikeFieldRefs {
   readonly id: Prisma.FieldRef<"Like", 'String'>
   readonly userId: Prisma.FieldRef<"Like", 'String'>
   readonly reviewId: Prisma.FieldRef<"Like", 'String'>
+  readonly likesCount: Prisma.FieldRef<"Like", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Like", 'DateTime'>
 }
     

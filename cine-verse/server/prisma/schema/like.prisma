@@ -2,6 +2,7 @@ model Like {
   id        String      @id @default(uuid()) 
   userId    String
   reviewId  String
+  likesCount      Int      @default(0)
   createdAt DateTime    @default(now())
 
 

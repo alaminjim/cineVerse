@@ -9,6 +9,9 @@ model Review {
 
   hasSpoiler Boolean       @default(false)  
   tags      String[]       @default([])   
+
+  likesCount      Int      @default(0)        
+  commentCount    Int      @default(0) 
   
   userId    String
   movieId   String

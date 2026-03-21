@@ -166,6 +166,7 @@ export const CommentScalarFieldEnum = {
   content: 'content',
   parentCommentId: 'parentCommentId',
   likesCount: 'likesCount',
+  commentCount: 'commentCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -177,6 +178,7 @@ export const LikeScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   reviewId: 'reviewId',
+  likesCount: 'likesCount',
   createdAt: 'createdAt'
 } as const
 
@@ -236,6 +238,8 @@ export const ReviewScalarFieldEnum = {
   status: 'status',
   hasSpoiler: 'hasSpoiler',
   tags: 'tags',
+  likesCount: 'likesCount',
+  commentCount: 'commentCount',
   userId: 'userId',
   movieId: 'movieId',
   createdAt: 'createdAt',
