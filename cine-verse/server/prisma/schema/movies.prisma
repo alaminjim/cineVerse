@@ -9,7 +9,7 @@ model Movie {
   cast              String[]                   
   streamingPlatform String[]                    
   
-  type              ContentType    @default(MOVIE)
+  type              ContentType    
   seasons           Int?
   episodes          Int?
   runtime           Int?

@@ -3,10 +3,13 @@ import { StatusCodes } from "http-status-codes";
 import catchFunction from "../../shared/catchFunction";
 import { movieService } from "./movies.service";
 
-const createMovie = catchFunction(async (req: Request, res: Response) => {
+const createMovie = catchFunction(async (req, res) => {
   const result = await movieService.createMovie(req.body, req.file);
 
-  res.status(StatusCodes.CREATED).json(result);
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    data: result,
+  });
 });
 
 const getAllMovies = catchFunction(async (req: Request, res: Response) => {

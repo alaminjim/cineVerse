@@ -480,7 +480,7 @@ export type MovieCreateInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null
@@ -507,7 +507,7 @@ export type MovieUncheckedCreateInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null
@@ -588,7 +588,7 @@ export type MovieCreateManyInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null
@@ -850,7 +850,7 @@ export type MovieCreateWithoutPurchasesInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null
@@ -876,7 +876,7 @@ export type MovieUncheckedCreateWithoutPurchasesInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null
@@ -970,7 +970,7 @@ export type MovieCreateWithoutReviewsInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null
@@ -996,7 +996,7 @@ export type MovieUncheckedCreateWithoutReviewsInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null
@@ -1090,7 +1090,7 @@ export type MovieCreateWithoutWatchlistsInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null
@@ -1116,7 +1116,7 @@ export type MovieUncheckedCreateWithoutWatchlistsInput = {
   director: string
   cast?: Prisma.MovieCreatecastInput | string[]
   streamingPlatform?: Prisma.MovieCreatestreamingPlatformInput | string[]
-  type?: $Enums.ContentType
+  type: $Enums.ContentType
   seasons?: number | null
   episodes?: number | null
   runtime?: number | null

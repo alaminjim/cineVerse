@@ -1,4 +1,4 @@
-import { PricingType } from "../../../generated/prisma/enums";
+import { PricingType, ContentType } from "../../../generated/prisma/enums";
 
 export interface ICreateMovie {
   title: string;
@@ -9,6 +9,15 @@ export interface ICreateMovie {
   director: string;
   cast: string[];
   streamingPlatform: string[];
+
+  type: ContentType;
+
+  seasons?: number;
+  episodes?: number;
+  runtime?: number;
+
+  streamingLink?: string;
+
   pricing: PricingType;
   buyPrice?: number;
   rentPrice?: number;
@@ -23,6 +32,13 @@ export interface IUpdateMovie {
   director?: string;
   cast?: string[];
   streamingPlatform?: string[];
+
+  type?: ContentType;
+  seasons?: number;
+  episodes?: number;
+  runtime?: number;
+  streamingLink?: string;
+
   pricing?: PricingType;
 }
 
@@ -36,4 +52,5 @@ export interface IFeaturedMovie {
   genre: string[];
   releaseYear: number;
   director: string;
+  type?: ContentType;
 }

@@ -5,7 +5,15 @@ import { uploadImage } from "../../config/cloudinary.config";
 import { stripe } from "../../config/stripe";
 import { prisma } from "../../lib/prisma";
 
+const toNumber = (val: any) => {
+  if (val === undefined || val === null || val === "") return null;
+  const num = Number(val);
+  return isNaN(num) ? null : num;
+};
+
 const createMovie = async (payload: any, file?: Express.Multer.File) => {
+  console.log("FINAL PAYLOAD:", payload);
+
   let thumbnail = null;
 
   if (file) {
@@ -14,6 +22,10 @@ const createMovie = async (payload: any, file?: Express.Multer.File) => {
 
   if (!payload.title || !payload.director) {
     throw new Error("Title and director are required");
+  }
+
+  if (!["MOVIE", "SERIES"].includes(payload.type)) {
+    throw new Error("Invalid type");
   }
 
   if (payload.type === "SERIES") {
@@ -44,13 +56,13 @@ const createMovie = async (payload: any, file?: Express.Multer.File) => {
     const buyPriceObj = await stripe.prices.create({
       product: product.id,
       unit_amount: Math.round(buyPrice * 100),
-      currency: "usd",
+      currency: "bdt",
     });
 
     const rentPriceObj = await stripe.prices.create({
       product: product.id,
       unit_amount: Math.round(rentPrice * 100),
-      currency: "usd",
+      currency: "bdt",
     });
 
     stripeBuyPriceId = buyPriceObj.id;
@@ -63,15 +75,17 @@ const createMovie = async (payload: any, file?: Express.Multer.File) => {
       synopsis: payload.synopsis,
       thumbnail,
       genre: payload.genre || [],
-      releaseYear: parseInt(payload.releaseYear),
+      releaseYear: payload.releaseYear,
       director: payload.director,
       cast: payload.cast || [],
       streamingPlatform: payload.streamingPlatform || [],
 
-      type: payload.type || "MOVIE",
-      seasons: payload.type === "SERIES" ? parseInt(payload.seasons) : null,
-      episodes: payload.type === "SERIES" ? parseInt(payload.episodes) : null,
-      runtime: payload.type === "MOVIE" ? parseInt(payload.runtime) : null,
+      type: payload.type,
+
+      seasons: payload.type === "SERIES" ? toNumber(payload.seasons) : null,
+      episodes: payload.type === "SERIES" ? toNumber(payload.episodes) : null,
+      runtime: payload.type === "MOVIE" ? toNumber(payload.runtime) : null,
+
       streamingLink: payload.streamingLink || null,
 
       pricing: payload.pricing,
@@ -250,23 +264,30 @@ const updateMovie = async (id: string, payload: any) => {
 
   if (payload.title) updateData.title = payload.title;
   if (payload.synopsis) updateData.synopsis = payload.synopsis;
+  if (payload.thumbnail) updateData.thumbnail = payload.thumbnail;
   if (payload.genre) updateData.genre = payload.genre;
+  if (payload.releaseYear) updateData.releaseYear = Number(payload.releaseYear);
   if (payload.director) updateData.director = payload.director;
   if (payload.cast) updateData.cast = payload.cast;
   if (payload.streamingPlatform)
     updateData.streamingPlatform = payload.streamingPlatform;
   if (payload.streamingLink) updateData.streamingLink = payload.streamingLink;
+  if (payload.pricing) updateData.pricing = payload.pricing;
 
-  if (payload.type === "SERIES") {
-    if (payload.seasons) updateData.seasons = parseInt(payload.seasons);
-    if (payload.episodes) updateData.episodes = parseInt(payload.episodes);
-    updateData.runtime = null;
-  }
+  if (payload.type) {
+    updateData.type = payload.type;
 
-  if (payload.type === "MOVIE") {
-    if (payload.runtime) updateData.runtime = parseInt(payload.runtime);
-    updateData.seasons = null;
-    updateData.episodes = null;
+    if (payload.type === "SERIES") {
+      if (payload.seasons) updateData.seasons = toNumber(payload.seasons);
+      if (payload.episodes) updateData.episodes = toNumber(payload.episodes);
+      updateData.runtime = null;
+    }
+
+    if (payload.type === "MOVIE") {
+      if (payload.runtime) updateData.runtime = toNumber(payload.runtime);
+      updateData.seasons = null;
+      updateData.episodes = null;
+    }
   }
 
   const updated = await prisma.movie.update({
