@@ -30,7 +30,7 @@ router.put(
 
 router.delete(
   "/:id",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   reviewController.deleteReview,
 );
 

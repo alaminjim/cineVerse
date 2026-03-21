@@ -144,6 +144,24 @@ const googleLoginSuccess = catchFunction(
   },
 );
 
+const forgotPassword = catchFunction(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  await authService.forgotPassword(email);
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: "Forgot password SuccessFul",
+  });
+});
+
+const resetPassword = catchFunction(async (req: Request, res: Response) => {
+  const { email, otp, newPassword } = req.body;
+  await authService.resetPassword(email, otp, newPassword);
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: "Password Reset SuccessFul",
+  });
+});
+
 export const authController = {
   authRegister,
   authLogin,
@@ -151,4 +169,6 @@ export const authController = {
   logOut,
   googleLogin,
   googleLoginSuccess,
+  forgotPassword,
+  resetPassword,
 };

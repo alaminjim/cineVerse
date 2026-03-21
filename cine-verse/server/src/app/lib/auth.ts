@@ -3,10 +3,13 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { UserRole, UserStatus } from "../../generated/prisma/enums";
 import { envConfig } from "../config/env";
+import { bearer, emailOTP } from "better-auth/plugins";
+import { sendEmail } from "../utils/email";
 
 export const auth = betterAuth({
   baseURL: envConfig.BETTER_AUTH_URL,
   secret: envConfig.BETTER_AUTH_SECRET,
+
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -15,10 +18,41 @@ export const auth = betterAuth({
     enabled: true,
   },
 
+  plugins: [
+    bearer(),
+
+    emailOTP({
+      overrideDefaultEmailVerification: true,
+
+      async sendVerificationOTP({ email, otp, type }) {
+        const user = await prisma.user.findUnique({
+          where: { email },
+        });
+
+        if (!user) return;
+
+        if (type === "forget-password") {
+          await sendEmail({
+            to: email,
+            subject: "Reset your password",
+            templateName: "otp",
+            templateData: {
+              name: user.name,
+              otp,
+            },
+          });
+        }
+      },
+
+      expiresIn: 2 * 60,
+      otpLength: 6,
+    }),
+  ],
+
   socialProviders: {
     google: {
-      clientId: envConfig.GOOGLE_CLIENT_ID,
-      clientSecret: envConfig.GOOGLE_CLIENT_SECRET,
+      clientId: envConfig.GOOGLE_CLIENT_ID!,
+      clientSecret: envConfig.GOOGLE_CLIENT_SECRET!,
 
       mapProfileToUser() {
         return {
@@ -60,35 +94,39 @@ export const auth = betterAuth({
   },
 
   trustedOrigins: [
-    process.env.BETTER_AUTH_URL || "http://localhost:5000",
+    envConfig.BETTER_AUTH_URL,
     envConfig.FRONTEND_URL,
+    "http://localhost:3000",
+    "http://localhost:5000",
   ],
 
   session: {
-    expiresIn: 60 * 60 * 60 * 24,
-    updateAge: 60 * 60 * 60 * 24,
+    expiresIn: 60 * 60 * 24,
+    updateAge: 60 * 60 * 24,
+
     cookieCache: {
       enabled: true,
-      maxAge: 60 * 60 * 60 * 24,
+      maxAge: 60 * 60 * 24,
     },
   },
 
   advanced: {
     useSecureCookies: false,
+
     cookies: {
       state: {
         attributes: {
           httpOnly: true,
-          secure: true,
-          sameSite: "none",
+          secure: false,
+          sameSite: "lax",
           path: "/",
         },
       },
       sessionToken: {
         attributes: {
           httpOnly: true,
-          secure: true,
-          sameSite: "none",
+          secure: false,
+          sameSite: "lax",
           path: "/",
         },
       },

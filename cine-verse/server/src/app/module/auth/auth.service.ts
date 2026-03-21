@@ -150,10 +150,62 @@ const googleLoginSuccess = async (session: any) => {
   return { accessToken, refreshToken };
 };
 
+const forgotPassword = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (user?.status === UserStatus.DELETED) {
+    throw new Error("user deleted");
+  }
+
+  await auth.api.requestPasswordResetEmailOTP({
+    body: {
+      email,
+    },
+  });
+};
+
+const resetPassword = async (
+  email: string,
+  otp: string,
+  newPassword: string,
+) => {
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.isDeleted || user.status === UserStatus.DELETED) {
+    throw new Error("User deleted");
+  }
+
+  await auth.api.resetPasswordEmailOTP({
+    body: {
+      email,
+      otp,
+      password: newPassword,
+    },
+  });
+
+  await prisma.session.deleteMany({
+    where: {
+      userId: user.id,
+    },
+  });
+};
+
 export const authService = {
   authRegister,
   authLogin,
   authMe,
   logOut,
   googleLoginSuccess,
+  forgotPassword,
+  resetPassword,
 };
