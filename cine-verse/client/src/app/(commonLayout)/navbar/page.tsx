@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
-import { Search, Menu, X, LogIn, LogOut, Film } from "lucide-react";
+import { Menu, X, LogIn, LogOut, Film } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Navbar() {
@@ -14,7 +15,10 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
   const { user, setUser, logout } = useAuthStore();
+
+  const isActive = (path: string) => pathname === path;
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -71,7 +75,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
         isScrolled
-          ? "bg-background/90 backdrop-blur-md border-border py-4 shadow-sm"
+          ? "bg-background/95 backdrop-blur-md border-border py-4 shadow-lg"
           : "bg-transparent border-transparent py-6"
       }`}
     >
@@ -86,31 +90,32 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
-          <Link
-            href="/"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            href="/movies"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Movies
-          </Link>
-          <Link
-            href="/series"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Series
-          </Link>
+          {[
+            { name: "Home", path: "/" },
+            { name: "Movies", path: "/movies" },
+            { name: "Series", path: "/series" },
+          ].map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              className={`relative text-sm font-medium transition-all duration-300 hover:text-primary ${
+                isActive(link.path) ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              {link.name}
+
+              {isActive(link.path) && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full animate-in fade-in zoom-in duration-300" />
+              )}
+            </Link>
+          ))}
         </div>
 
         <div className="hidden md:flex items-center gap-6">
           {user ? (
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-destructive transition-colors"
             >
               <LogOut className="w-4 h-4" /> Log Out
             </button>
@@ -124,7 +129,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/register"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium py-2.5 px-6 rounded-full transition-all"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium py-2.5 px-6 rounded-full transition-all shadow-md active:scale-95"
               >
                 Sign Up
               </Link>
@@ -145,35 +150,33 @@ export default function Navbar() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center gap-8">
-          <Link
-            href="/"
-            className="text-2xl font-medium"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Home
-          </Link>
-          <Link
-            href="/movies"
-            className="text-2xl font-medium text-muted-foreground"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Movies
-          </Link>
-          <Link
-            href="/series"
-            className="text-2xl font-medium text-muted-foreground"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Series
-          </Link>
+        <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center gap-8 animate-in slide-in-from-top duration-300">
+          {[
+            { name: "Home", path: "/" },
+            { name: "Movies", path: "/movies" },
+            { name: "Series", path: "/series" },
+          ].map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              className={`text-2xl font-bold transition-colors ${
+                isActive(link.path) ? "text-primary" : "text-muted-foreground"
+              }`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
+
+          <div className="h-px w-20 bg-border my-2" />
+
           {user ? (
             <button
               onClick={() => {
                 handleLogout();
                 setIsMobileMenuOpen(false);
               }}
-              className="flex items-center gap-2 text-2xl font-medium mt-4 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-2xl font-medium text-destructive"
             >
               <LogOut className="w-6 h-6" /> Log Out
             </button>
@@ -181,14 +184,14 @@ export default function Navbar() {
             <>
               <Link
                 href="/login"
-                className="flex items-center gap-2 text-2xl font-medium mt-4"
+                className="flex items-center gap-2 text-2xl font-medium"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <LogIn className="w-6 h-6" /> Sign In
               </Link>
               <Link
                 href="/register"
-                className="bg-primary text-primary-foreground text-xl font-medium py-4 px-10 rounded-full mt-4"
+                className="bg-primary text-primary-foreground text-xl font-bold py-4 px-10 rounded-full shadow-lg"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Sign Up

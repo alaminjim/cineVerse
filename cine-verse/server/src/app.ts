@@ -17,14 +17,21 @@ app.set("views", path.resolve(process.cwd(), "src/app/template"));
 app.use(
   cors({
     origin: [
-      envConfig.FRONTEND_URL,
-      envConfig.BETTER_AUTH_URL,
+      envConfig.FRONTEND_URL as string,
+      envConfig.BETTER_AUTH_URL as string,
       "http://localhost:3000",
       "http://localhost:5000",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "cache",
+      "Pragma",
+    ],
   }),
 );
 

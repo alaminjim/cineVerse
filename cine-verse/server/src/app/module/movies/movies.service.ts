@@ -302,7 +302,7 @@ const updateMovie = async (id: string, payload: any) => {
 
 const getFeaturedMovies = async () => {
   const movies = await prisma.movie.findMany({
-    where: { avgRating: { gte: 8 } },
+    where: { avgRating: { gte: 1 } },
     orderBy: { avgRating: "desc" },
     take: 10,
   });
