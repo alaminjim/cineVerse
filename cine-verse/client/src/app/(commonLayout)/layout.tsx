@@ -1,11 +1,16 @@
-import { ReactNode } from "react";
+import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
 
-const layout = ({ children }: { children: ReactNode }) => {
+export default function CommonLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div suppressHydrationWarning>
-      <div>{children}</div>
+    <div className="bg-black text-white min-h-screen">
+      <Navbar />
+      <main className="min-h-[80vh]">{children}</main>
+      <Footer />
     </div>
   );
-};
-
-export default layout;
+}
