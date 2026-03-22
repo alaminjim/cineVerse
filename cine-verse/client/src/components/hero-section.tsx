@@ -18,7 +18,7 @@ export default function HeroSection() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4 } }
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, bounce: 0.4 } }
   };
 
   return (

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import MovieCard, { MovieData } from "./movie-card";
 
 const mockFeaturedMovies: MovieData[] = [
