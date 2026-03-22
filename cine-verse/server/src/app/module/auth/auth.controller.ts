@@ -62,22 +62,24 @@ const logOut = catchFunction(async (req: Request, res: Response) => {
 
   await authService.logOut(sessionToken);
 
+  const isProduction = process.env.NODE_ENV === "production";
+
   cookieUtils.clearCookies(res, "accessToken", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   });
 
   cookieUtils.clearCookies(res, "refreshToken", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   });
 
   cookieUtils.clearCookies(res, "better-auth.session_token", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   });
 
   res.status(StatusCodes.CREATED).json({

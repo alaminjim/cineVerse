@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { cookieUtils } from "../utils/cookie";
 import { jwtUtils } from "../utils/jwt";
+import { auth } from "../lib/auth";
 
 export const authMiddleware =
   (...userRole: UserRole[]) =>
@@ -19,23 +20,23 @@ export const authMiddleware =
         throw new Error("Unauthorized access! No session token provided.");
       }
 
-      const sessionTokenExists = await prisma.session.findFirst({
-        where: {
-          token: sessionToken,
-          expiresAt: {
-            gt: new Date(),
-          },
-        },
-        include: {
-          user: true,
-        },
+      const authSession = await auth.api.getSession({
+        headers: new Headers({
+          cookie: `better-auth.session_token=${sessionToken}`,
+        }),
       });
 
-      if (!sessionTokenExists || !sessionTokenExists.user) {
+      if (!authSession || !authSession.user) {
         throw new Error("Unauthorized access! Invalid session.");
       }
 
-      const user = sessionTokenExists.user;
+      const user = await prisma.user.findUnique({
+        where: { id: authSession.user.id },
+      });
+
+      if (!user) {
+        throw new Error("Unauthorized access! User not found in database.");
+      }
 
       if (
         user.status === UserStatus.SUSPENDED ||
