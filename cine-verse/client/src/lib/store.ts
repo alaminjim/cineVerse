@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 
 interface User {
@@ -5,7 +6,6 @@ interface User {
   name: string;
   email: string;
   role: string;
-  profilePhoto?: string;
   [key: string]: any;
 }
 
@@ -22,7 +22,5 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoading: true,
   setUser: (user) => set({ user }),
   setLoading: (isLoading) => set({ isLoading }),
-  logout: () => {
-    set({ user: null });
-  },
+  logout: () => set({ user: null }),
 }));

@@ -1,5 +1,4 @@
 import axios from "axios";
-// @ts-ignore
 import Cookies from "js-cookie";
 
 const axiosInstance = axios.create({
@@ -7,17 +6,23 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const accessToken = Cookies.get("accessToken");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+axiosInstance.interceptors.request.use((config) => {
+  const token = Cookies.get("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+  return config;
+});
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      Cookies.remove("accessToken");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  },
 );
 
 export default axiosInstance;

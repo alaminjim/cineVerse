@@ -21,7 +21,11 @@ export default function Navbar() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("oauth") === "success") {
         toast.success("Successfully logged in with Google!");
-        window.history.replaceState({}, document.title, window.location.pathname);
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname,
+        );
       }
     }
   }, []);
@@ -39,7 +43,7 @@ export default function Navbar() {
         setUser(null);
       }
     };
-    
+
     if (!user) {
       fetchUser();
     }
@@ -72,7 +76,6 @@ export default function Navbar() {
       }`}
     >
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8 flex justify-between items-center">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group z-50">
           <div className="bg-primary/20 p-2 rounded-lg text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
             <Film className="w-5 h-5" />
@@ -82,7 +85,6 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Center Links */}
         <div className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
           <Link
             href="/"
@@ -104,7 +106,6 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Right Actions */}
         <div className="hidden md:flex items-center gap-6">
           {user ? (
             <button
@@ -131,7 +132,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Toggle */}
         <button
           className="md:hidden text-foreground p-2 z-50"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -144,7 +144,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center gap-8">
           <Link

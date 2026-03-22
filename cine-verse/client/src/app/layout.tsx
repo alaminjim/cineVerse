@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "CineVerse - Unlimited Entertainment",
@@ -14,10 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body style={{ backgroundColor: "#000", color: "#fff" }}>
-        {children}
-        <Toaster position="top-center" />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

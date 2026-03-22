@@ -1,29 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authService } from "@/services/auth.service";
-import { Film, Mail, Lock, KeyRound, Loader2, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  Film,
+  Mail,
+  Lock,
+  KeyRound,
+  Loader2,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultEmail = searchParams?.get("email") || "";
-  
+
   const [formData, setFormData] = useState({
     email: defaultEmail,
     otp: "",
     newPassword: "",
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (defaultEmail) {
-      setFormData(prev => ({ ...prev, email: defaultEmail }));
+      setFormData((prev) => ({ ...prev, email: defaultEmail }));
     }
   }, [defaultEmail]);
 
@@ -40,9 +49,9 @@ export default function ResetPasswordPage() {
       const res = await authService.resetPassword({
         email: formData.email,
         otp: formData.otp,
-        newPassword: formData.newPassword
+        newPassword: formData.newPassword,
       });
-      
+
       if (res.success) {
         setSuccess(true);
         setTimeout(() => router.push("/login"), 3000);
@@ -50,7 +59,9 @@ export default function ResetPasswordPage() {
         setError(res.message || "Failed to reset password");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || "An error occurred");
+      setError(
+        err.response?.data?.message || err.message || "An error occurred",
+      );
     } finally {
       setLoading(false);
     }
@@ -59,7 +70,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-background">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background z-0" />
-      
+
       <div className="relative z-10 w-full max-w-md px-6">
         <div className="flex flex-col items-center mb-8">
           <Link href="/" className="flex items-center gap-2 group mb-6">
@@ -70,7 +81,9 @@ export default function ResetPasswordPage() {
               Cine<span className="text-primary">Verse</span>
             </span>
           </Link>
-          <h1 className="text-2xl font-semibold text-foreground tracking-tight">Create New Password</h1>
+          <h1 className="text-2xl font-semibold text-foreground tracking-tight">
+            Create New Password
+          </h1>
           <p className="text-sm text-muted-foreground mt-2 text-center">
             Enter the OTP sent to your email and your new password.
           </p>
@@ -89,15 +102,20 @@ export default function ResetPasswordPage() {
               <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center text-green-500 mb-2">
                 <CheckCircle className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-medium text-foreground">Password Reset Successful</h3>
+              <h3 className="text-lg font-medium text-foreground">
+                Password Reset Successful
+              </h3>
               <p className="text-sm text-muted-foreground">
-                Your password has been successfully updated. Redirecting to login...
+                Your password has been successfully updated. Redirecting to
+                login...
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Email Address</label>
+                <label className="text-sm font-medium text-foreground">
+                  Email Address
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-muted-foreground" />
@@ -116,7 +134,9 @@ export default function ResetPasswordPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">OTP Code</label>
+                <label className="text-sm font-medium text-foreground">
+                  OTP Code
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                     <KeyRound className="h-5 w-5 text-muted-foreground" />
@@ -134,7 +154,9 @@ export default function ResetPasswordPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">New Password</label>
+                <label className="text-sm font-medium text-foreground">
+                  New Password
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                     <Lock className="h-5 w-5 text-muted-foreground" />
@@ -157,7 +179,11 @@ export default function ResetPasswordPage() {
                 disabled={loading}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(147,51,234,0.3)] flex items-center justify-center gap-2 mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Reset Password"}
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  "Reset Password"
+                )}
               </button>
             </form>
           )}

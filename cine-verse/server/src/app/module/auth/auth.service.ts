@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { UserStatus } from "../../../generated/prisma/enums";
@@ -121,33 +122,38 @@ const logOut = async (sessionToken: string) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const googleLoginSuccess = async (session: any) => {
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      email: session.user.email,
-    },
+  let user = await prisma.user.findUnique({
+    where: { email: session.user.email },
   });
 
-  if (!existingUser) {
-    await prisma.user.create({
+  if (!user) {
+    user = await prisma.user.create({
       data: {
         name: session.user.name,
         email: session.user.email,
+        role: "USER",
+        status: "ACTIVE",
       },
     });
   }
 
   const accessToken = tokenUtils.accessToken({
-    userId: session.user.id,
-    role: session.user.role || "USER",
+    userId: user.id,
+    role: user.role || "USER",
   });
 
   const refreshToken = tokenUtils.refreshToken({
-    userId: session.user.id,
-    role: session.user.role || "USER",
+    userId: user.id,
+    role: user.role || "USER",
   });
 
-  return { accessToken, refreshToken };
+  return {
+    accessToken,
+    refreshToken,
+    sessionToken: session.token,
+  };
 };
 
 const forgotPassword = async (email: string) => {
