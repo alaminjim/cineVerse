@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { authService } from "@/services/auth.service";
@@ -10,113 +9,108 @@ import { useAuthStore } from "@/lib/store";
 import { Film, Mail, Lock, User, Loader2, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { authRegisterValidationSchema } from "../validations";
+import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
+import { useState } from "react";
+
+const registerFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 6 characters")
+    .regex(/[A-Z]/, "Password must contain an uppercase letter")
+    .regex(/[a-z]/, "Password must contain a lowercase letter")
+    .regex(/[0-9]/, "Password must contain a number"),
+});
+
+type RegisterFormData = z.infer<typeof registerFormSchema>;
+
+const getErrorMessage = (error: any): string => {
+  if (typeof error === "string") return error;
+  if (error && typeof error === "object" && "message" in error) {
+    return error.message;
+  }
+  return "An error occurred";
+};
 
 export default function RegisterPage() {
   const router = useRouter();
   const { setUser } = useAuthStore();
+  const [serverErrors, setServerErrors] = useState<Record<string, string>>({});
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+    validators: {
+      onChange: registerFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const toastId = toast.loading("Creating account...");
+      setServerErrors({});
 
-  const validateField = (name: string, value: string) => {
-    try {
-      const fieldSchema = authRegisterValidationSchema.pick({
-        [name]: true,
-      } as any);
-      fieldSchema.parse({ [name]: value });
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    } catch (error: any) {
-      if (error.errors) {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: error.errors[0].message,
-        }));
-      }
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    validateField(name, value);
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      authRegisterValidationSchema.parse(formData);
-    } catch (error: any) {
-      const newErrors: Record<string, string> = {};
-      error.errors.forEach((err: any) => {
-        newErrors[err.path[0]] = err.message;
-      });
-      setErrors(newErrors);
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const res = await authService.register(formData);
-
-      if (res.success) {
-        toast.success("Registration successful!");
-        const { accessToken, refreshToken, token, ...userData } = res.data;
-
-        Cookies.set("accessToken", accessToken, {
-          secure: true,
-          sameSite: "lax",
-          path: "/",
-          expires: 7,
+      try {
+        const res = await authService.register({
+          name: value.name,
+          email: value.email,
+          password: value.password,
         });
 
-        if (refreshToken) {
-          Cookies.set("refreshToken", refreshToken, {
+        if (res.success) {
+          const { accessToken, refreshToken, token, ...userData } = res.data;
+
+          Cookies.set("accessToken", accessToken, {
             secure: true,
             sameSite: "lax",
             path: "/",
-            expires: 30,
+            expires: 7,
           });
-        }
+          if (refreshToken)
+            Cookies.set("refreshToken", refreshToken, {
+              secure: true,
+              sameSite: "lax",
+              path: "/",
+              expires: 30,
+            });
+          if (token)
+            Cookies.set("better-auth.session_token", token, {
+              secure: true,
+              sameSite: "lax",
+              path: "/",
+            });
 
-        if (token) {
-          Cookies.set("better-auth.session_token", token, {
-            secure: true,
-            sameSite: "lax",
-            path: "/",
+          setUser(userData);
+          toast.success("Registration successful! 🎬", { id: toastId });
+          setTimeout(() => router.push("/"), 500);
+        } else {
+          const errorField = res.field || "email";
+          setServerErrors({
+            [errorField]: res.message,
           });
+          toast.error(res.message || "Registration failed", { id: toastId });
         }
+      } catch (err: any) {
+        const errorMsg =
+          err.response?.data?.errorSources?.[0]?.message ||
+          err.response?.data?.message ||
+          err.message ||
+          "Something went wrong while registering.";
 
-        setUser(userData);
-        router.push("/");
-      } else {
-        toast.error(res.message || "Registration failed");
+        setServerErrors({
+          email: errorMsg,
+        });
+
+        toast.error(errorMsg, { id: toastId });
       }
-    } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.errorSources?.[0]?.message ||
-        err.response?.data?.message ||
-        err.message ||
-        "Something went wrong while registering.";
-      toast.error(errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
   const handleGoogleRegister = () => {
-    router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/login/google`);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    window.location.href = `${apiUrl}/auth/login/google`;
   };
 
   return (
@@ -147,101 +141,173 @@ export default function RegisterPage() {
         </div>
 
         <div className="bg-card/50 backdrop-blur-xl border border-border p-8 rounded-2xl shadow-2xl">
-          <form onSubmit={handleRegister} className="space-y-5">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">
-                Full Name
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={`w-full bg-secondary/50 border ${
-                    errors.name ? "border-red-500" : "border-border"
-                  } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none py-3 pl-11 pr-4 transition-all`}
-                  placeholder="John Doe"
-                  required
-                />
-              </div>
-              {errors.name && (
-                <div className="flex items-center gap-2 text-red-500 text-sm">
-                  <AlertCircle className="w-4 h-4" />
-                  {errors.name}
-                </div>
-              )}
-            </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+            className="space-y-5"
+          >
+            {/* Name Field */}
+            <form.Field name="name">
+              {(field) => {
+                const isTouched = field.state.meta.isTouched;
+                const isInvalid =
+                  isTouched && field.state.meta.errors.length > 0;
+                const errorMessage =
+                  (isInvalid
+                    ? getErrorMessage(field.state.meta.errors[0])
+                    : null) || serverErrors.name;
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full bg-secondary/50 border ${
-                    errors.email ? "border-red-500" : "border-border"
-                  } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none py-3 pl-11 pr-4 transition-all`}
-                  placeholder="name@example.com"
-                  required
-                />
-              </div>
-              {errors.email && (
-                <div className="flex items-center gap-2 text-red-500 text-sm">
-                  <AlertCircle className="w-4 h-4" />
-                  {errors.email}
-                </div>
-              )}
-            </div>
+                return (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">
+                      Full Name
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <User className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <input
+                        type="text"
+                        id="name"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={field.handleBlur}
+                        className={`w-full bg-secondary/50 border-2 transition-colors ${
+                          isInvalid || serverErrors.name
+                            ? "border-red-500"
+                            : "border-border"
+                        } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-4`}
+                        placeholder="John Doe"
+                        required
+                      />
+                    </div>
+                    {(isInvalid || serverErrors.name) && errorMessage && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/30"
+                      >
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        <span>{errorMessage}</span>
+                      </motion.div>
+                    )}
+                  </div>
+                );
+              }}
+            </form.Field>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`w-full bg-secondary/50 border ${
-                    errors.password ? "border-red-500" : "border-border"
-                  } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none py-3 pl-11 pr-4 transition-all`}
-                  placeholder="••••••••"
-                  required
-                  minLength={6}
-                />
-              </div>
-              {errors.password && (
-                <div className="flex items-center gap-2 text-red-500 text-sm">
-                  <AlertCircle className="w-4 h-4" />
-                  {errors.password}
-                </div>
-              )}
-              <p className="text-xs text-muted-foreground mt-1">
-                Must contain: uppercase, lowercase, number (min 6 chars)
-              </p>
-            </div>
+            {/* Email Field */}
+            <form.Field name="email">
+              {(field) => {
+                const isTouched = field.state.meta.isTouched;
+                const isInvalid =
+                  isTouched && field.state.meta.errors.length > 0;
+                const errorMessage =
+                  (isInvalid
+                    ? getErrorMessage(field.state.meta.errors[0])
+                    : null) || serverErrors.email;
 
+                return (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <Mail className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <input
+                        type="email"
+                        id="email"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={field.handleBlur}
+                        className={`w-full bg-secondary/50 border-2 transition-colors ${
+                          isInvalid || serverErrors.email
+                            ? "border-red-500"
+                            : "border-border"
+                        } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-4`}
+                        placeholder="name@example.com"
+                        required
+                      />
+                    </div>
+                    {(isInvalid || serverErrors.email) && errorMessage && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/30"
+                      >
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        <span>{errorMessage}</span>
+                      </motion.div>
+                    )}
+                  </div>
+                );
+              }}
+            </form.Field>
+
+            {/* Password Field */}
+            <form.Field name="password">
+              {(field) => {
+                const isTouched = field.state.meta.isTouched;
+                const isInvalid =
+                  isTouched && field.state.meta.errors.length > 0;
+                const errorMessage =
+                  (isInvalid
+                    ? getErrorMessage(field.state.meta.errors[0])
+                    : null) || serverErrors.password;
+
+                return (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <Lock className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <input
+                        type="password"
+                        id="password"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={field.handleBlur}
+                        className={`w-full bg-secondary/50 border-2 transition-colors ${
+                          isInvalid || serverErrors.password
+                            ? "border-red-500"
+                            : "border-border"
+                        } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-4`}
+                        placeholder="••••••••"
+                        required
+                      />
+                    </div>
+                    {(isInvalid || serverErrors.password) && errorMessage && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-2 text-red-500 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/30"
+                      >
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        <span>{errorMessage}</span>
+                      </motion.div>
+                    )}
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Must contain: uppercase, lowercase, number (min 6 chars)
+                    </p>
+                  </div>
+                );
+              }}
+            </form.Field>
+
+            {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading || Object.keys(errors).length > 0}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(147,51,234,0.3)] flex items-center justify-center gap-2 mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
+              disabled={form.state.isSubmitting}
+              className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-primary-foreground font-semibold py-3 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(147,51,234,0.3)] hover:shadow-[0_0_25px_rgba(147,51,234,0.5)] flex items-center justify-center gap-2 mt-6 disabled:cursor-not-allowed"
             >
-              {loading ? (
+              {form.state.isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
                   Creating...
@@ -252,6 +318,7 @@ export default function RegisterPage() {
             </button>
           </form>
 
+          {/* Google register button */}
           <div className="mt-6">
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">
@@ -267,7 +334,8 @@ export default function RegisterPage() {
             <button
               type="button"
               onClick={handleGoogleRegister}
-              className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-3 border border-border"
+              disabled={form.state.isSubmitting}
+              className="w-full bg-secondary hover:bg-secondary/80 disabled:bg-secondary/50 text-secondary-foreground font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-3 border border-border disabled:cursor-not-allowed"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
