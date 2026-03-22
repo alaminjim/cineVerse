@@ -1,195 +1,78 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X, Play } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Menu, X, LogIn, Film } from "lucide-react";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <nav
-      style={{
-        position: "fixed",
-        top: 0,
-        width: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.8)",
-        backdropFilter: "blur(10px)",
-        borderBottom: "1px solid rgba(147, 51, 234, 0.3)",
-        zIndex: 50,
-        padding: "0 20px",
-      }}
+      className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
+        isScrolled 
+          ? "bg-background/90 backdrop-blur-md border-border py-4 shadow-sm" 
+          : "bg-transparent border-transparent py-6"
+      }`}
     >
-      <div
-        style={{
-          maxWidth: "1280px",
-          margin: "0 auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          height: "80px",
-        }}
-      >
+      <div className="w-full max-w-7xl mx-auto px-6 md:px-8 flex justify-between items-center">
         {/* Logo */}
-        <Link
-          href="/"
-          style={{ display: "flex", alignItems: "center", gap: "12px" }}
-        >
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              background: "linear-gradient(to right, #9333ea, #3b82f6)",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Play
-              style={{
-                width: "20px",
-                height: "20px",
-                color: "white",
-                fill: "white",
-              }}
-            />
+        <Link href="/" className="flex items-center gap-2 group z-50">
+          <div className="bg-primary/20 p-2 rounded-lg text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+            <Film className="w-5 h-5" />
           </div>
-          <span
-            style={{
-              fontSize: "24px",
-              fontWeight: "bold",
-              color: "white",
-              display: "none",
-            }}
-            className="hidden sm:inline"
-          >
-            CineVerse
+          <span className="text-2xl font-bold tracking-tight text-foreground">
+            Cine<span className="text-primary">Verse</span>
           </span>
         </Link>
 
-        {/* Desktop Menu */}
-        <div
-          style={{ display: "none", gap: "32px" }}
-          className="hidden md:flex"
-        >
-          <Link href="/" style={{ color: "#d1d5db", textDecoration: "none" }}>
-            Home
-          </Link>
-          <Link
-            href="/movies"
-            style={{ color: "#d1d5db", textDecoration: "none" }}
-          >
-            Movies
-          </Link>
+        {/* Desktop Center Links */}
+        <div className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+          <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">Home</Link>
+          <Link href="/movies" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Movies</Link>
+          <Link href="/series" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Series</Link>
         </div>
 
-        {/* Desktop Buttons */}
-        <div
-          style={{ display: "none", gap: "16px", alignItems: "center" }}
-          className="hidden md:flex"
-        >
-          <input
-            type="text"
-            placeholder="Search..."
-            style={{
-              backgroundColor: "rgba(31, 41, 55, 0.5)",
-              color: "white",
-              borderRadius: "9999px",
-              padding: "6px 16px",
-              border: "1px solid rgba(147, 51, 234, 0.2)",
-              fontSize: "14px",
-              outline: "none",
-              width: "120px",
-            }}
-          />
-          <button
-            style={{
-              color: "#d1d5db",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "14px",
-            }}
-          >
-            Sign In
-          </button>
-          <button
-            className="btn-primary"
-            style={{ fontSize: "14px", padding: "8px 24px" }}
-          >
+        {/* Right Actions */}
+        <div className="hidden md:flex items-center gap-6">
+          <Link href="/login" className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <LogIn className="w-4 h-4" /> Sign In
+          </Link>
+          <Link href="/signup" className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium py-2.5 px-6 rounded-full transition-all">
             Sign Up
-          </button>
+          </Link>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Toggle */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          style={{
-            display: "none",
-            background: "transparent",
-            border: "none",
-            color: "white",
-            cursor: "pointer",
-          }}
-          className="md:hidden"
+          className="md:hidden text-foreground p-2 z-50"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
       {/* Mobile Menu */}
-      {isOpen && (
-        <div
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.9)",
-            borderTop: "1px solid rgba(147, 51, 234, 0.2)",
-            padding: "16px",
-          }}
-        >
-          <Link
-            href="/"
-            style={{
-              display: "block",
-              color: "#d1d5db",
-              textDecoration: "none",
-              padding: "8px 12px",
-            }}
-          >
-            Home
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center gap-8">
+          <Link href="/" className="text-2xl font-medium" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+          <Link href="/movies" className="text-2xl font-medium text-muted-foreground" onClick={() => setIsMobileMenuOpen(false)}>Movies</Link>
+          <Link href="/series" className="text-2xl font-medium text-muted-foreground" onClick={() => setIsMobileMenuOpen(false)}>Series</Link>
+          <Link href="/login" className="flex items-center gap-2 text-2xl font-medium mt-4" onClick={() => setIsMobileMenuOpen(false)}>
+            <LogIn className="w-6 h-6" /> Sign In
           </Link>
-          <Link
-            href="/movies"
-            style={{
-              display: "block",
-              color: "#d1d5db",
-              textDecoration: "none",
-              padding: "8px 12px",
-            }}
-          >
-            Movies
-          </Link>
-          <button
-            style={{
-              width: "100%",
-              marginTop: "16px",
-              padding: "8px",
-              background: "transparent",
-              border: "1px solid #9333ea",
-              color: "#a78bfa",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontSize: "14px",
-            }}
-          >
-            Sign In
-          </button>
-          <button
-            className="btn-primary"
-            style={{ width: "100%", marginTop: "8px", fontSize: "14px" }}
-          >
+          <Link href="/signup" className="bg-primary text-primary-foreground text-xl font-medium py-4 px-10 rounded-full mt-4" onClick={() => setIsMobileMenuOpen(false)}>
             Sign Up
-          </button>
+          </Link>
         </div>
       )}
     </nav>

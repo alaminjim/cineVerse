@@ -1,15 +1,14 @@
-import HeroSection from "@/components/home/HeroSection";
-import FeaturedSection from "@/components/home/FeaturedSection";
-import TrendingSection from "@/components/home/TrendingSection";
-import SubscriptionSection from "@/components/home/SubscriptionSection";
+import HeroSection from "./hero/page";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+const page = () => {
   return (
-    <div className="w-full">
+    <main className="min-h-screen flex flex-col bg-[#000]">
       <HeroSection />
-      <FeaturedSection />
-      <TrendingSection />
-      <SubscriptionSection />
-    </div>
+    </main>
   );
-}
+};
+
+export default page;
+

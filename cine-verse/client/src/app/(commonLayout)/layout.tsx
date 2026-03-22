@@ -1,5 +1,5 @@
-import Navbar from "@/components/shared/Navbar";
-import Footer from "@/components/shared/Footer";
+import Footer from "./footer/page";
+import Navbar from "./navbar/page";
 
 export default function CommonLayout({
   children,
@@ -9,7 +9,7 @@ export default function CommonLayout({
   return (
     <div className="bg-black text-white min-h-screen">
       <Navbar />
-      <main className="min-h-[80vh]">{children}</main>
+      <main className="pt-20 flex-1">{children}</main>
       <Footer />
     </div>
   );
