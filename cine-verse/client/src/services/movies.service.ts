@@ -28,4 +28,9 @@ export const moviesService = {
     );
     return response.data;
   },
+
+  getMovieById: async (id: string) => {
+    const response = await axiosInstance.get(`/movies/${id}`, noStoreConfig);
+    return response.data;
+  },
 };

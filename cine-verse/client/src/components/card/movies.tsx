@@ -26,7 +26,7 @@ export default function MovieCard({
   isPremium = false,
 }: MovieCardProps) {
   return (
-    <Link href={`/movie/${id}`}>
+    <Link href={`/movies/${id}`}>
       <motion.div
         whileHover={{ scale: 1.05, y: -8 }}
         whileTap={{ scale: 0.95 }}
