@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
       } else {
         setError(res.message || "Failed to process request");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     } catch (err: any) {
       setError(
         err.response?.data?.message || err.message || "An error occurred",

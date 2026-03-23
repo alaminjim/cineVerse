@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
-import { Menu, X, LogIn, LogOut, Film } from "lucide-react";
+import { Menu, X, LogIn, LogOut, Film, Crown } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Navbar() {
@@ -71,6 +71,12 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Movies", path: "/movies" },
+    { name: "Series", path: "/series" },
+  ];
+
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
@@ -90,11 +96,7 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
-          {[
-            { name: "Home", path: "/" },
-            { name: "Movies", path: "/movies" },
-            { name: "Series", path: "/series" },
-          ].map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.path}
               href={link.path}
@@ -111,7 +113,19 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4">
+          {/* Subscription Button — always visible */}
+          <Link
+            href="/subscription"
+            className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-full border transition-all ${
+              isActive("/subscription")
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white border-transparent shadow-lg shadow-purple-500/20"
+                : "border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/50"
+            }`}
+          >
+            <Crown className="w-3.5 h-3.5" /> Premium
+          </Link>
+
           {user ? (
             <button
               onClick={handleLogout}
@@ -151,11 +165,7 @@ export default function Navbar() {
 
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center gap-8 animate-in slide-in-from-top duration-300">
-          {[
-            { name: "Home", path: "/" },
-            { name: "Movies", path: "/movies" },
-            { name: "Series", path: "/series" },
-          ].map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.path}
               href={link.path}
@@ -167,6 +177,15 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+
+          {/* Subscription in mobile menu */}
+          <Link
+            href="/subscription"
+            className="flex items-center gap-2 text-xl font-bold text-purple-400"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <Crown className="w-5 h-5" /> Premium
+          </Link>
 
           <div className="h-px w-20 bg-border my-2" />
 

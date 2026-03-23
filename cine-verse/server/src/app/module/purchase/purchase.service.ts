@@ -14,53 +14,45 @@ const createPurchaseCheckout = async (
   });
 
   if (!movie) {
-    throw new Error("Movie not found");
+    return null;
   }
 
-  if (payload.purchaseType === "BUY") {
-    const existing = await prisma.purchase.findFirst({
-      where: {
-        userId,
-        movieId: payload.movieId,
-        purchaseType: "BUY",
-      },
-    });
+  const existingPurchase = await prisma.purchase.findFirst({
+    where: {
+      userId,
+      movieId: payload.movieId,
+      purchaseType: payload.purchaseType as PurchaseType,
+      isPurchase: true,
+      status: "ACTIVE",
+    },
+  });
 
-    if (existing) {
-      throw new Error("You already own this movie");
-    }
+  if (existingPurchase) {
+    throw new Error(`You already have an active ${payload.purchaseType} for this movie`);
   }
 
-  if (payload.purchaseType === "RENT") {
-    const existing = await prisma.purchase.findFirst({
-      where: {
-        userId,
-        movieId: payload.movieId,
-        purchaseType: "RENT",
-        status: "ACTIVE" as PurchaseStatus,
-        expiresAt: { gt: new Date() },
-      },
-    });
+  const amount =
+    payload.purchaseType === "BUY" ? movie.buyPrice : movie.rentPrice;
 
-    if (existing) {
-      throw new Error("You already have active rental");
-    }
+  if (!amount || amount <= 0) {
+    throw new Error(`Price not set for this movie`);
   }
 
-  const priceId =
-    payload.purchaseType === "BUY"
-      ? movie.stripeBuyPriceId
-      : movie.stripeRentPriceId;
-
-  if (!priceId) {
-    throw new Error(`Stripe price not configured for ${payload.purchaseType}`);
-  }
+  const movieImages = movie.thumbnail ? [movie.thumbnail] : [];
+  const unitAmount = Math.round(amount * 100);
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [
       {
-        price: priceId,
+        price_data: {
+          currency: "bdt",
+          product_data: {
+            name: `${movie.title} (${payload.purchaseType})`,
+            images: movieImages,
+          },
+          unit_amount: unitAmount,
+        },
         quantity: 1,
       },
     ],
@@ -84,10 +76,23 @@ const createPurchaseCheckout = async (
 };
 
 const confirmPurchase = async (sessionId: string) => {
+
+  const existing = await prisma.purchase.findFirst({
+    where: { stripeTransactionId: sessionId },
+  });
+
+  if (existing) {
+    return {
+      success: true,
+      message: "Purchase already confirmed",
+      data: existing,
+    };
+  }
+
   const session = await stripe.checkout.sessions.retrieve(sessionId);
 
   if (session.payment_status !== "paid") {
-    throw new Error("Payment not completed");
+    throw new Error("Payment not completed yet.");
   }
 
   const userId = session.metadata?.userId;
@@ -95,15 +100,7 @@ const confirmPurchase = async (sessionId: string) => {
   const purchaseType = session.metadata?.purchaseType as PurchaseType;
 
   if (!userId || !movieId || !purchaseType) {
-    throw new Error("Invalid session metadata");
-  }
-
-  const movie = await prisma.movie.findUnique({
-    where: { id: movieId },
-  });
-
-  if (!movie) {
-    throw new Error("Movie not found");
+    throw new Error("Invalid session metadata. Cannot complete purchase.");
   }
 
   const expiresAt =
@@ -111,27 +108,14 @@ const confirmPurchase = async (sessionId: string) => {
       ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       : null;
 
-  let amount = 0;
-
-  if (purchaseType === "BUY" && movie.stripeBuyPriceId) {
-    const priceDetails = await stripe.prices.retrieve(movie.stripeBuyPriceId);
-    amount = priceDetails.unit_amount || 0;
-  } else if (purchaseType === "RENT" && movie.stripeRentPriceId) {
-    const priceDetails = await stripe.prices.retrieve(movie.stripeRentPriceId);
-    amount = priceDetails.unit_amount || 0;
-  }
-
-  if (amount <= 0) {
-    throw new Error("Invalid price amount");
-  }
-
   const purchase = await prisma.purchase.create({
     data: {
       userId,
       movieId,
       purchaseType,
+      isPurchase: true,
       status: "ACTIVE",
-      amount,
+      amount: session.amount_total ? session.amount_total / 100 : 0,
       stripeTransactionId: session.id,
       expiresAt,
     },
@@ -139,7 +123,7 @@ const confirmPurchase = async (sessionId: string) => {
 
   return {
     success: true,
-    message: `Movie ${purchaseType === "BUY" ? "purchased" : "rented for 7 days"}`,
+    message: `Payment successful! Movie ${purchaseType === "BUY" ? "purchased" : "rented"}.`,
     data: purchase,
   };
 };
@@ -167,53 +151,60 @@ const getPurchaseHistory = async (userId: string) => {
 };
 
 const checkPurchase = async (movieId: string, userId: string) => {
-  const buy = await prisma.purchase.findFirst({
+
+  const activeSubscription = await prisma.subscription.findFirst({
     where: {
       userId,
-      movieId,
-      purchaseType: "BUY",
+      status: "ACTIVE",
     },
   });
 
-  if (buy) {
-    return {
-      success: true,
-      isPurchased: true,
-      purchaseType: "BUY",
-      expiresAt: null,
-      status: "ACTIVE",
-    };
+  if (activeSubscription) {
+
+    if (activeSubscription.endDate && new Date() > new Date(activeSubscription.endDate)) {
+      await prisma.subscription.update({
+        where: { id: activeSubscription.id },
+        data: { status: "EXPIRED" },
+      });
+    } else {
+
+      return {
+        success: true,
+        isPurchased: true,
+        purchaseType: "SUBSCRIPTION",
+        subscriptionPlan: activeSubscription.planType,
+      };
+    }
   }
 
-  const rent = await prisma.purchase.findFirst({
+  const purchase = await prisma.purchase.findFirst({
     where: {
       userId,
       movieId,
-      purchaseType: "RENT",
-      status: "ACTIVE" as PurchaseStatus,
-      expiresAt: { gt: new Date() },
+      isPurchase: true,
+      status: "ACTIVE",
     },
   });
 
-  if (rent) {
-    const daysRemaining = Math.ceil(
-      (rent.expiresAt!.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
-    );
+  if (purchase) {
 
+    if (purchase.purchaseType === "RENT" && purchase.expiresAt) {
+      if (new Date() > new Date(purchase.expiresAt)) {
+        await prisma.purchase.update({
+          where: { id: purchase.id },
+          data: { status: "EXPIRED" as PurchaseStatus },
+        });
+        return { success: true, isPurchased: false, purchaseType: null };
+      }
+    }
     return {
       success: true,
       isPurchased: true,
-      purchaseType: "RENT",
-      expiresAt: rent.expiresAt,
-      daysRemaining,
-      status: "ACTIVE",
+      purchaseType: purchase.purchaseType,
     };
   }
 
-  return {
-    success: true,
-    isPurchased: false,
-  };
+  return { success: true, isPurchased: false, purchaseType: null };
 };
 
 const cancelRental = async (purchaseId: string, userId: string) => {

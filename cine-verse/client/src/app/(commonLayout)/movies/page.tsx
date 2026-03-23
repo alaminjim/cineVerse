@@ -97,8 +97,8 @@ export default function AllMoviesPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-10">
             {filteredMovies.map((movie: any) => (
               <MovieCard
-                key={movie._id}
-                id={movie._id}
+                key={movie.id || movie._id}
+                id={movie.id || movie._id}
                 title={movie.title}
                 posterUrl={movie.thumbnail}
                 rating={movie.avgRating || 0}

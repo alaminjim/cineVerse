@@ -7,7 +7,6 @@ export const authService = {
     return response.data;
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: async (userData: any) => {
     const response = await axiosInstance.post("/auth/register", userData);
     return response.data;

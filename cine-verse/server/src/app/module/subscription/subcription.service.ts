@@ -121,12 +121,29 @@ const getActiveSubscription = async (userId: string) => {
   if (!subscription) {
     return {
       success: true,
+      isSubscribed: false,
       data: null,
       message: "No active subscription",
     };
+  }
+  if (subscription.endDate && new Date() > new Date(subscription.endDate)) {
+    await prisma.subscription.update({
+      where: { id: subscription.id },
+      data: { status: "EXPIRED" as SubscriptionStatus },
+    });
+    return {
+      success: true,
+      isSubscribed: false,
+      data: null,
+      message: "Subscription expired",
+    };
   }
 
-  return subscription;
+  return {
+    success: true,
+    isSubscribed: true,
+    data: subscription,
+  };
 };
 
 const cancelSubscription = async (subscriptionId: string, userId: string) => {

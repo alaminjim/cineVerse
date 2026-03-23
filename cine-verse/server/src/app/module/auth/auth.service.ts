@@ -119,9 +119,7 @@ const logOut = async (sessionToken: string) => {
     }),
   });
   return result;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+};
 
 const googleLoginSuccess = async (session: any) => {
   let user = await prisma.user.findUnique({

@@ -236,7 +236,7 @@ const getMovieById = async (id: string) => {
   });
 
   if (!movie) {
-    throw new Error("Movie not found");
+    return null;
   }
 
   return {
@@ -259,7 +259,7 @@ const updateMovie = async (id: string, payload: any) => {
   });
 
   if (!movie) {
-    throw new Error("Movie not found");
+    return null;
   }
 
   const updateData: any = {};
@@ -325,7 +325,7 @@ const deleteMovie = async (id: string) => {
   });
 
   if (!movie) {
-    throw new Error("Movie not found");
+    return null;
   }
 
   if (movie.stripeBuyPriceId) {

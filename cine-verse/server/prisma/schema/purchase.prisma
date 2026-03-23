@@ -2,7 +2,8 @@ model Purchase {
   id                  String      @id @default(uuid())
   userId              String
   movieId             String
-  purchaseType        PurchaseType   
+  purchaseType        PurchaseType
+  isPurchase          Boolean     @default(false)   
   status              PurchaseStatus  @default(ACTIVE)
   amount              Float
   stripeTransactionId String?

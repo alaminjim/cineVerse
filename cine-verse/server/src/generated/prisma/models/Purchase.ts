@@ -39,6 +39,7 @@ export type PurchaseMinAggregateOutputType = {
   userId: string | null
   movieId: string | null
   purchaseType: $Enums.PurchaseType | null
+  isPurchase: boolean | null
   status: $Enums.PurchaseStatus | null
   amount: number | null
   stripeTransactionId: string | null
@@ -52,6 +53,7 @@ export type PurchaseMaxAggregateOutputType = {
   userId: string | null
   movieId: string | null
   purchaseType: $Enums.PurchaseType | null
+  isPurchase: boolean | null
   status: $Enums.PurchaseStatus | null
   amount: number | null
   stripeTransactionId: string | null
@@ -65,6 +67,7 @@ export type PurchaseCountAggregateOutputType = {
   userId: number
   movieId: number
   purchaseType: number
+  isPurchase: number
   status: number
   amount: number
   stripeTransactionId: number
@@ -88,6 +91,7 @@ export type PurchaseMinAggregateInputType = {
   userId?: true
   movieId?: true
   purchaseType?: true
+  isPurchase?: true
   status?: true
   amount?: true
   stripeTransactionId?: true
@@ -101,6 +105,7 @@ export type PurchaseMaxAggregateInputType = {
   userId?: true
   movieId?: true
   purchaseType?: true
+  isPurchase?: true
   status?: true
   amount?: true
   stripeTransactionId?: true
@@ -114,6 +119,7 @@ export type PurchaseCountAggregateInputType = {
   userId?: true
   movieId?: true
   purchaseType?: true
+  isPurchase?: true
   status?: true
   amount?: true
   stripeTransactionId?: true
@@ -214,6 +220,7 @@ export type PurchaseGroupByOutputType = {
   userId: string
   movieId: string
   purchaseType: $Enums.PurchaseType
+  isPurchase: boolean
   status: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId: string | null
@@ -250,6 +257,7 @@ export type PurchaseWhereInput = {
   userId?: Prisma.StringFilter<"Purchase"> | string
   movieId?: Prisma.StringFilter<"Purchase"> | string
   purchaseType?: Prisma.EnumPurchaseTypeFilter<"Purchase"> | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFilter<"Purchase"> | boolean
   status?: Prisma.EnumPurchaseStatusFilter<"Purchase"> | $Enums.PurchaseStatus
   amount?: Prisma.FloatFilter<"Purchase"> | number
   stripeTransactionId?: Prisma.StringNullableFilter<"Purchase"> | string | null
@@ -265,6 +273,7 @@ export type PurchaseOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   movieId?: Prisma.SortOrder
   purchaseType?: Prisma.SortOrder
+  isPurchase?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   stripeTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -284,6 +293,7 @@ export type PurchaseWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Purchase"> | string
   movieId?: Prisma.StringFilter<"Purchase"> | string
   purchaseType?: Prisma.EnumPurchaseTypeFilter<"Purchase"> | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFilter<"Purchase"> | boolean
   status?: Prisma.EnumPurchaseStatusFilter<"Purchase"> | $Enums.PurchaseStatus
   amount?: Prisma.FloatFilter<"Purchase"> | number
   stripeTransactionId?: Prisma.StringNullableFilter<"Purchase"> | string | null
@@ -299,6 +309,7 @@ export type PurchaseOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   movieId?: Prisma.SortOrder
   purchaseType?: Prisma.SortOrder
+  isPurchase?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   stripeTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -320,6 +331,7 @@ export type PurchaseScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Purchase"> | string
   movieId?: Prisma.StringWithAggregatesFilter<"Purchase"> | string
   purchaseType?: Prisma.EnumPurchaseTypeWithAggregatesFilter<"Purchase"> | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolWithAggregatesFilter<"Purchase"> | boolean
   status?: Prisma.EnumPurchaseStatusWithAggregatesFilter<"Purchase"> | $Enums.PurchaseStatus
   amount?: Prisma.FloatWithAggregatesFilter<"Purchase"> | number
   stripeTransactionId?: Prisma.StringNullableWithAggregatesFilter<"Purchase"> | string | null
@@ -331,6 +343,7 @@ export type PurchaseScalarWhereWithAggregatesInput = {
 export type PurchaseCreateInput = {
   id?: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -346,6 +359,7 @@ export type PurchaseUncheckedCreateInput = {
   userId: string
   movieId: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -357,6 +371,7 @@ export type PurchaseUncheckedCreateInput = {
 export type PurchaseUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -372,6 +387,7 @@ export type PurchaseUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   movieId?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -385,6 +401,7 @@ export type PurchaseCreateManyInput = {
   userId: string
   movieId: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -396,6 +413,7 @@ export type PurchaseCreateManyInput = {
 export type PurchaseUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -409,6 +427,7 @@ export type PurchaseUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   movieId?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -438,6 +457,7 @@ export type PurchaseCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   movieId?: Prisma.SortOrder
   purchaseType?: Prisma.SortOrder
+  isPurchase?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   stripeTransactionId?: Prisma.SortOrder
@@ -455,6 +475,7 @@ export type PurchaseMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   movieId?: Prisma.SortOrder
   purchaseType?: Prisma.SortOrder
+  isPurchase?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   stripeTransactionId?: Prisma.SortOrder
@@ -468,6 +489,7 @@ export type PurchaseMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   movieId?: Prisma.SortOrder
   purchaseType?: Prisma.SortOrder
+  isPurchase?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   stripeTransactionId?: Prisma.SortOrder
@@ -575,6 +597,7 @@ export type EnumPurchaseStatusFieldUpdateOperationsInput = {
 export type PurchaseCreateWithoutUserInput = {
   id?: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -588,6 +611,7 @@ export type PurchaseUncheckedCreateWithoutUserInput = {
   id?: string
   movieId: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -630,6 +654,7 @@ export type PurchaseScalarWhereInput = {
   userId?: Prisma.StringFilter<"Purchase"> | string
   movieId?: Prisma.StringFilter<"Purchase"> | string
   purchaseType?: Prisma.EnumPurchaseTypeFilter<"Purchase"> | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFilter<"Purchase"> | boolean
   status?: Prisma.EnumPurchaseStatusFilter<"Purchase"> | $Enums.PurchaseStatus
   amount?: Prisma.FloatFilter<"Purchase"> | number
   stripeTransactionId?: Prisma.StringNullableFilter<"Purchase"> | string | null
@@ -641,6 +666,7 @@ export type PurchaseScalarWhereInput = {
 export type PurchaseCreateWithoutMovieInput = {
   id?: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -654,6 +680,7 @@ export type PurchaseUncheckedCreateWithoutMovieInput = {
   id?: string
   userId: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -692,6 +719,7 @@ export type PurchaseCreateManyUserInput = {
   id?: string
   movieId: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -703,6 +731,7 @@ export type PurchaseCreateManyUserInput = {
 export type PurchaseUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -716,6 +745,7 @@ export type PurchaseUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   movieId?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -728,6 +758,7 @@ export type PurchaseUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   movieId?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -740,6 +771,7 @@ export type PurchaseCreateManyMovieInput = {
   id?: string
   userId: string
   purchaseType: $Enums.PurchaseType
+  isPurchase?: boolean
   status?: $Enums.PurchaseStatus
   amount: number
   stripeTransactionId?: string | null
@@ -751,6 +783,7 @@ export type PurchaseCreateManyMovieInput = {
 export type PurchaseUpdateWithoutMovieInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -764,6 +797,7 @@ export type PurchaseUncheckedUpdateWithoutMovieInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -776,6 +810,7 @@ export type PurchaseUncheckedUpdateManyWithoutMovieInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseType?: Prisma.EnumPurchaseTypeFieldUpdateOperationsInput | $Enums.PurchaseType
+  isPurchase?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   stripeTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -791,6 +826,7 @@ export type PurchaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   userId?: boolean
   movieId?: boolean
   purchaseType?: boolean
+  isPurchase?: boolean
   status?: boolean
   amount?: boolean
   stripeTransactionId?: boolean
@@ -806,6 +842,7 @@ export type PurchaseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   userId?: boolean
   movieId?: boolean
   purchaseType?: boolean
+  isPurchase?: boolean
   status?: boolean
   amount?: boolean
   stripeTransactionId?: boolean
@@ -821,6 +858,7 @@ export type PurchaseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   userId?: boolean
   movieId?: boolean
   purchaseType?: boolean
+  isPurchase?: boolean
   status?: boolean
   amount?: boolean
   stripeTransactionId?: boolean
@@ -836,6 +874,7 @@ export type PurchaseSelectScalar = {
   userId?: boolean
   movieId?: boolean
   purchaseType?: boolean
+  isPurchase?: boolean
   status?: boolean
   amount?: boolean
   stripeTransactionId?: boolean
@@ -844,7 +883,7 @@ export type PurchaseSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PurchaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "movieId" | "purchaseType" | "status" | "amount" | "stripeTransactionId" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["purchase"]>
+export type PurchaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "movieId" | "purchaseType" | "isPurchase" | "status" | "amount" | "stripeTransactionId" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["purchase"]>
 export type PurchaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   movie?: boolean | Prisma.MovieDefaultArgs<ExtArgs>
@@ -869,6 +908,7 @@ export type $PurchasePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     userId: string
     movieId: string
     purchaseType: $Enums.PurchaseType
+    isPurchase: boolean
     status: $Enums.PurchaseStatus
     amount: number
     stripeTransactionId: string | null
@@ -1304,6 +1344,7 @@ export interface PurchaseFieldRefs {
   readonly userId: Prisma.FieldRef<"Purchase", 'String'>
   readonly movieId: Prisma.FieldRef<"Purchase", 'String'>
   readonly purchaseType: Prisma.FieldRef<"Purchase", 'PurchaseType'>
+  readonly isPurchase: Prisma.FieldRef<"Purchase", 'Boolean'>
   readonly status: Prisma.FieldRef<"Purchase", 'PurchaseStatus'>
   readonly amount: Prisma.FieldRef<"Purchase", 'Float'>
   readonly stripeTransactionId: Prisma.FieldRef<"Purchase", 'String'>

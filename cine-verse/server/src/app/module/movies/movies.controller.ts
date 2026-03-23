@@ -22,12 +22,26 @@ const getMovieById = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await movieService.getMovieById(id as string);
 
+  if (!result) {
+    return res.status(StatusCodes.NOT_FOUND).json({
+      success: false,
+      message: "Movie not found",
+    });
+  }
+
   res.status(StatusCodes.OK).json(result);
 });
 
 const updateMovie = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await movieService.updateMovie(id as string, req.body);
+
+  if (!result) {
+    return res.status(StatusCodes.NOT_FOUND).json({
+      success: false,
+      message: "Movie not found",
+    });
+  }
 
   res.status(StatusCodes.OK).json(result);
 });
@@ -55,6 +69,13 @@ const deleteMovie = catchFunction(async (req: Request, res: Response) => {
   }
 
   const result = await movieService.deleteMovie(id as string);
+
+  if (!result) {
+    return res.status(StatusCodes.NOT_FOUND).json({
+      success: false,
+      message: "Movie not found",
+    });
+  }
 
   res.status(StatusCodes.OK).json(result);
 });

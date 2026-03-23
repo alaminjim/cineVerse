@@ -27,6 +27,13 @@ const createPurchaseCheckout = catchFunction(
       req.user.email || "",
     );
 
+    if (!result) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Movie not found",
+      });
+    }
+
     res.status(StatusCodes.CREATED).json(result);
   },
 );

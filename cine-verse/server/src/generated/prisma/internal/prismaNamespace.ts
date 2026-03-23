@@ -1480,6 +1480,7 @@ export const PurchaseScalarFieldEnum = {
   userId: 'userId',
   movieId: 'movieId',
   purchaseType: 'purchaseType',
+  isPurchase: 'isPurchase',
   status: 'status',
   amount: 'amount',
   stripeTransactionId: 'stripeTransactionId',

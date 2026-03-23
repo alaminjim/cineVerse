@@ -32,7 +32,7 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          
+
           <div>
             <h4 className="text-foreground font-semibold mb-6">Platform</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
@@ -41,7 +41,7 @@ export default function Footer() {
               <li><Link href="/trending" className="hover:text-primary transition-colors">Trending Now</Link></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="text-foreground font-semibold mb-6">Company</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
@@ -49,7 +49,7 @@ export default function Footer() {
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="text-foreground font-semibold mb-6">Legal</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
@@ -58,7 +58,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        
+
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} CineVerse Entertainment.</p>
           <div className="flex items-center gap-2">
