@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 
 import {
   PurchaseStatus,
@@ -231,9 +232,9 @@ const approveReview = async (reviewId: string) => {
 const rejectReview = async (reviewId: string, reason?: string) => {
   const review = await prisma.review.update({
     where: { id: reviewId },
-    data: { 
+    data: {
       status: ReviewStatus.REJECTED,
-      rejectionReason: reason 
+      rejectionReason: reason
     },
     include: {
       user: { select: { name: true } },

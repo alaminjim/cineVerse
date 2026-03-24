@@ -16,6 +16,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
+import toast from "react-hot-toast";
 
 const sidebarLinks = [
   { href: "/user/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -41,6 +42,7 @@ export default function UserLayout({
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     logout();
+    toast.success("Logged out successfully");
     router.push("/login");
   };
 
