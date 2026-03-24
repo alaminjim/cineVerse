@@ -179,10 +179,15 @@ export default function MovieDetailsPage({
       });
       toast.success("Review submitted! Pending admin approval.");
       setReviewForm({ title: "", rating: 0, content: "", hasSpoiler: false });
-      // Refresh reviews
-      const res = await reviewService.getReviewsByMovieId(id, 1);
-      setReviews(res?.data || []);
-      setReviewMeta(res?.meta || null);
+      // Refresh reviews and movie data
+      const [reviewRes, movieRes] = await Promise.all([
+        reviewService.getReviewsByMovieId(id, 1),
+        moviesService.getMovieById(id)
+      ]);
+      
+      setReviews(reviewRes?.data || []);
+      setReviewMeta(reviewRes?.meta || null);
+      if (movieRes.success) setMovie(movieRes.data);
       setReviewPage(1);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Failed to submit review!");

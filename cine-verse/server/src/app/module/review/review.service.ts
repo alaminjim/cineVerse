@@ -35,7 +35,7 @@ const createReview = async (userId: string, payload: any) => {
       content,
       hasSpoiler: hasSpoiler || false,
       tags: tags || [],
-      status: ReviewStatus.PENDING,
+      status: ReviewStatus.APPROVED,
     },
     include: {
       user: {
@@ -257,7 +257,6 @@ const updateMovieRating = async (movieId: string) => {
   const reviews = await prisma.review.findMany({
     where: {
       movieId,
-      status: "APPROVED",
     },
     select: {
       rating: true,
@@ -404,6 +403,21 @@ const getAllReviews = async () => {
   return reviews;
 };
 
+const syncRatings = async () => {
+  const movies = await prisma.movie.findMany({
+    select: { id: true },
+  });
+
+  for (const movie of movies) {
+    await updateMovieRating(movie.id);
+  }
+
+  return {
+    success: true,
+    message: "All movie ratings synchronized successfully",
+  };
+};
+
 export const reviewService = {
   createReview,
   getReviewsByMovieId,
@@ -414,4 +428,5 @@ export const reviewService = {
   approveReview,
   rejectReview,
   getAllReviews,
+  syncRatings,
 };

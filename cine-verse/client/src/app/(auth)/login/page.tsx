@@ -78,7 +78,7 @@ export default function LoginPage() {
               path: "/",
             });
 
-          setUser(userData);
+          setUser(res.data.user);
           toast.success("Welcome back!", { id: toastId });
           setTimeout(() => router.push("/"), 500);
         } else {

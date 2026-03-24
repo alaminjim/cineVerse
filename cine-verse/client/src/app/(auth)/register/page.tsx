@@ -82,7 +82,7 @@ export default function RegisterPage() {
               path: "/",
             });
 
-          setUser(userData);
+          setUser(res.data.user);
           toast.success("Registration successful! 🎬", { id: toastId });
           setTimeout(() => router.push("/"), 500);
         } else {
