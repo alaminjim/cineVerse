@@ -12,8 +12,11 @@ import {
 const router = Router();
 
 router.get("/new-releases", movieController.getNewReleases);
+router.get("/coming-soon", movieController.getComingSoon);
+router.get("/editors-picks", movieController.getEditorsPicks);
 router.get("/featured", movieController.getFeaturedMovies);
 router.get("/", movieController.getAllMovies);
+
 router.get("/:id", movieController.getMovieById);
 
 router.post(

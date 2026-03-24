@@ -9,6 +9,7 @@ import {
   ShoppingBag,
   Clock,
   ExternalLink,
+  PlayCircle,
 } from "lucide-react";
 
 export default function PurchaseHistoryPage() {
@@ -101,13 +102,22 @@ export default function PurchaseHistoryPage() {
                 </div>
               </div>
 
-              <Link
-                href={`/movies/${purchase.movie?.id}`}
-                className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all shrink-0"
-                title="Watch Now"
-              >
-                <ExternalLink className="w-5 h-5" />
-              </Link>
+              <div className="flex gap-2 shrink-0">
+                <Link
+                  href={purchase.movie?.streamingLink || `/movies/${purchase.movie?.id}`}
+                  target={purchase.movie?.streamingLink ? "_blank" : "_self"}
+                  className="px-6 py-3 bg-white text-black rounded-xl flex items-center gap-2 font-black uppercase italic text-xs hover:bg-blue-500 hover:text-white transition-all shadow-lg"
+                >
+                  <PlayCircle className="w-4 h-4" /> Watch Now
+                </Link>
+                <Link
+                  href={`/movies/${purchase.movie?.id}`}
+                  className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-gray-700 transition-all text-gray-400"
+                  title="View Details"
+                >
+                  <ExternalLink className="w-5 h-5" />
+                </Link>
+              </div>
             </div>
           ))}
         </div>

@@ -21,7 +21,6 @@ export default function HeroSection() {
   };
   return (
     <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Background Image & Overlay */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -34,24 +33,20 @@ export default function HeroSection() {
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col items-center text-center mt-12 mb-12">
-        {/* Badge */}
         <div className="inline-flex items-center py-1.5 px-4 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase mb-8">
           Premium Cinema Experience
         </div>
 
-        {/* Title */}
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tighter text-foreground max-w-5xl">
           Unlimited <br className="hidden sm:block" />
           <span className="text-primary">Entertainment</span>
         </h1>
 
-        {/* Subtitle */}
         <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl">
           Discover, stream, and review the most trending movies and series. All
           in one place.
         </p>
 
-        {/* Search Bar Component */}
         <div className="w-full max-w-2xl relative mb-12">
           <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-muted-foreground" />

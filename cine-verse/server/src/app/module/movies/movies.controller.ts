@@ -58,6 +58,18 @@ const getNewReleases = catchFunction(async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(result);
 });
 
+const getComingSoon = catchFunction(async (req: Request, res: Response) => {
+  const result = await movieService.getComingSoon();
+
+  res.status(StatusCodes.OK).json(result);
+});
+
+const getEditorsPicks = catchFunction(async (req: Request, res: Response) => {
+  const result = await movieService.getEditorsPicks();
+
+  res.status(StatusCodes.OK).json(result);
+});
+
 const deleteMovie = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -87,5 +99,7 @@ export const movieController = {
   updateMovie,
   getFeaturedMovies,
   getNewReleases,
+  getComingSoon,
+  getEditorsPicks,
   deleteMovie,
 };

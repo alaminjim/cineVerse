@@ -111,7 +111,6 @@ export default function CreateMoviePage() {
         className="space-y-8"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Thumbnail Section */}
           <div className="md:col-span-1">
             <div className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-6">
               <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">
@@ -136,7 +135,6 @@ export default function CreateMoviePage() {
             </div>
           </div>
 
-          {/* Details Section */}
           <div className="md:col-span-2 space-y-6">
             <div className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-6 space-y-6">
               <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">

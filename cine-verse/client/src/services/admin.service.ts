@@ -1,15 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from "@/lib/axiosInstance";
 
+const noStoreConfig = {
+  headers: {
+    cache: "no-store",
+  },
+};
+
 export const adminService = {
   getAnalyticsStats: async () => {
-    const response = await axiosInstance.get("/admin-analytics/stats");
+    const response = await axiosInstance.get("/admin-analytics/stats", noStoreConfig);
     return response.data;
   },
 
   getPendingReviews: async (page = 1, limit = 10) => {
     const response = await axiosInstance.get(
-      `/admin-analytics/pending-reviews?page=${page}&limit=${limit}`
+      `/admin-analytics/pending-reviews?page=${page}&limit=${limit}`,
+      noStoreConfig
     );
     return response.data;
   },
@@ -30,7 +37,8 @@ export const adminService = {
 
   getActivityLogs: async (page = 1, limit = 20) => {
     const response = await axiosInstance.get(
-      `/admin-analytics/activity-logs?page=${page}&limit=${limit}`
+      `/admin-analytics/activity-logs?page=${page}&limit=${limit}`,
+      noStoreConfig
     );
     return response.data;
   },

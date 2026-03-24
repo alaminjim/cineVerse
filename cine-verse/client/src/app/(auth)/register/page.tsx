@@ -148,7 +148,6 @@ export default function RegisterPage() {
             }}
             className="space-y-5"
           >
-            {/* Name Field */}
             <form.Field name="name">
               {(field) => {
                 const isTouched = field.state.meta.isTouched;
@@ -198,7 +197,6 @@ export default function RegisterPage() {
               }}
             </form.Field>
 
-            {/* Email Field */}
             <form.Field name="email">
               {(field) => {
                 const isTouched = field.state.meta.isTouched;
@@ -248,7 +246,6 @@ export default function RegisterPage() {
               }}
             </form.Field>
 
-            {/* Password Field */}
             <form.Field name="password">
               {(field) => {
                 const isTouched = field.state.meta.isTouched;
@@ -301,7 +298,6 @@ export default function RegisterPage() {
               }}
             </form.Field>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={form.state.isSubmitting}
@@ -318,7 +314,6 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          {/* Google register button */}
           <div className="mt-6">
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">

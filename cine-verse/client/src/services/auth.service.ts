@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from "@/lib/axiosInstance";
 
+const noStoreConfig = {
+  headers: {
+    cache: "no-store",
+  },
+};
+
 export const authService = {
   login: async (credentials: any) => {
     const response = await axiosInstance.post("/auth/login", credentials);
@@ -13,7 +19,7 @@ export const authService = {
   },
 
   getMe: async () => {
-    const response = await axiosInstance.get("/auth/me");
+    const response = await axiosInstance.get("/auth/me", noStoreConfig);
     return response.data;
   },
 

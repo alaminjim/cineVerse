@@ -48,7 +48,7 @@ export default function LoginPage() {
     },
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Signing in...");
-      setServerErrors({}); // Clear previous server errors
+      setServerErrors({}); 
 
       try {
         const res = await authService.login({
@@ -152,7 +152,6 @@ export default function LoginPage() {
             }}
             className="space-y-5"
           >
-            {/* Email Field */}
             <form.Field name="email">
               {(field) => {
                 const isTouched = field.state.meta.isTouched;
@@ -202,7 +201,6 @@ export default function LoginPage() {
               }}
             </form.Field>
 
-            {/* Password Field */}
             <form.Field name="password">
               {(field) => {
                 const isTouched = field.state.meta.isTouched;
@@ -260,7 +258,6 @@ export default function LoginPage() {
               }}
             </form.Field>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={form.state.isSubmitting}
@@ -277,7 +274,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Google login button */}
           <div className="mt-6">
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">

@@ -21,6 +21,22 @@ export const moviesService = {
     return response.data;
   },
 
+  getComingSoon: async () => {
+    const response = await axiosInstance.get(
+      "/movies/coming-soon",
+      noStoreConfig,
+    );
+    return response.data;
+  },
+
+  getEditorsPicks: async () => {
+    const response = await axiosInstance.get(
+      "/movies/editors-picks",
+      noStoreConfig,
+    );
+    return response.data;
+  },
+
   getAllMovies: async (params: any = {}) => {
     const query = new URLSearchParams();
     Object.keys(params).forEach((key) => {

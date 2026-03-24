@@ -1,5 +1,11 @@
 import axiosInstance from "@/lib/axiosInstance";
 
+const noStoreConfig = {
+  headers: {
+    cache: "no-store",
+  },
+};
+
 export const likeService = {
   likeReview: async (reviewId: string) => {
     const response = await axiosInstance.post(`/likes/${reviewId}`);
@@ -12,7 +18,7 @@ export const likeService = {
   },
 
   checkLike: async (reviewId: string) => {
-    const response = await axiosInstance.get(`/likes/check/${reviewId}`);
+    const response = await axiosInstance.get(`/likes/check/${reviewId}`, noStoreConfig);
     return response.data;
   },
 };

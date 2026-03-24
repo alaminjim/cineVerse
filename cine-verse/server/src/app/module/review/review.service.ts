@@ -399,7 +399,25 @@ const rejectReview = async (reviewId: string, reason?: string) => {
 };
 
 const getAllReviews = async () => {
-  const reviews = await prisma.review.findMany();
+  const reviews = await prisma.review.findMany({
+    include: {
+      user: { select: { name: true, image: true } },
+      movie: { select: { title: true, thumbnail: true } },
+    },
+  });
+  return reviews;
+};
+
+const getRecentApprovedReviews = async (limit = 10) => {
+  const reviews = await prisma.review.findMany({
+    where: { status: "APPROVED" },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    include: {
+      user: { select: { name: true, image: true } },
+      movie: { select: { title: true, thumbnail: true } },
+    },
+  });
   return reviews;
 };
 
@@ -428,5 +446,6 @@ export const reviewService = {
   approveReview,
   rejectReview,
   getAllReviews,
+  getRecentApprovedReviews,
   syncRatings,
 };

@@ -7,7 +7,15 @@ import Cookies from "js-cookie";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
-import { Menu, X, LogIn, LogOut, Film, Crown, LayoutDashboard } from "lucide-react";
+import {
+  Menu,
+  X,
+  LogIn,
+  LogOut,
+  Film,
+  Crown,
+  LayoutDashboard,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Navbar() {
@@ -60,6 +68,7 @@ export default function Navbar() {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     logout();
+    toast.success("Logged out successfully");
     router.push("/login");
   };
 
@@ -74,7 +83,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Movies", path: "/movies" },
-    { name: "Series", path: "/movies?type=SERIES" },
+    { name: "Info", path: "/info" },
   ];
 
   return (
@@ -87,11 +96,15 @@ export default function Navbar() {
     >
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2 group z-50">
-          <div className="bg-primary/20 p-2 rounded-lg text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-            <Film className="w-5 h-5" />
+          <div className="bg-primary/20 p-1.5 rounded-lg transition-colors group-hover:bg-primary/30">
+            <img
+              src="/logo.png"
+              alt="CineVerse Logo"
+              className="w-8 h-8 object-contain rounded-md"
+            />
           </div>
-          <span className="text-2xl font-bold tracking-tight text-foreground">
-            Cine<span className="text-primary">Verse</span>
+          <span className="text-2xl font-black uppercase italic tracking-tighter text-white">
+            Cine<span className="text-primary italic">Verse</span>
           </span>
         </Link>
 
@@ -129,7 +142,9 @@ export default function Navbar() {
           {user ? (
             <>
               <Link
-                href={user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"}
+                href={
+                  user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"
+                }
                 className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 <LayoutDashboard className="w-4 h-4" />
@@ -201,7 +216,9 @@ export default function Navbar() {
           {user ? (
             <>
               <Link
-                href={user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"}
+                href={
+                  user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"
+                }
                 className="flex items-center gap-2 text-2xl font-bold text-blue-400"
                 onClick={() => setIsMobileMenuOpen(false)}
               >

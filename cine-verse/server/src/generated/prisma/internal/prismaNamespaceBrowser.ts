@@ -239,6 +239,7 @@ export const ReviewScalarFieldEnum = {
   status: 'status',
   hasSpoiler: 'hasSpoiler',
   tags: 'tags',
+  rejectionReason: 'rejectionReason',
   likesCount: 'likesCount',
   commentCount: 'commentCount',
   userId: 'userId',

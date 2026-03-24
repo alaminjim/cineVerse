@@ -45,6 +45,7 @@ export type ReviewMinAggregateOutputType = {
   content: string | null
   status: $Enums.ReviewStatus | null
   hasSpoiler: boolean | null
+  rejectionReason: string | null
   likesCount: number | null
   commentCount: number | null
   userId: string | null
@@ -60,6 +61,7 @@ export type ReviewMaxAggregateOutputType = {
   content: string | null
   status: $Enums.ReviewStatus | null
   hasSpoiler: boolean | null
+  rejectionReason: string | null
   likesCount: number | null
   commentCount: number | null
   userId: string | null
@@ -76,6 +78,7 @@ export type ReviewCountAggregateOutputType = {
   status: number
   hasSpoiler: number
   tags: number
+  rejectionReason: number
   likesCount: number
   commentCount: number
   userId: number
@@ -105,6 +108,7 @@ export type ReviewMinAggregateInputType = {
   content?: true
   status?: true
   hasSpoiler?: true
+  rejectionReason?: true
   likesCount?: true
   commentCount?: true
   userId?: true
@@ -120,6 +124,7 @@ export type ReviewMaxAggregateInputType = {
   content?: true
   status?: true
   hasSpoiler?: true
+  rejectionReason?: true
   likesCount?: true
   commentCount?: true
   userId?: true
@@ -136,6 +141,7 @@ export type ReviewCountAggregateInputType = {
   status?: true
   hasSpoiler?: true
   tags?: true
+  rejectionReason?: true
   likesCount?: true
   commentCount?: true
   userId?: true
@@ -239,6 +245,7 @@ export type ReviewGroupByOutputType = {
   status: $Enums.ReviewStatus
   hasSpoiler: boolean
   tags: string[]
+  rejectionReason: string | null
   likesCount: number
   commentCount: number
   userId: string
@@ -278,6 +285,7 @@ export type ReviewWhereInput = {
   status?: Prisma.EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFilter<"Review"> | boolean
   tags?: Prisma.StringNullableListFilter<"Review">
+  rejectionReason?: Prisma.StringNullableFilter<"Review"> | string | null
   likesCount?: Prisma.IntFilter<"Review"> | number
   commentCount?: Prisma.IntFilter<"Review"> | number
   userId?: Prisma.StringFilter<"Review"> | string
@@ -298,6 +306,7 @@ export type ReviewOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   hasSpoiler?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   likesCount?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -321,6 +330,7 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFilter<"Review"> | boolean
   tags?: Prisma.StringNullableListFilter<"Review">
+  rejectionReason?: Prisma.StringNullableFilter<"Review"> | string | null
   likesCount?: Prisma.IntFilter<"Review"> | number
   commentCount?: Prisma.IntFilter<"Review"> | number
   userId?: Prisma.StringFilter<"Review"> | string
@@ -341,6 +351,7 @@ export type ReviewOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   hasSpoiler?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   likesCount?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -365,6 +376,7 @@ export type ReviewScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumReviewStatusWithAggregatesFilter<"Review"> | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
   tags?: Prisma.StringNullableListFilter<"Review">
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
   likesCount?: Prisma.IntWithAggregatesFilter<"Review"> | number
   commentCount?: Prisma.IntWithAggregatesFilter<"Review"> | number
   userId?: Prisma.StringWithAggregatesFilter<"Review"> | string
@@ -381,6 +393,7 @@ export type ReviewCreateInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   createdAt?: Date | string
@@ -399,6 +412,7 @@ export type ReviewUncheckedCreateInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   userId: string
@@ -417,6 +431,7 @@ export type ReviewUpdateInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,6 +450,7 @@ export type ReviewUncheckedUpdateInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -453,6 +469,7 @@ export type ReviewCreateManyInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   userId: string
@@ -469,6 +486,7 @@ export type ReviewUpdateManyMutationInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -483,6 +501,7 @@ export type ReviewUncheckedUpdateManyInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -514,6 +533,7 @@ export type ReviewCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   hasSpoiler?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   likesCount?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -535,6 +555,7 @@ export type ReviewMaxOrderByAggregateInput = {
   content?: Prisma.SortOrder
   status?: Prisma.SortOrder
   hasSpoiler?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   likesCount?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -550,6 +571,7 @@ export type ReviewMinOrderByAggregateInput = {
   content?: Prisma.SortOrder
   status?: Prisma.SortOrder
   hasSpoiler?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
   likesCount?: Prisma.SortOrder
   commentCount?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -697,6 +719,7 @@ export type ReviewCreateWithoutUserInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   createdAt?: Date | string
@@ -714,6 +737,7 @@ export type ReviewUncheckedCreateWithoutUserInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   movieId: string
@@ -760,6 +784,7 @@ export type ReviewScalarWhereInput = {
   status?: Prisma.EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFilter<"Review"> | boolean
   tags?: Prisma.StringNullableListFilter<"Review">
+  rejectionReason?: Prisma.StringNullableFilter<"Review"> | string | null
   likesCount?: Prisma.IntFilter<"Review"> | number
   commentCount?: Prisma.IntFilter<"Review"> | number
   userId?: Prisma.StringFilter<"Review"> | string
@@ -776,6 +801,7 @@ export type ReviewCreateWithoutCommentsInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   createdAt?: Date | string
@@ -793,6 +819,7 @@ export type ReviewUncheckedCreateWithoutCommentsInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   userId: string
@@ -826,6 +853,7 @@ export type ReviewUpdateWithoutCommentsInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -843,6 +871,7 @@ export type ReviewUncheckedUpdateWithoutCommentsInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -860,6 +889,7 @@ export type ReviewCreateWithoutLikesInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   createdAt?: Date | string
@@ -877,6 +907,7 @@ export type ReviewUncheckedCreateWithoutLikesInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   userId: string
@@ -910,6 +941,7 @@ export type ReviewUpdateWithoutLikesInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -927,6 +959,7 @@ export type ReviewUncheckedUpdateWithoutLikesInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -944,6 +977,7 @@ export type ReviewCreateWithoutMovieInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   createdAt?: Date | string
@@ -961,6 +995,7 @@ export type ReviewUncheckedCreateWithoutMovieInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   userId: string
@@ -1004,6 +1039,7 @@ export type ReviewCreateManyUserInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   movieId: string
@@ -1019,6 +1055,7 @@ export type ReviewUpdateWithoutUserInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1036,6 +1073,7 @@ export type ReviewUncheckedUpdateWithoutUserInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   movieId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1053,6 +1091,7 @@ export type ReviewUncheckedUpdateManyWithoutUserInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   movieId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1068,6 +1107,7 @@ export type ReviewCreateManyMovieInput = {
   status?: $Enums.ReviewStatus
   hasSpoiler?: boolean
   tags?: Prisma.ReviewCreatetagsInput | string[]
+  rejectionReason?: string | null
   likesCount?: number
   commentCount?: number
   userId: string
@@ -1083,6 +1123,7 @@ export type ReviewUpdateWithoutMovieInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1100,6 +1141,7 @@ export type ReviewUncheckedUpdateWithoutMovieInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1117,6 +1159,7 @@ export type ReviewUncheckedUpdateManyWithoutMovieInput = {
   status?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
   hasSpoiler?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tags?: Prisma.ReviewUpdatetagsInput | string[]
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1172,6 +1215,7 @@ export type ReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   status?: boolean
   hasSpoiler?: boolean
   tags?: boolean
+  rejectionReason?: boolean
   likesCount?: boolean
   commentCount?: boolean
   userId?: boolean
@@ -1193,6 +1237,7 @@ export type ReviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   status?: boolean
   hasSpoiler?: boolean
   tags?: boolean
+  rejectionReason?: boolean
   likesCount?: boolean
   commentCount?: boolean
   userId?: boolean
@@ -1211,6 +1256,7 @@ export type ReviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   status?: boolean
   hasSpoiler?: boolean
   tags?: boolean
+  rejectionReason?: boolean
   likesCount?: boolean
   commentCount?: boolean
   userId?: boolean
@@ -1229,6 +1275,7 @@ export type ReviewSelectScalar = {
   status?: boolean
   hasSpoiler?: boolean
   tags?: boolean
+  rejectionReason?: boolean
   likesCount?: boolean
   commentCount?: boolean
   userId?: boolean
@@ -1237,7 +1284,7 @@ export type ReviewSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "rating" | "content" | "status" | "hasSpoiler" | "tags" | "likesCount" | "commentCount" | "userId" | "movieId" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
+export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "rating" | "content" | "status" | "hasSpoiler" | "tags" | "rejectionReason" | "likesCount" | "commentCount" | "userId" | "movieId" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
 export type ReviewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   movie?: boolean | Prisma.MovieDefaultArgs<ExtArgs>
@@ -1270,6 +1317,7 @@ export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     status: $Enums.ReviewStatus
     hasSpoiler: boolean
     tags: string[]
+    rejectionReason: string | null
     likesCount: number
     commentCount: number
     userId: string
@@ -1710,6 +1758,7 @@ export interface ReviewFieldRefs {
   readonly status: Prisma.FieldRef<"Review", 'ReviewStatus'>
   readonly hasSpoiler: Prisma.FieldRef<"Review", 'Boolean'>
   readonly tags: Prisma.FieldRef<"Review", 'String[]'>
+  readonly rejectionReason: Prisma.FieldRef<"Review", 'String'>
   readonly likesCount: Prisma.FieldRef<"Review", 'Int'>
   readonly commentCount: Prisma.FieldRef<"Review", 'Int'>
   readonly userId: Prisma.FieldRef<"Review", 'String'>

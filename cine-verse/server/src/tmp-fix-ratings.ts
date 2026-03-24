@@ -4,14 +4,12 @@ async function main() {
   console.log("Finalizing review approvals and rating updates...");
 
   try {
-    // 1. Update all PENDING reviews to APPROVED
     const updateReviews = await prisma.review.updateMany({
       where: { status: "PENDING" },
       data: { status: "APPROVED" },
     });
     console.log(`Updated ${updateReviews.count} reviews to APPROVED.`);
 
-    // 2. Get all movies
     const movies = await prisma.movie.findMany({
       select: { id: true },
     });
@@ -59,7 +57,5 @@ async function main() {
 main()
   .catch((e) => console.error(e))
   .finally(async () => {
-    // Note: We don't necessarily want to disconnect the global prisma instance if it's shared,
-    // but for a standalone script execution it's usually fine.
     await prisma.$disconnect();
   });

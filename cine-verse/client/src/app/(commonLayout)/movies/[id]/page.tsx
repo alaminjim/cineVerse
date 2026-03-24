@@ -9,6 +9,7 @@ import { moviesService } from "@/services/movies.service";
 import { reviewService } from "@/services/review.service";
 import { commentService } from "@/services/comment.service";
 import { likeService } from "@/services/like.service";
+import { watchlistService } from "@/services/watchlist.service";
 import { useAuthStore } from "@/lib/store";
 import {
   PlayCircle,
@@ -26,10 +27,16 @@ import {
   Send,
   AlertTriangle,
   Trash2,
+  Plus,
+  Check,
+  Ban,
+  Tag,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
 import toast from "react-hot-toast";
+
+const REVIEW_TAGS = ["Family Friendly", "Must Watch", "Action Packed", "Emotional", "Great Visuals", "Highly Recommended", "Mind Blowing"];
 
 export default function MovieDetailsPage({
   params,
@@ -51,25 +58,25 @@ export default function MovieDetailsPage({
     subscriptionPlan: null as string | null,
   });
 
-  // Review states
+  const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const [watchlistLoading, setWatchlistLoading] = useState(false);
+
   const [reviews, setReviews] = useState<any[]>([]);
   const [reviewMeta, setReviewMeta] = useState<any>(null);
   const [reviewPage, setReviewPage] = useState(1);
   const [reviewLoading, setReviewLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
 
-  // Review form
   const [reviewForm, setReviewForm] = useState({
     title: "",
     rating: 0,
     content: "",
     hasSpoiler: false,
+    tags: [] as string[],
   });
 
-  // Like states
   const [likedReviews, setLikedReviews] = useState<Set<string>>(new Set());
 
-  // Comment states
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
   const [commentLoading, setCommentLoading] = useState<string | null>(null);
@@ -88,10 +95,15 @@ export default function MovieDetailsPage({
 
         if (accessRes) {
           setAccess({
-            isPurchased: accessRes.isPurchased === true,
-            purchaseType: accessRes.purchaseType || null,
+            isPurchased: accessRes.isPurchased === true || user?.role === "ADMIN",
+            purchaseType: accessRes.purchaseType || (user?.role === "ADMIN" ? "ADMIN_ACCESS" : null),
             subscriptionPlan: accessRes.subscriptionPlan || null,
           });
+        }
+
+        if (user) {
+          const wRes = await watchlistService.checkWatchlist(id).catch(() => null);
+          if (wRes?.isWatchlisted) setIsWatchlisted(true);
         }
       } catch (error) {
         console.error("Fetch error:", error);
@@ -139,6 +151,49 @@ export default function MovieDetailsPage({
     checkLikes();
   }, [reviews, user]);
 
+  const handleToggleWatchlist = async () => {
+    if (!user) {
+      toast.error("Please login to manage watchlist!");
+      return;
+    }
+    try {
+      setWatchlistLoading(true);
+      if (isWatchlisted) {
+        await watchlistService.removeFromWatchlist(id);
+        setIsWatchlisted(false);
+        toast.success("Removed from watchlist");
+      } else {
+        await watchlistService.addToWatchlist(id);
+        setIsWatchlisted(true);
+        toast.success("Added to watchlist");
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Watchlist action failed!");
+    } finally {
+      setWatchlistLoading(false);
+    }
+  };
+
+  const handleApproveReview = async (reviewId: string) => {
+    try {
+      await reviewService.approveReview(reviewId);
+      toast.success("Review approved & published!");
+      setReviews((prev) => prev.map(r => r.id === reviewId ? { ...r, status: "APPROVED" } : r));
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Approval failed!");
+    }
+  };
+
+  const handleRejectReview = async (reviewId: string) => {
+    try {
+      await reviewService.rejectReview(reviewId);
+      toast.success("Review rejected & unpublished!");
+      setReviews((prev) => prev.map(r => r.id === reviewId ? { ...r, status: "REJECTED" } : r));
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Rejection failed!");
+    }
+  };
+
   const { isPurchased, purchaseType, subscriptionPlan } = access;
 
   const handlePurchase = async (type: "BUY" | "RENT") => {
@@ -178,7 +233,7 @@ export default function MovieDetailsPage({
         ...reviewForm,
       });
       toast.success("Review submitted! Pending admin approval.");
-      setReviewForm({ title: "", rating: 0, content: "", hasSpoiler: false });
+      setReviewForm({ title: "", rating: 0, content: "", hasSpoiler: false, tags: [] });
       // Refresh reviews and movie data
       const [reviewRes, movieRes] = await Promise.all([
         reviewService.getReviewsByMovieId(id, 1),
@@ -292,6 +347,7 @@ export default function MovieDetailsPage({
 
   const getAccessLabel = () => {
     if (movie?.pricing === "FREE") return "Free to Watch";
+    if (purchaseType === "ADMIN_ACCESS") return "Administrator Access";
     if (subscriptionPlan) return `${subscriptionPlan} Subscriber`;
     if (purchaseType === "BUY") return "Owned Lifetime";
     if (purchaseType === "RENT") return "Rented (7 Days)";
@@ -451,7 +507,34 @@ export default function MovieDetailsPage({
                   />
                 </div>
 
-                <div className="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <label className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-3 block">Tags (Help others find relevant content)</label>
+                  <div className="flex flex-wrap gap-2">
+                    {REVIEW_TAGS.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          setReviewForm(prev => ({
+                            ...prev,
+                            tags: prev.tags.includes(tag) 
+                              ? prev.tags.filter(t => t !== tag) 
+                              : [...prev.tags, tag]
+                          }));
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border ${
+                          reviewForm.tags.includes(tag)
+                            ? "bg-purple-600 border-purple-500 text-white"
+                            : "bg-gray-900 border-gray-800 text-gray-500 hover:border-gray-600"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between flex-wrap gap-4 pt-2">
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input
                       type="checkbox"
@@ -516,7 +599,33 @@ export default function MovieDetailsPage({
                     </div>
 
                     {/* Review Title */}
-                    <h4 className="font-bold text-lg mb-2 text-white">{review.title}</h4>
+                    <div className="flex items-center justify-between gap-4 mb-2">
+                      <h4 className="font-bold text-lg text-white">{review.title}</h4>
+                      {user?.role === "ADMIN" && (
+                        <div className="flex items-center gap-2">
+                          {review.status !== "APPROVED" ? (
+                            <button
+                              onClick={() => handleApproveReview(review.id)}
+                              className="p-1.5 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500 hover:text-white transition-all"
+                              title="Approve & Publish"
+                            >
+                              <Check className="w-4 h-4" />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleRejectReview(review.id)}
+                              className="p-1.5 bg-orange-500/10 text-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition-all"
+                              title="Unpublish"
+                            >
+                              <Ban className="w-4 h-4" />
+                            </button>
+                          )}
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded ${review.status === 'APPROVED' ? 'bg-green-500/20 text-green-500' : 'bg-orange-500/20 text-orange-500'}`}>
+                            {review.status}
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Spoiler Warning */}
                     {review.hasSpoiler && (
@@ -525,12 +634,22 @@ export default function MovieDetailsPage({
                       </div>
                     )}
 
+                    {/* Tags Display */}
+                    {review.tags && review.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {review.tags.map((tag: string) => (
+                          <span key={tag} className="flex items-center gap-1.5 px-2 py-1 bg-white/5 border border-white/10 rounded-md text-[10px] text-gray-400 font-medium">
+                            <Tag className="w-3 h-3 text-purple-500" /> {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Review Content */}
                     <p className={`text-gray-400 leading-relaxed text-sm ${review.hasSpoiler ? "blur-sm hover:blur-none transition-all cursor-pointer" : ""}`}>
                       {review.content}
                     </p>
 
-                    {/* Review Actions */}
                     <div className="flex items-center gap-6 mt-5 pt-4 border-t border-gray-800/50">
                       <button
                         onClick={() => handleToggleLike(review.id)}
@@ -688,6 +807,25 @@ export default function MovieDetailsPage({
                   className="w-full bg-white text-black py-5 rounded-2xl font-black uppercase italic flex items-center justify-center gap-3 hover:bg-purple-600 hover:text-white transition-all shadow-lg active:scale-[0.98]"
                 >
                   <PlayCircle size={24} /> Watch Now
+                </button>
+
+                <button
+                  onClick={handleToggleWatchlist}
+                  disabled={watchlistLoading}
+                  className={`w-full mt-4 py-4 rounded-2xl font-black uppercase italic flex items-center justify-center gap-3 transition-all border ${
+                    isWatchlisted
+                      ? "bg-purple-600/10 border-purple-500/30 text-purple-400 hover:bg-red-600/10 hover:border-red-500/30 hover:text-red-400"
+                      : "bg-gray-900 border-gray-800 text-gray-500 hover:bg-gray-800 hover:text-white"
+                  }`}
+                >
+                  {watchlistLoading ? (
+                    <Loader2 className="animate-spin w-5 h-5" />
+                  ) : isWatchlisted ? (
+                    <Check size={20} />
+                  ) : (
+                    <Plus size={20} />
+                  )}
+                  {isWatchlisted ? "In Watchlist" : "Add to Watchlist"}
                 </button>
               </div>
             ) : (

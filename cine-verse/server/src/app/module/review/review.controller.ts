@@ -106,7 +106,13 @@ const rejectReview = catchFunction(async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(result);
 });
 
+const getRecentApprovedReviews = catchFunction(async (req: Request, res: Response) => {
+  const result = await reviewService.getRecentApprovedReviews(10);
+  res.status(StatusCodes.OK).json(result);
+});
+
 const syncRatings = catchFunction(async (req: Request, res: Response) => {
+
   const result = await reviewService.syncRatings();
   res.status(StatusCodes.OK).json(result);
 });
@@ -121,5 +127,6 @@ export const reviewController = {
   approveReview,
   rejectReview,
   getAllReviews,
+  getRecentApprovedReviews,
   syncRatings,
 };

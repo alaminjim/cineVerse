@@ -13,6 +13,7 @@ import {
   DollarSign,
   Clock,
   Film,
+  AlertCircle,
 } from "lucide-react";
 
 export default function UserDashboard() {
@@ -127,15 +128,23 @@ export default function UserDashboard() {
                     <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
                     <span className="text-yellow-500 text-xs font-bold">{review.rating}</span>
                   </div>
-                  <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-lg ${
-                    review.status === "APPROVED"
-                      ? "bg-green-600/15 text-green-400"
-                      : review.status === "REJECTED"
-                      ? "bg-red-600/15 text-red-400"
-                      : "bg-yellow-600/15 text-yellow-400"
-                  }`}>
-                    {review.status}
-                  </span>
+                  <div className="flex flex-col items-end gap-2">
+                    <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-lg ${
+                      review.status === "APPROVED"
+                        ? "bg-green-600/15 text-green-400"
+                        : review.status === "REJECTED"
+                        ? "bg-red-600/15 text-red-400"
+                        : "bg-yellow-600/15 text-yellow-400"
+                    }`}>
+                      {review.status}
+                    </span>
+                    {review.status === "REJECTED" && review.rejectionReason && (
+                      <div className="flex items-center gap-1.5 text-[10px] text-red-400 opacity-80 max-w-[150px] text-right">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span className="truncate" title={review.rejectionReason}>{review.rejectionReason}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

@@ -3,16 +3,24 @@
 
 import { useEffect, useState } from "react";
 import { moviesService } from "@/services/movies.service";
+import { reviewService } from "@/services/review.service";
 import Hero from "./hero/page";
 import NewReleaseSection from "./(movies)/newReales";
 import TopRatedSection from "./(movies)/topRatigs";
 import AllMoviesSection from "./(movies)/allMovies";
+import EditorsPicksSection from "./(movies)/editorsPicks";
+import ComingSoonSection from "./(movies)/comingSoon";
+import CommunityHighlightsSection from "./(movies)/communityHighlights";
+import SubscriptionPlansSection from "./subscription/subscriptionPlans";
 import StreamingMarquee from "@/components/StreamingMarquee";
 import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
   const [featured, setFeatured] = useState<any[]>([]);
   const [newReleases, setNewReleases] = useState<any[]>([]);
+  const [comingSoon, setComingSoon] = useState<any[]>([]);
+  const [editorsPicks, setEditorsPicks] = useState<any[]>([]);
+  const [recentReviews, setRecentReviews] = useState<any[]>([]);
   const [allMovies, setAllMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,15 +28,20 @@ export default function HomePage() {
     try {
       setLoading(true);
 
-      const [fRes, nRes, aRes] = await Promise.all([
+      const [fRes, nRes, cRes, eRes, rRes, aRes] = await Promise.all([
         moviesService.getFeatured(),
         moviesService.getNewReleases(),
-        moviesService.getAllMovies(),
+        moviesService.getComingSoon(),
+        moviesService.getEditorsPicks(),
+        reviewService.getRecentApprovedReviews(),
+        moviesService.getAllMovies({ limit: 6 }),
       ]);
 
       setFeatured(Array.isArray(fRes) ? fRes : []);
-
       setNewReleases(Array.isArray(nRes) ? nRes : []);
+      setComingSoon(Array.isArray(cRes) ? cRes : []);
+      setEditorsPicks(Array.isArray(eRes) ? eRes : []);
+      setRecentReviews(Array.isArray(rRes) ? rRes : []);
 
       if (aRes && aRes.data && Array.isArray(aRes.data)) {
         setAllMovies(aRes.data);
@@ -63,14 +76,22 @@ export default function HomePage() {
     <main className="bg-black min-h-screen">
       <Hero />
 
-      <div className="max-w-7xl mx-auto px-6 space-y-16 pb-20">
+      <div className="max-w-7xl mx-auto px-6 space-y-24 pb-20">
         {newReleases.length > 0 && <NewReleaseSection movies={newReleases} />}
 
         {featured.length > 0 && <TopRatedSection movies={featured} />}
 
+        {editorsPicks.length > 0 && <EditorsPicksSection movies={editorsPicks} />}
+
+        {comingSoon.length > 0 && <ComingSoonSection movies={comingSoon} />}
+
+        <SubscriptionPlansSection />
+
+        {recentReviews.length > 0 && <CommunityHighlightsSection reviews={recentReviews} />}
+
         {allMovies.length > 0 && <AllMoviesSection movies={allMovies} />}
 
-        {!newReleases.length && !featured.length && !allMovies.length && (
+        {!newReleases.length && !featured.length && !allMovies.length && !comingSoon.length && (
           <div className="text-center py-20">
             <p className="text-gray-500 text-lg font-light italic">
               No movies available in the catalog yet.

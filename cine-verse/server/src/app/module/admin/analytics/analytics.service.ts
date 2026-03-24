@@ -231,7 +231,10 @@ const approveReview = async (reviewId: string) => {
 const rejectReview = async (reviewId: string, reason?: string) => {
   const review = await prisma.review.update({
     where: { id: reviewId },
-    data: { status: ReviewStatus.REJECTED },
+    data: { 
+      status: ReviewStatus.REJECTED,
+      rejectionReason: reason 
+    },
     include: {
       user: { select: { name: true } },
       movie: { select: { title: true } },

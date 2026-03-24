@@ -1,5 +1,11 @@
 import axiosInstance from "@/lib/axiosInstance";
 
+const noStoreConfig = {
+  headers: {
+    cache: "no-store",
+  },
+};
+
 export const watchlistService = {
   addToWatchlist: async (movieId: string) => {
     const response = await axiosInstance.post(`/watchList/${movieId}`);
@@ -12,12 +18,12 @@ export const watchlistService = {
   },
 
   getWatchlist: async () => {
-    const response = await axiosInstance.get("/watchList");
+    const response = await axiosInstance.get("/watchList", noStoreConfig);
     return response.data;
   },
 
   checkWatchlist: async (movieId: string) => {
-    const response = await axiosInstance.get(`/watchList/check/${movieId}`);
+    const response = await axiosInstance.get(`/watchList/check/${movieId}`, noStoreConfig);
     return response.data;
   },
 };

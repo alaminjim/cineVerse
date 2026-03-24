@@ -138,6 +138,7 @@ const getPurchaseHistory = async (userId: string) => {
           title: true,
           thumbnail: true,
           genre: true,
+          streamingLink: true,
         },
       },
     },
@@ -150,7 +151,14 @@ const getPurchaseHistory = async (userId: string) => {
   };
 };
 
-const checkPurchase = async (movieId: string, userId: string) => {
+const checkPurchase = async (movieId: string, userId: string, role: string) => {
+  if (role === "ADMIN") {
+    return {
+      success: true,
+      isPurchased: true,
+      purchaseType: "ADMIN_ACCESS",
+    };
+  }
 
   const activeSubscription = await prisma.subscription.findFirst({
     where: {

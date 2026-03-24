@@ -1,5 +1,11 @@
 import axiosInstance from "@/lib/axiosInstance";
 
+const noStoreConfig = {
+  headers: {
+    cache: "no-store",
+  },
+};
+
 export const subscriptionService = {
   createSubscription: async (planType: "MONTHLY" | "YEARLY") => {
     const res = await axiosInstance.post("/subscription", { planType });
@@ -14,7 +20,7 @@ export const subscriptionService = {
   },
 
   getActiveSubscription: async () => {
-    const res = await axiosInstance.get("/subscription/active");
+    const res = await axiosInstance.get("/subscription/active", noStoreConfig);
     return res.data;
   },
 
@@ -24,7 +30,7 @@ export const subscriptionService = {
   },
 
   getAllSubscriptions: async () => {
-    const res = await axiosInstance.get("/subscription/all");
+    const res = await axiosInstance.get("/subscription/all", noStoreConfig);
     return res.data;
   },
 };

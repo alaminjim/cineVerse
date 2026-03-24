@@ -18,7 +18,9 @@ router.post(
 );
 
 router.get("/", reviewController.getAllReviews);
+router.get("/recent-approved", reviewController.getRecentApprovedReviews);
 router.get("/sync-ratings", reviewController.syncRatings);
+
 
 router.get("/movie/:movieId", reviewController.getReviewsByMovieId);
 

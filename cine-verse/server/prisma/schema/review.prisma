@@ -9,6 +9,7 @@ model Review {
 
   hasSpoiler Boolean       @default(false)  
   tags      String[]       @default([])   
+  rejectionReason String?
 
   likesCount      Int      @default(0)        
   commentCount    Int      @default(0) 

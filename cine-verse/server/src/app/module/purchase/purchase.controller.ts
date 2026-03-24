@@ -72,6 +72,7 @@ const checkPurchase = catchFunction(async (req: Request, res: Response) => {
   const result = await purchaseService.checkPurchase(
     movieId as string,
     req.user.userId,
+    req.user.role,
   );
   res.status(StatusCodes.OK).json(result);
 });

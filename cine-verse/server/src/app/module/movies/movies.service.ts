@@ -139,6 +139,11 @@ const getAllMovies = async (queryParams: any) => {
 
   if (popularity) where.reviewCount = { gte: parseInt(popularity) };
 
+  if (queryParams.streamingPlatform) {
+    where.streamingPlatform = { hasSome: [queryParams.streamingPlatform] };
+  }
+
+
   let orderBy: any = {};
   switch (sortBy) {
     case "avgRating":
@@ -357,6 +362,27 @@ const deleteMovie = async (id: string) => {
   return deleted;
 };
 
+const getComingSoon = async () => {
+  const currentYear = new Date().getFullYear();
+  const movies = await prisma.movie.findMany({
+    where: { releaseYear: { gt: currentYear } },
+    orderBy: { releaseYear: "asc" },
+    take: 10,
+  });
+
+  return movies;
+};
+
+const getEditorsPicks = async () => {
+  const movies = await prisma.movie.findMany({
+    where: { avgRating: { gte: 8.5 } },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
+
+  return movies;
+};
+
 export const movieService = {
   createMovie,
   getAllMovies,
@@ -364,5 +390,7 @@ export const movieService = {
   updateMovie,
   getFeaturedMovies,
   getNewReleases,
+  getComingSoon,
+  getEditorsPicks,
   deleteMovie,
 };
