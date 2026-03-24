@@ -21,9 +21,14 @@ export const moviesService = {
     return response.data;
   },
 
-  getAllMovies: async (page = 1, limit = 10) => {
+  getAllMovies: async (params: any = {}) => {
+    const query = new URLSearchParams();
+    Object.keys(params).forEach((key) => {
+      if (params[key]) query.append(key, String(params[key]));
+    });
+    
     const response = await axiosInstance.get(
-      `/movies?page=${page}&limit=${limit}`,
+      `/movies?${query.toString()}`,
       noStoreConfig,
     );
     return response.data;

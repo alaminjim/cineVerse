@@ -3,21 +3,56 @@
 
 import { useEffect, useState } from "react";
 import { moviesService } from "@/services/movies.service";
-import { Loader2, Clapperboard, Search } from "lucide-react";
+import { Loader2, Clapperboard, Search, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import MovieCard from "@/components/card/movies";
+
+const GENRES = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Thriller", "Romance", "Adventure", "Fantasy", "Animation", "Crime", "Mystery"];
+const TYPES = ["MOVIE", "SERIES"];
+const SORT_OPTIONS = [
+  { label: "Newest Arrivals", value: "createdAt", order: "desc" },
+  { label: "Highest Rated", value: "avgRating", order: "desc" },
+  { label: "Most Popular", value: "reviewCount", order: "desc" },
+];
 
 export default function AllMoviesPage() {
   const [movies, setMovies] = useState<any[]>([]);
+  const [meta, setMeta] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+
+  const [searchTerms, setSearchTerms] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [genre, setGenre] = useState("");
+  const [type, setType] = useState("");
+  const [activeSort, setActiveSort] = useState(0); 
+  const [page, setPage] = useState(1);
+
+  // Debounce search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerms);
+      setPage(1); 
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchTerms]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         setLoading(true);
-        const res = await moviesService.getAllMovies();
-        const movieData = res?.data || res;
-        setMovies(Array.isArray(movieData) ? movieData : []);
+        const sortOpt = SORT_OPTIONS[activeSort];
+        
+        const res = await moviesService.getAllMovies({
+          searchTerms: debouncedSearch,
+          genre,
+          type,
+          sortBy: sortOpt.value,
+          sortOrder: sortOpt.order,
+          page,
+          limit: 15,
+        });
+        
+        setMovies(res?.data || []);
+        setMeta(res?.meta || null);
       } catch (error) {
         console.error("Error fetching movies:", error);
       } finally {
@@ -25,59 +60,50 @@ export default function AllMoviesPage() {
       }
     };
     fetchMovies();
-  }, []);
+  }, [debouncedSearch, genre, type, activeSort, page]);
 
-  const filteredMovies = movies.filter((movie) =>
-    movie.title.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const getPageNumbers = () => {
+    if (!meta) return [];
+    const total = meta.totalPages;
+    const current = page;
+    const delta = 2;
 
-  if (loading) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center bg-black">
-        <div className="relative mb-8">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-2xl opacity-20 animate-pulse"></div>
+    if (total <= 7) {
+      return Array.from({ length: total }).map((_, i) => i + 1);
+    }
 
-          <div className="relative p-1 bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 rounded-full animate-spin">
-            <div className="bg-black rounded-full p-2">
-              <Loader2 className="text-purple-400 w-12 h-12 stroke-[2px]" />
-            </div>
-          </div>
-        </div>
+    const range = [];
+    for (
+      let i = Math.max(2, current - delta);
+      i <= Math.min(total - 1, current + delta);
+      i++
+    ) {
+      range.push(i);
+    }
 
-        <div className="flex flex-col items-center">
-          <h2 className="text-2xl font-black tracking-widest uppercase italic bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 bg-clip-text text-transparent animate-pulse">
-            CineVerse
-          </h2>
+    if (current - delta > 2) range.unshift("...");
+    if (current + delta < total - 1) range.push("...");
 
-          <div className="mt-4 flex gap-1.5">
-            <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-            <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-            <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></span>
-          </div>
+    range.unshift(1);
+    range.push(total);
 
-          <p className="mt-6 text-gray-500 text-[10px] font-bold uppercase tracking-[0.4em] opacity-50">
-            Loading Catalog...
-          </p>
-        </div>
-      </div>
-    );
-  }
+    return range;
+  };
 
   return (
     <main className="bg-black min-h-screen pt-28 pb-20 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-gray-900 pb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b border-gray-900 pb-8">
           <div className="flex items-center gap-4">
             <div className="bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 p-3 rounded-xl shadow-lg shadow-red-900/20">
               <Clapperboard className="text-white w-7 h-7" />
             </div>
             <div>
               <h1 className="text-3xl font-black text-white uppercase tracking-tighter italic">
-                All Movies
+                {searchTerms ? "Search Results" : "All Movies"}
               </h1>
               <p className="text-gray-500 text-sm font-medium">
-                Total <span className="text-red-300">{movies.length}</span>{" "}
-                titles in catalog
+                {meta ? `Showing ${movies.length} of ${meta.total} titles` : "Loading..."}
               </p>
             </div>
           </div>
@@ -86,39 +112,150 @@ export default function AllMoviesPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search by title..."
+              placeholder="Search by title, director, cast..."
+              value={searchTerms}
               className="w-full bg-gray-900/50 border border-gray-800 text-white pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-600"
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerms(e.target.value)}
             />
           </div>
         </div>
 
-        {filteredMovies.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-10">
-            {filteredMovies.map((movie: any) => (
-              <MovieCard
-                key={movie.id || movie._id}
-                id={movie.id || movie._id}
-                title={movie.title}
-                posterUrl={movie.thumbnail}
-                rating={movie.avgRating || 0}
-                type={movie.type || "MOVIE"}
-                year={movie.year}
-                genres={movie.genres || []}
-                isPremium={movie.isPremium}
-              />
+        {/* Filters and Sorting */}
+        <div className="flex flex-col lg:flex-row justify-between gap-6 mb-12">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 text-gray-500 mr-2">
+              <Filter className="w-4 h-4" />
+              <span className="text-xs uppercase tracking-widest font-bold">Filters</span>
+            </div>
+            
+            <select
+              value={type}
+              onChange={(e) => { setType(e.target.value); setPage(1); }}
+              className="bg-gray-900 border border-gray-800 text-gray-300 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5 outline-none custom-select"
+            >
+              <option value="">Any Type</option>
+              {TYPES.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+
+            <select
+              value={genre}
+              onChange={(e) => { setGenre(e.target.value); setPage(1); }}
+              className="bg-gray-900 border border-gray-800 text-gray-300 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5 outline-none custom-select"
+            >
+              <option value="">All Genres</option>
+              {GENRES.map((g) => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {SORT_OPTIONS.map((opt, idx) => (
+              <button
+                key={opt.label}
+                onClick={() => { setActiveSort(idx); setPage(1); }}
+                className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg border transition-all ${
+                  activeSort === idx
+                    ? "bg-purple-600/20 border-purple-500 text-purple-400"
+                    : "bg-transparent border-gray-800 text-gray-500 hover:border-gray-600"
+                }`}
+              >
+                {opt.label}
+              </button>
             ))}
           </div>
+        </div>
+
+        {loading ? (
+          <div className="py-40 flex justify-center">
+            <Loader2 className="w-10 h-10 text-purple-500 animate-spin" />
+          </div>
+        ) : movies.length > 0 ? (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-10">
+              {movies.map((movie: any) => (
+                <MovieCard
+                  key={movie.id || movie._id}
+                  id={movie.id || movie._id}
+                  title={movie.title}
+                  posterUrl={movie.thumbnail}
+                  rating={movie.avgRating || 0}
+                  type={movie.type}
+                  year={movie.releaseYear}
+                  genres={movie.genre || []}
+                  isPremium={movie.pricing === "PREMIUM"}
+                />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {meta && (
+              <div className="mt-16 flex items-center justify-center gap-2 md:gap-3 flex-wrap">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-3 rounded-xl bg-gray-900/80 border border-gray-800 text-gray-300 font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-800 transition-all flex items-center gap-2"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                  <span className="hidden sm:inline">Prev Page</span>
+                </button>
+
+                <div className="flex items-center gap-2">
+                  {getPageNumbers().map((p, i) => (
+                    <button
+                      key={i}
+                      disabled={p === "..."}
+                      onClick={() => p !== "..." && setPage(p as number)}
+                      className={`min-w-[44px] h-11 px-2 rounded-xl flex items-center justify-center text-sm font-black transition-all ${
+                        p === page
+                          ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                          : p === "..."
+                          ? "bg-transparent text-gray-500 cursor-default"
+                          : "bg-gray-900 border border-gray-800 text-gray-400 hover:bg-gray-800 hover:text-white"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
+                  disabled={page === meta.totalPages}
+                  className="px-4 py-3 rounded-xl bg-gray-900/80 border border-gray-800 text-gray-300 font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-800 transition-all flex items-center gap-2"
+                >
+                  <span className="hidden sm:inline">Next Page</span>
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-40">
             <div className="inline-block p-6 bg-gray-900/30 rounded-full mb-4">
               <Search className="w-12 h-12 text-gray-700" />
             </div>
             <p className="text-gray-500 text-xl font-light italic">
-              {searchTerm
-                ? `No results found for "${searchTerm}"`
+              {searchTerms || genre || type
+                ? "No movies found matching your filters."
                 : "The catalog is empty."}
             </p>
+            {(searchTerms || genre || type) && (
+              <button
+                onClick={() => {
+                  setSearchTerms("");
+                  setGenre("");
+                  setType("");
+                  setActiveSort(0);
+                  setPage(1);
+                }}
+                className="mt-6 text-purple-400 hover:text-purple-300 font-bold tracking-wider text-sm uppercase underline underline-offset-4"
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
         )}
       </div>
