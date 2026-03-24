@@ -114,17 +114,18 @@ export default function AdminUsersPage() {
                         value={user.status}
                         onChange={(e) => handleStatusChange(user.id, e.target.value)}
                         disabled={actionLoading === `status-${user.id}` || user.role === "ADMIN"}
-                        className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg appearance-none cursor-pointer outline-none border focus:ring-2 focus:ring-purple-500 disabled:opacity-50 transition-all ${
+                        style={{ backgroundColor: "#111827" }}
+                        className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-md cursor-pointer outline-none border text-center w-[100px] focus:ring-1 focus:ring-purple-500 disabled:opacity-50 transition-all ${
                           user.status === "ACTIVE"
-                            ? "bg-green-600/15 text-green-400 border-green-500/20"
+                            ? "text-green-400 border-green-500/40"
                             : user.status === "BANNED"
-                            ? "bg-red-600/15 text-red-400 border-red-500/20"
-                            : "bg-yellow-600/15 text-yellow-400 border-yellow-500/20"
+                            ? "text-red-400 border-red-500/40"
+                            : "text-yellow-400 border-yellow-500/40"
                         }`}
                       >
-                        <option value="ACTIVE">Active</option>
-                        <option value="SUSPENDED">Suspended</option>
-                        <option value="BANNED">Banned</option>
+                        <option value="ACTIVE" className="bg-gray-900 text-green-400">Active</option>
+                        <option value="SUSPENDED" className="bg-gray-900 text-yellow-400">Suspended</option>
+                        <option value="BANNED" className="bg-gray-900 text-red-400">Banned</option>
                       </select>
                     </td>
                     <td className="px-6 py-4 text-gray-400 text-xs">

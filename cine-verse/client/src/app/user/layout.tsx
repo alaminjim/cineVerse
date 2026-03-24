@@ -103,7 +103,7 @@ export default function UserLayout({
             className="w-full flex items-center gap-2 text-gray-500 hover:text-red-500 text-sm transition-all px-4 py-2 text-left"
           >
             <LogOut className="w-4 h-4" />
-            Sign Out
+            Log Out
           </button>
         </div>
       </aside>

@@ -65,8 +65,8 @@ const updateStatus = async (payload: IAdminUpdate, statusId: string) => {
     throw new Error("This user can not found");
   }
 
-  if (isExists.role !== "ADMIN") {
-    throw new Error("Status only changed by admin");
+  if (isExists.role === "ADMIN") {
+    throw new Error("Cannot change status of an admin user");
   }
 
   return await prisma.user.update({
