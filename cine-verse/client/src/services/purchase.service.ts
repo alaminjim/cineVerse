@@ -23,4 +23,9 @@ export const purchaseService = {
     const res = await axiosInstance.get("/purchase/history");
     return res.data;
   },
+
+  getAllPurchases: async () => {
+    const res = await axiosInstance.get("/purchase/all");
+    return res.data;
+  },
 };

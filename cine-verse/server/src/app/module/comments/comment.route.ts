@@ -12,7 +12,7 @@ const router = Router();
 
 router.post(
   "/",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   zodValidation(createCommentValidationSchema),
   commentController.createComment,
 );

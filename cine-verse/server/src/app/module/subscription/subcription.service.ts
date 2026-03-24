@@ -178,9 +178,30 @@ const cancelSubscription = async (subscriptionId: string, userId: string) => {
   return updated;
 };
 
+const getAllSubscriptions = async () => {
+  const subscriptions = await prisma.subscription.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return {
+    success: true,
+    data: subscriptions,
+  };
+};
+
 export const subscriptionService = {
   createSubscription,
   confirmSubscription,
   getActiveSubscription,
+  getAllSubscriptions,
   cancelSubscription,
 };

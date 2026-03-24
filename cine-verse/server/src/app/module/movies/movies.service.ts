@@ -44,8 +44,8 @@ const createMovie = async (payload: any, file?: Express.Multer.File) => {
   let rentPrice = null;
 
   if (payload.pricing === "PREMIUM") {
-    buyPrice = payload.buyPrice || 1500;
-    rentPrice = payload.rentPrice || 500;
+    buyPrice = toNumber(payload.buyPrice) || 1500;
+    rentPrice = toNumber(payload.rentPrice) || 500;
 
     const product = await stripe.products.create({
       name: payload.title,
@@ -275,6 +275,16 @@ const updateMovie = async (id: string, payload: any) => {
     updateData.streamingPlatform = payload.streamingPlatform;
   if (payload.streamingLink) updateData.streamingLink = payload.streamingLink;
   if (payload.pricing) updateData.pricing = payload.pricing;
+
+  if (payload.pricing === "PREMIUM") {
+    if (payload.buyPrice) updateData.buyPrice = toNumber(payload.buyPrice);
+    if (payload.rentPrice) updateData.rentPrice = toNumber(payload.rentPrice);
+  } else if (payload.pricing === "FREE") {
+    updateData.buyPrice = null;
+    updateData.rentPrice = null;
+    updateData.stripeBuyPriceId = null;
+    updateData.stripeRentPriceId = null;
+  }
 
   if (payload.type) {
     updateData.type = payload.type;

@@ -22,4 +22,9 @@ export const subscriptionService = {
     const res = await axiosInstance.post(`/subscription/${subscriptionId}`);
     return res.data;
   },
+
+  getAllSubscriptions: async () => {
+    const res = await axiosInstance.get("/subscription/all");
+    return res.data;
+  },
 };

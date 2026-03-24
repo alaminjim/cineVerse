@@ -12,7 +12,7 @@ const router = Router();
 
 router.post(
   "/",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   zodValidation(createReviewValidationSchema),
   reviewController.createReview,
 );
@@ -23,7 +23,7 @@ router.get("/movie/:movieId", reviewController.getReviewsByMovieId);
 
 router.put(
   "/:id",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   zodValidation(updateReviewValidationSchema),
   reviewController.updateReview,
 );

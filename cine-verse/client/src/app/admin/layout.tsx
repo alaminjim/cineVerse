@@ -11,6 +11,9 @@ import {
   Video,
   Users,
   LogOut,
+  User,
+  ShoppingBag,
+  Crown,
 } from "lucide-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -23,6 +26,9 @@ const sidebarLinks = [
   { href: "/admin/users", label: "Manage Users", icon: Users },
   { href: "/admin/reviews", label: "Pending Reviews", icon: ClipboardCheck },
   { href: "/admin/activity", label: "Activity Logs", icon: Activity },
+  { href: "/admin/my-activity", label: "Personal Dashboard", icon: User },
+  { href: "/admin/purchases", label: "Purchase History", icon: ShoppingBag },
+  { href: "/admin/subscriptions", label: "My Subscription", icon: Crown },
 ];
 
 export default function AdminLayout({

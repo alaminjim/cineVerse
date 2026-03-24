@@ -65,7 +65,11 @@ export const authMiddleware =
         userRole.length > 0 &&
         !userRole.includes(userData.role as UserRole)
       ) {
-        throw new Error("Forbidden access! You don't have permission.");
+        const error: any = new Error(
+          "Forbidden access! You don't have permission.",
+        );
+        error.statusCode = 403;
+        throw error;
       }
 
       req.user = userData;

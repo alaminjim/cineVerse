@@ -93,10 +93,16 @@ const cancelRental = catchFunction(async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(result);
 });
 
+const getAllPurchases = catchFunction(async (req: Request, res: Response) => {
+  const result = await purchaseService.getAllPurchases();
+  res.status(StatusCodes.OK).json(result);
+});
+
 export const purchaseController = {
   createPurchaseCheckout,
   confirmPurchase,
   getPurchaseHistory,
+  getAllPurchases,
   checkPurchase,
   cancelRental,
 };

@@ -9,7 +9,7 @@ function errorHandler(
   res: Response,
   next: NextFunction,
 ) {
-  let statusCode = 500;
+  let statusCode = err.statusCode || 500;
   let errorMessage = "Internal server error";
 
   if (err instanceof Prisma.PrismaClientValidationError) {

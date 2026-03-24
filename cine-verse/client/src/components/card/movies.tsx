@@ -1,8 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star, Bookmark, BookmarkPlus, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/lib/store";
+import { watchlistService } from "@/services/watchlist.service";
+import toast from "react-hot-toast";
 
 interface MovieCardProps {
   id: string;
@@ -25,6 +29,53 @@ export default function MovieCard({
   genres = [],
   isPremium = false,
 }: MovieCardProps) {
+  const { user } = useAuthStore();
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+  const [loadingWatchlist, setLoadingWatchlist] = useState(false);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      if (!user) return;
+      try {
+        setLoadingWatchlist(true);
+        const res = await watchlistService.checkWatchlist(id);
+        setIsInWatchlist(res.success && res.isInWatchlist);
+      } catch (error) {
+        console.error("Watchlist check error:", error);
+      } finally {
+        setLoadingWatchlist(false);
+      }
+    };
+    checkStatus();
+  }, [id, user]);
+
+  const handleWatchlistToggle = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      toast.error("Please login to add to watchlist!");
+      return;
+    }
+
+    try {
+      setIsToggling(true);
+      if (isInWatchlist) {
+        await watchlistService.removeFromWatchlist(id);
+        setIsInWatchlist(false);
+        toast.success("Removed from watchlist");
+      } else {
+        await watchlistService.addToWatchlist(id);
+        setIsInWatchlist(true);
+        toast.success("Added to watchlist");
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to update watchlist");
+    } finally {
+      setIsToggling(false);
+    }
+  };
   return (
     <Link href={`/movies/${id}`}>
       <motion.div
@@ -45,11 +96,31 @@ export default function MovieCard({
                 {isPremium ? " PREMIUM" : type === "MOVIE" ? "MOVIE" : "SERIES"}
               </span>
 
-              <div className="bg-black/70 backdrop-blur rounded-lg px-2 py-1 flex items-center gap-1 border border-primary/30">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-white text-sm font-bold">
-                  {rating.toFixed(1)}
-                </span>
+              <div className="flex flex-col gap-2 items-end">
+                <div className="bg-black/70 backdrop-blur rounded-lg px-2 py-1 flex items-center gap-1 border border-primary/30">
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-white text-sm font-bold">
+                    {rating.toFixed(1)}
+                  </span>
+                </div>
+
+                <button
+                  onClick={handleWatchlistToggle}
+                  disabled={isToggling || loadingWatchlist}
+                  className={`p-2 rounded-full backdrop-blur-md border transition-all duration-300 ${
+                    isInWatchlist
+                      ? "bg-primary text-white border-primary"
+                      : "bg-black/50 text-white border-white/20 hover:bg-primary/20 hover:border-primary/50"
+                  }`}
+                >
+                  {isToggling ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : isInWatchlist ? (
+                    <Bookmark className="w-4 h-4 fill-current" />
+                  ) : (
+                    <BookmarkPlus className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 

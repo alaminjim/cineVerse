@@ -239,10 +239,38 @@ const cancelRental = async (purchaseId: string, userId: string) => {
   };
 };
 
+const getAllPurchases = async () => {
+  const purchases = await prisma.purchase.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      movie: {
+        select: {
+          id: true,
+          title: true,
+          thumbnail: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return {
+    success: true,
+    data: purchases,
+  };
+};
+
 export const purchaseService = {
   createPurchaseCheckout,
   confirmPurchase,
   getPurchaseHistory,
+  getAllPurchases,
   checkPurchase,
   cancelRental,
 };

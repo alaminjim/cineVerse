@@ -80,9 +80,15 @@ const cancelSubscription = catchFunction(
   },
 );
 
+const getAllSubscriptions = catchFunction(async (req: Request, res: Response) => {
+  const result = await subscriptionService.getAllSubscriptions();
+  res.status(StatusCodes.OK).json(result);
+});
+
 export const subscriptionController = {
   createSubscription,
   confirmSubscription,
   getActiveSubscription,
+  getAllSubscriptions,
   cancelSubscription,
 };

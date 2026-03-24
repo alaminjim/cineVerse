@@ -7,19 +7,19 @@ const router = Router();
 
 router.post(
   "/:reviewId",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   likeController.likeReview,
 );
 
 router.delete(
   "/:reviewId",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   likeController.unlikeReview,
 );
 
 router.get(
   "/check/:reviewId",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   likeController.isLiked,
 );
 

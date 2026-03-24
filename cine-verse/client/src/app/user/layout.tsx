@@ -9,6 +9,8 @@ import {
   Film,
   ChevronLeft,
   LogOut,
+  ShoppingBag,
+  Crown,
 } from "lucide-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -18,6 +20,8 @@ import { authService } from "@/services/auth.service";
 const sidebarLinks = [
   { href: "/user/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/user/watchlist", label: "Watchlist", icon: Bookmark },
+  { href: "/user/purchases", label: "Purchase History", icon: ShoppingBag },
+  { href: "/user/subscriptions", label: "My Subscription", icon: Crown },
   { href: "/user/profile", label: "Profile", icon: UserCircle },
 ];
 
@@ -28,7 +32,7 @@ export default function UserLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const handleLogout = async () => {
     try {
@@ -78,6 +82,15 @@ export default function UserLayout({
         </nav>
 
         <div className="p-4 border-t border-gray-800/50 space-y-2">
+          {user?.role === "ADMIN" && (
+            <Link
+              href="/admin/dashboard"
+              className="flex items-center gap-2 text-purple-400 hover:text-purple-300 text-sm font-bold transition-all px-4 py-2"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              Admin Panel
+            </Link>
+          )}
           <Link
             href="/"
             className="flex items-center gap-2 text-gray-500 hover:text-gray-300 text-sm transition-all px-4 py-2"

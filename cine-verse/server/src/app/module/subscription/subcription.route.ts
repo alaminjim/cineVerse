@@ -7,22 +7,28 @@ const router = Router();
 
 router.post(
   "/",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
 
   subscriptionController.createSubscription,
 );
 
 router.get(
   "/active",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   subscriptionController.getActiveSubscription,
+);
+
+router.get(
+  "/all",
+  authMiddleware(UserRole.ADMIN),
+  subscriptionController.getAllSubscriptions,
 );
 
 router.post("/confirm", subscriptionController.confirmSubscription);
 
 router.post(
   "/:id",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   subscriptionController.cancelSubscription,
 );
 

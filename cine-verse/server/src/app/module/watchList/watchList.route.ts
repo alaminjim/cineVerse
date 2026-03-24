@@ -7,13 +7,13 @@ const router = Router();
 
 router.post(
   "/:movieId",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   watchlistController.addToWatchlist,
 );
 
 router.delete(
   "/:movieId",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   watchlistController.removeFromWatchlist,
 );
 
@@ -21,7 +21,7 @@ router.get("/", authMiddleware(), watchlistController.getWatchlist);
 
 router.get(
   "/check/:movieId",
-  authMiddleware(UserRole.USER),
+  authMiddleware(UserRole.USER, UserRole.ADMIN),
   watchlistController.isInWatchlist,
 );
 

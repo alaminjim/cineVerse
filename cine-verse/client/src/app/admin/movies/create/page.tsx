@@ -42,29 +42,29 @@ export default function CreateMoviePage() {
         const formData = new FormData();
         formData.append("file", file);
 
-        // Required fields
-        formData.append("title", value.title);
-        formData.append("synopsis", value.synopsis);
-        formData.append("director", value.director);
-        formData.append("releaseYear", String(value.releaseYear));
-        formData.append("type", value.type);
-        formData.append("pricing", value.pricing);
-        
-        // Array fields (split by comma)
-        formData.append("genre", JSON.stringify(value.genre.split(",").map((s) => s.trim()).filter(Boolean)));
-        formData.append("cast", JSON.stringify(value.cast.split(",").map((s) => s.trim()).filter(Boolean)));
-        formData.append("streamingPlatform", JSON.stringify(value.streamingPlatform.split(",").map((s) => s.trim()).filter(Boolean)));
+        const data: any = {
+          title: value.title,
+          synopsis: value.synopsis,
+          director: value.director,
+          releaseYear: Number(value.releaseYear),
+          type: value.type,
+          pricing: value.pricing,
+          genre: value.genre.split(",").map((s: string) => s.trim()).filter(Boolean),
+          cast: value.cast.split(",").map((s: string) => s.trim()).filter(Boolean),
+          streamingPlatform: value.streamingPlatform.split(",").map((s: string) => s.trim()).filter(Boolean),
+        };
 
-        // Optional fields
-        if (value.seasons) formData.append("seasons", String(value.seasons));
-        if (value.episodes) formData.append("episodes", String(value.episodes));
-        if (value.runtime) formData.append("runtime", String(value.runtime));
-        if (value.streamingLink) formData.append("streamingLink", value.streamingLink);
-        
+        if (value.seasons) data.seasons = Number(value.seasons);
+        if (value.episodes) data.episodes = Number(value.episodes);
+        if (value.runtime) data.runtime = Number(value.runtime);
+        if (value.streamingLink) data.streamingLink = value.streamingLink;
+
         if (value.pricing === "PREMIUM") {
-          if (value.buyPrice) formData.append("buyPrice", String(value.buyPrice));
-          if (value.rentPrice) formData.append("rentPrice", String(value.rentPrice));
+          if (value.buyPrice) data.buyPrice = Number(value.buyPrice);
+          if (value.rentPrice) data.rentPrice = Number(value.rentPrice);
         }
+
+        formData.append("data", JSON.stringify(data));
 
         await moviesService.createMovie(formData);
         toast.success("Movie created successfully!");
