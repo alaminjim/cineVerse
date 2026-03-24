@@ -97,6 +97,7 @@ export default function MovieDetailsPage({
     );
 
   const getAccessLabel = () => {
+    if (movie?.pricing === "FREE") return "Free to Watch";
     if (subscriptionPlan) return `${subscriptionPlan} Subscriber`;
     if (purchaseType === "BUY") return "Owned Lifetime";
     if (purchaseType === "RENT") return "Rented (7 Days)";
@@ -193,7 +194,7 @@ export default function MovieDetailsPage({
         {/* Access Panel */}
         <div className="lg:col-span-1">
           <div className="bg-[#0A0A0A] border border-white/5 p-8 md:p-10 rounded-[2.5rem] sticky top-28 shadow-2xl">
-            {isPurchased ? (
+            {isPurchased || movie?.pricing === "FREE" ? (
               /* ✅ ACCESS GRANTED — Watch Now */
               <div className="text-center py-4">
                 <div className="relative inline-block mb-6">
@@ -209,7 +210,7 @@ export default function MovieDetailsPage({
                 </div>
 
                 <h3 className="text-2xl font-black italic uppercase mb-2">
-                  {subscriptionPlan ? "Premium Access" : "Movie Unlocked"}
+                  {movie?.pricing === "FREE" ? "Free Movie" : subscriptionPlan ? "Premium Access" : "Movie Unlocked"}
                 </h3>
                 <p className="text-gray-500 text-[10px] uppercase mb-8 tracking-widest">
                   {getAccessLabel()}
@@ -274,7 +275,7 @@ export default function MovieDetailsPage({
                       className="text-blue-400 group-hover:text-blue-600"
                     />
                     <span className="text-[10px] font-bold uppercase tracking-widest">
-                      Buy Lifetime
+                      Buy OneTimes
                     </span>
                   </div>
                   <span className="text-xl md:text-2xl font-black italic">
