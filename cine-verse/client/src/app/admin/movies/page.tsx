@@ -17,6 +17,8 @@ export default function AdminMoviesPage() {
   const [movies, setMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
 
   const fetchMovies = async () => {
     try {
@@ -33,13 +35,20 @@ export default function AdminMoviesPage() {
     fetchMovies();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this movie?")) return;
+  const confirmDelete = (id: string) => {
+    setSelectedMovieId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedMovieId) return;
     try {
-      setDeleteLoading(id);
-      await moviesService.deleteMovie(id);
+      setDeleteLoading(selectedMovieId);
+      await moviesService.deleteMovie(selectedMovieId);
       toast.success("Movie deleted successfully");
-      setMovies((prev) => prev.filter((m) => m.id !== id));
+      setMovies((prev) => prev.filter((m) => m.id !== selectedMovieId));
+      setDeleteModalOpen(false);
+      setSelectedMovieId(null);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Failed to delete movie");
     } finally {
@@ -129,7 +138,7 @@ export default function AdminMoviesPage() {
                           <Pencil className="w-4 h-4" />
                         </Link>
                         <button
-                          onClick={() => handleDelete(movie.id)}
+                          onClick={() => confirmDelete(movie.id)}
                           disabled={deleteLoading === movie.id}
                           className="p-2 text-gray-400 hover:text-red-400 bg-gray-800/50 hover:bg-red-500/10 rounded-lg transition-all disabled:opacity-50"
                         >
@@ -154,6 +163,42 @@ export default function AdminMoviesPage() {
           </table>
         </div>
       </div>
+
+      {deleteModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-gray-900 border border-gray-800 rounded-3xl w-full max-w-sm p-8 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="flex flex-col items-center text-center gap-4 mb-8">
+              <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 shrink-0">
+                <Trash2 className="w-8 h-8" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black uppercase italic tracking-tighter text-white mb-2">Delete Movie</h3>
+                <p className="text-sm text-gray-400 font-medium">Are you sure you want to delete this movie? This action cannot be undone.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                  setSelectedMovieId(null);
+                }}
+                disabled={!!deleteLoading}
+                className="w-full py-4 rounded-2xl font-black uppercase tracking-wider text-xs bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-all border border-gray-700 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={!!deleteLoading}
+                className="w-full py-4 rounded-2xl font-black uppercase tracking-wider text-xs bg-red-600 text-white hover:bg-red-500 transition-all shadow-lg shadow-red-600/20 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {deleteLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -258,7 +258,7 @@ const getMovieById = async (id: string) => {
   };
 };
 
-const updateMovie = async (id: string, payload: any) => {
+const updateMovie = async (id: string, payload: any, file?: Express.Multer.File) => {
   const movie = await prisma.movie.findUnique({
     where: { id },
   });
@@ -271,7 +271,11 @@ const updateMovie = async (id: string, payload: any) => {
 
   if (payload.title) updateData.title = payload.title;
   if (payload.synopsis) updateData.synopsis = payload.synopsis;
-  if (payload.thumbnail) updateData.thumbnail = payload.thumbnail;
+  let thumbnail = payload.thumbnail;
+  if (file) {
+    thumbnail = await uploadImage(file);
+  }
+  if (thumbnail) updateData.thumbnail = thumbnail;
   if (payload.genre) updateData.genre = payload.genre;
   if (payload.releaseYear) updateData.releaseYear = Number(payload.releaseYear);
   if (payload.director) updateData.director = payload.director;

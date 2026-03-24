@@ -34,7 +34,7 @@ const getMovieById = catchFunction(async (req: Request, res: Response) => {
 
 const updateMovie = catchFunction(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await movieService.updateMovie(id as string, req.body);
+  const result = await movieService.updateMovie(id as string, req.body, req.file);
 
   if (!result) {
     return res.status(StatusCodes.NOT_FOUND).json({
