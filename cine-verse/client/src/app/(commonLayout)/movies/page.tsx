@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { moviesService } from "@/services/movies.service";
 import { Loader2, Clapperboard, Search, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import MovieCard from "@/components/card/movies";
@@ -14,16 +15,19 @@ const SORT_OPTIONS = [
   { label: "Most Popular", value: "reviewCount", order: "desc" },
 ];
 
-export default function AllMoviesPage() {
+function MoviesContent() {
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
+
   const [movies, setMovies] = useState<any[]>([]);
   const [meta, setMeta] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const [searchTerms, setSearchTerms] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searchTerms, setSearchTerms] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [genre, setGenre] = useState("");
   const [type, setType] = useState("");
-  const [activeSort, setActiveSort] = useState(0); 
+  const [activeSort, setActiveSort] = useState(0);
   const [page, setPage] = useState(1);
 
   // Debounce search
@@ -260,5 +264,19 @@ export default function AllMoviesPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function AllMoviesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="h-screen flex items-center justify-center bg-black">
+          <Loader2 className="animate-spin text-purple-600 w-10 h-10" />
+        </div>
+      }
+    >
+      <MoviesContent />
+    </Suspense>
   );
 }

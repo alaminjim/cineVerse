@@ -1,8 +1,24 @@
-"use client";
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Play, Info, Search } from "lucide-react";
 
 export default function HeroSection() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/movies?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push("/movies");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
   return (
     <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Background Image & Overlay */}
@@ -42,10 +58,16 @@ export default function HeroSection() {
           </div>
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="w-full bg-secondary/50 border border-border text-foreground text-base rounded-full focus:ring-2 focus:ring-primary focus:border-transparent outline-none py-4 pl-14 pr-32"
             placeholder="Search for movies, TV shows, genres..."
           />
-          <button className="absolute right-2 top-2 bottom-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-full px-8 transition-colors">
+          <button
+            onClick={handleSearch}
+            className="absolute right-2 top-2 bottom-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-full px-8 transition-colors"
+          >
             Search
           </button>
         </div>

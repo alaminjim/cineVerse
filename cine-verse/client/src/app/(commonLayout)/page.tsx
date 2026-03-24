@@ -7,6 +7,7 @@ import Hero from "./hero/page";
 import NewReleaseSection from "./(movies)/newReales";
 import TopRatedSection from "./(movies)/topRatigs";
 import AllMoviesSection from "./(movies)/allMovies";
+import StreamingMarquee from "@/components/StreamingMarquee";
 import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
@@ -77,6 +78,7 @@ export default function HomePage() {
           </div>
         )}
       </div>
+      <StreamingMarquee />
     </main>
   );
 }
