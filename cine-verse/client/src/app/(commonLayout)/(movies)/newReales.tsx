@@ -13,14 +13,16 @@ export default function NewReleaseSection({ movies }: { movies: any[] }) {
         </h2>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {movies.map((movie: any) => (
-          <MovieCard
-            key={movie.id}
-            {...movie}
-            posterUrl={movie.thumbnail}
-            rating={movie.avgRating || 0}
-          />
-        ))}
+        {movies
+          .map((movie: any) => (
+            <MovieCard
+              key={movie.id}
+              {...movie}
+              posterUrl={movie.thumbnail}
+              rating={movie.avgRating || 0}
+            />
+          ))
+          .slice(0, 5)}
       </div>
     </section>
   );

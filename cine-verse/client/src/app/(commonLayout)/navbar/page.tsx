@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
-import { Menu, X, LogIn, LogOut, Film, Crown } from "lucide-react";
+import { Menu, X, LogIn, LogOut, Film, Crown, LayoutDashboard } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Navbar() {
@@ -74,7 +74,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Movies", path: "/movies" },
-    { name: "Series", path: "/series" },
+    { name: "Series", path: "/movies?type=SERIES" },
   ];
 
   return (
@@ -127,12 +127,21 @@ export default function Navbar() {
           </Link>
 
           {user ? (
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-destructive transition-colors"
-            >
-              <LogOut className="w-4 h-4" /> Log Out
-            </button>
+            <>
+              <Link
+                href={user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"}
+                className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                {user.role === "ADMIN" ? "Admin" : "Dashboard"}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-destructive transition-colors"
+              >
+                <LogOut className="w-4 h-4" /> Log Out
+              </button>
+            </>
           ) : (
             <>
               <Link
@@ -190,15 +199,25 @@ export default function Navbar() {
           <div className="h-px w-20 bg-border my-2" />
 
           {user ? (
-            <button
-              onClick={() => {
-                handleLogout();
-                setIsMobileMenuOpen(false);
-              }}
-              className="flex items-center gap-2 text-2xl font-medium text-destructive"
-            >
-              <LogOut className="w-6 h-6" /> Log Out
-            </button>
+            <>
+              <Link
+                href={user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"}
+                className="flex items-center gap-2 text-2xl font-bold text-blue-400"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                {user.role === "ADMIN" ? "Admin Panel" : "Dashboard"}
+              </Link>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center gap-2 text-2xl font-medium text-destructive"
+              >
+                <LogOut className="w-6 h-6" /> Log Out
+              </button>
+            </>
           ) : (
             <>
               <Link

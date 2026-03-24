@@ -1,0 +1,418 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useForm } from "@tanstack/react-form";
+import { moviesService } from "@/services/movies.service";
+import { useRouter } from "next/navigation";
+import { ChevronLeft, Loader2, Save, Upload } from "lucide-react";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { useState } from "react";
+
+export default function CreateMoviePage() {
+  const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const form = useForm({
+    defaultValues: {
+      title: "",
+      synopsis: "",
+      genre: "",
+      releaseYear: new Date().getFullYear(),
+      director: "",
+      cast: "",
+      streamingPlatform: "",
+      type: "MOVIE",
+      pricing: "FREE",
+      seasons: "",
+      episodes: "",
+      runtime: "",
+      streamingLink: "",
+      buyPrice: "",
+      rentPrice: "",
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        if (!file) {
+          toast.error("Thumbnail image is required!");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // Required fields
+        formData.append("title", value.title);
+        formData.append("synopsis", value.synopsis);
+        formData.append("director", value.director);
+        formData.append("releaseYear", String(value.releaseYear));
+        formData.append("type", value.type);
+        formData.append("pricing", value.pricing);
+        
+        // Array fields (split by comma)
+        formData.append("genre", JSON.stringify(value.genre.split(",").map((s) => s.trim()).filter(Boolean)));
+        formData.append("cast", JSON.stringify(value.cast.split(",").map((s) => s.trim()).filter(Boolean)));
+        formData.append("streamingPlatform", JSON.stringify(value.streamingPlatform.split(",").map((s) => s.trim()).filter(Boolean)));
+
+        // Optional fields
+        if (value.seasons) formData.append("seasons", String(value.seasons));
+        if (value.episodes) formData.append("episodes", String(value.episodes));
+        if (value.runtime) formData.append("runtime", String(value.runtime));
+        if (value.streamingLink) formData.append("streamingLink", value.streamingLink);
+        
+        if (value.pricing === "PREMIUM") {
+          if (value.buyPrice) formData.append("buyPrice", String(value.buyPrice));
+          if (value.rentPrice) formData.append("rentPrice", String(value.rentPrice));
+        }
+
+        await moviesService.createMovie(formData);
+        toast.success("Movie created successfully!");
+        router.push("/admin/movies");
+      } catch (error: any) {
+        toast.error(error?.response?.data?.message || "Failed to create movie");
+      }
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected) {
+      setFile(selected);
+      setPreview(URL.createObjectURL(selected));
+    }
+  };
+
+  return (
+    <div className="text-white max-w-4xl mx-auto pb-20">
+      <div className="flex items-center gap-4 mb-8">
+        <Link
+          href="/admin/movies"
+          className="p-2 bg-gray-900 border border-gray-800 rounded-xl hover:bg-gray-800 transition-all text-gray-400 hover:text-white"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </Link>
+        <div>
+          <h1 className="text-3xl font-black uppercase italic tracking-tighter">
+            Add New Movie
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Fill in the details to publish a new movie or series
+          </p>
+        </div>
+      </div>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-8"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Thumbnail Section */}
+          <div className="md:col-span-1">
+            <div className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-6">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">
+                Thumbnail
+              </h3>
+              <label className="block w-full aspect-[2/3] border-2 border-dashed border-gray-700/50 rounded-xl overflow-hidden cursor-pointer hover:border-purple-500/50 transition-all group relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                {preview ? (
+                  <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 group-hover:text-purple-400 transition-colors">
+                    <Upload className="w-8 h-8 mb-2" />
+                    <span className="text-xs font-bold uppercase tracking-widest">Upload Image</span>
+                  </div>
+                )}
+              </label>
+            </div>
+          </div>
+
+          {/* Details Section */}
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-6 space-y-6">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">
+                Basic Info
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <form.Field name="title">
+                  {(field) => (
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Title *</label>
+                      <input
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                        placeholder="e.g. Inception"
+                        required
+                      />
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="type">
+                  {(field) => (
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Type *</label>
+                      <select
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value as any)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all appearance-none"
+                      >
+                        <option value="MOVIE">Movie</option>
+                        <option value="SERIES">Series</option>
+                      </select>
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="releaseYear">
+                  {(field) => (
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Release Year *</label>
+                      <input
+                        type="number"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(Number(e.target.value))}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                        required
+                      />
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="genre">
+                  {(field) => (
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Genre(s) *</label>
+                      <input
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                        placeholder="Action, Sci-Fi"
+                        required
+                      />
+                      <span className="text-[10px] text-gray-600">Comma separated</span>
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="director">
+                  {(field) => (
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Director *</label>
+                      <input
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                        required
+                      />
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="synopsis">
+                  {(field) => (
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Synopsis *</label>
+                      <textarea
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all min-h-[100px]"
+                        required
+                      />
+                    </div>
+                  )}
+                </form.Field>
+                
+                <form.Field name="cast">
+                  {(field) => (
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Cast *</label>
+                      <input
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                        placeholder="Actor 1, Actor 2"
+                        required
+                      />
+                    </div>
+                  )}
+                </form.Field>
+              </div>
+            </div>
+
+            <div className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-6 space-y-6">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4">
+                Media & Pricing
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <form.Field name="streamingPlatform">
+                  {(field) => (
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Streaming Platforms *</label>
+                      <input
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                        placeholder="Netflix, Amazon Prime"
+                        required
+                      />
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="streamingLink">
+                  {(field) => (
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Streaming URL</label>
+                      <input
+                        type="url"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                        placeholder="https://"
+                      />
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="runtime">
+                  {(field) => (
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Runtime (mins)</label>
+                      <input
+                        type="number"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                      />
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Subscribe
+                  selector={(state) => state.values.type}
+                  children={(type) => (
+                    type === "SERIES" ? (
+                      <>
+                        <form.Field name="seasons">
+                          {(field) => (
+                            <div>
+                              <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Seasons</label>
+                              <input
+                                type="number"
+                                value={field.state.value}
+                                onChange={(e) => field.handleChange(e.target.value)}
+                                className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                              />
+                            </div>
+                          )}
+                        </form.Field>
+                        <form.Field name="episodes">
+                          {(field) => (
+                            <div>
+                              <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Episodes</label>
+                              <input
+                                type="number"
+                                value={field.state.value}
+                                onChange={(e) => field.handleChange(e.target.value)}
+                                className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                              />
+                            </div>
+                          )}
+                        </form.Field>
+                      </>
+                    ) : null
+                  )}
+                />
+
+                <form.Field name="pricing">
+                  {(field) => (
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Pricing Model *</label>
+                      <select
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value as any)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all appearance-none"
+                      >
+                        <option value="FREE">Free (Subscription Based)</option>
+                        <option value="PREMIUM">Premium (Buy/Rent)</option>
+                      </select>
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Subscribe
+                  selector={(state) => state.values.pricing}
+                  children={(pricing) => (
+                    pricing === "PREMIUM" ? (
+                      <>
+                        <form.Field name="buyPrice">
+                          {(field) => (
+                            <div>
+                              <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Buy Price (৳)</label>
+                              <input
+                                type="number"
+                                value={field.state.value}
+                                onChange={(e) => field.handleChange(e.target.value)}
+                                className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                                required
+                              />
+                            </div>
+                          )}
+                        </form.Field>
+                        <form.Field name="rentPrice">
+                          {(field) => (
+                            <div>
+                              <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Rent Price (৳)</label>
+                              <input
+                                type="number"
+                                value={field.state.value}
+                                onChange={(e) => field.handleChange(e.target.value)}
+                                className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                                required
+                              />
+                            </div>
+                          )}
+                        </form.Field>
+                      </>
+                    ) : null
+                  )}
+                />
+              </div>
+            </div>
+
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+              children={([canSubmit, isSubmitting]) => (
+                <button
+                  type="submit"
+                  disabled={!canSubmit || isSubmitting}
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-4 rounded-xl font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Save className="w-5 h-5" />
+                  )}
+                  Publish Movie
+                </button>
+              )}
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}

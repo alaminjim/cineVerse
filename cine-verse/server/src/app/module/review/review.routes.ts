@@ -19,6 +19,8 @@ router.post(
 
 router.get("/", reviewController.getAllReviews);
 
+router.get("/movie/:movieId", reviewController.getReviewsByMovieId);
+
 router.put(
   "/:id",
   authMiddleware(UserRole.USER),

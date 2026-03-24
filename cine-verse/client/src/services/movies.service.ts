@@ -38,4 +38,23 @@ export const moviesService = {
     const response = await axiosInstance.get(`/movies/${id}`, noStoreConfig);
     return response.data;
   },
+
+  deleteMovie: async (id: string) => {
+    const response = await axiosInstance.delete(`/movies/${id}`);
+    return response.data;
+  },
+
+  createMovie: async (data: FormData) => {
+    const response = await axiosInstance.post(`/movies`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
+
+  updateMovie: async (id: string, data: FormData) => {
+    const response = await axiosInstance.put(`/movies/${id}`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
 };

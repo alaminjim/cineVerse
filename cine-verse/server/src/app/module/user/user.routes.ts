@@ -8,6 +8,8 @@ const router = Router();
 
 router.get("/", authMiddleware(UserRole.USER), userController.getUserDashboard);
 
+router.get("/all", authMiddleware(UserRole.ADMIN), userController.getAllUsers);
+
 router.get(
   "/stats",
   authMiddleware(UserRole.USER),

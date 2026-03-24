@@ -249,9 +249,38 @@ const updateUserProfile = async (userId: string, payload: any) => {
   };
 };
 
+const getAllUsers = async (query: any) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const users = await prisma.user.findMany({
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      role: true,
+      status: true,
+      createdAt: true,
+    },
+  });
+
+  const total = await prisma.user.count();
+
+  return {
+    meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    data: users,
+  };
+};
+
 export const userService = {
   getUserDashboard,
   getUserStats,
   getUserProfile,
   updateUserProfile,
+  getAllUsers,
 };

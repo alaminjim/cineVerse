@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { purchaseService } from "@/services/purchase.service";
 import { moviesService } from "@/services/movies.service";
+import { reviewService } from "@/services/review.service";
+import { commentService } from "@/services/comment.service";
+import { likeService } from "@/services/like.service";
+import { useAuthStore } from "@/lib/store";
 import {
   PlayCircle,
   Lock,
@@ -17,6 +21,13 @@ import {
   Crown,
   Sparkles,
   Star,
+  Heart,
+  MessageCircle,
+  Send,
+  AlertTriangle,
+  Trash2,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -28,6 +39,7 @@ export default function MovieDetailsPage({
   const resolvedParams = use(params);
   const id = resolvedParams.id;
   const router = useRouter();
+  const { user } = useAuthStore();
 
   const [movie, setMovie] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -38,6 +50,29 @@ export default function MovieDetailsPage({
     purchaseType: null as string | null,
     subscriptionPlan: null as string | null,
   });
+
+  // Review states
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewMeta, setReviewMeta] = useState<any>(null);
+  const [reviewPage, setReviewPage] = useState(1);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+
+  // Review form
+  const [reviewForm, setReviewForm] = useState({
+    title: "",
+    rating: 0,
+    content: "",
+    hasSpoiler: false,
+  });
+
+  // Like states
+  const [likedReviews, setLikedReviews] = useState<Set<string>>(new Set());
+
+  // Comment states
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
+  const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
+  const [commentLoading, setCommentLoading] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +103,42 @@ export default function MovieDetailsPage({
     fetchData();
   }, [id]);
 
+  // Fetch reviews
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!id) return;
+      try {
+        setReviewLoading(true);
+        const res = await reviewService.getReviewsByMovieId(id, reviewPage);
+        setReviews(res?.data || []);
+        setReviewMeta(res?.meta || null);
+      } catch (error) {
+        console.error("Review fetch error:", error);
+      } finally {
+        setReviewLoading(false);
+      }
+    };
+    fetchReviews();
+  }, [id, reviewPage]);
+
+  // Check likes for current user
+  useEffect(() => {
+    const checkLikes = async () => {
+      if (!user || reviews.length === 0) return;
+      const liked = new Set<string>();
+      for (const review of reviews) {
+        try {
+          const res = await likeService.checkLike(review.id);
+          if (res) liked.add(review.id);
+        } catch {
+          // not liked
+        }
+      }
+      setLikedReviews(liked);
+    };
+    checkLikes();
+  }, [reviews, user]);
+
   const { isPurchased, purchaseType, subscriptionPlan } = access;
 
   const handlePurchase = async (type: "BUY" | "RENT") => {
@@ -89,6 +160,124 @@ export default function MovieDetailsPage({
     }
   };
 
+  // Submit Review
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error("Please login to write a review!");
+      return;
+    }
+    if (reviewForm.rating === 0) {
+      toast.error("Please select a rating!");
+      return;
+    }
+    try {
+      setSubmitLoading(true);
+      await reviewService.createReview({
+        movieId: id,
+        ...reviewForm,
+      });
+      toast.success("Review submitted! Pending admin approval.");
+      setReviewForm({ title: "", rating: 0, content: "", hasSpoiler: false });
+      // Refresh reviews
+      const res = await reviewService.getReviewsByMovieId(id, 1);
+      setReviews(res?.data || []);
+      setReviewMeta(res?.meta || null);
+      setReviewPage(1);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to submit review!");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  // Like / Unlike
+  const handleToggleLike = async (reviewId: string) => {
+    if (!user) {
+      toast.error("Please login to like reviews!");
+      return;
+    }
+    try {
+      if (likedReviews.has(reviewId)) {
+        await likeService.unlikeReview(reviewId);
+        setLikedReviews((prev) => {
+          const s = new Set(prev);
+          s.delete(reviewId);
+          return s;
+        });
+        setReviews((prev) =>
+          prev.map((r) =>
+            r.id === reviewId ? { ...r, likesCount: Math.max(0, (r.likesCount || 0) - 1) } : r
+          )
+        );
+      } else {
+        await likeService.likeReview(reviewId);
+        setLikedReviews((prev) => new Set(prev).add(reviewId));
+        setReviews((prev) =>
+          prev.map((r) =>
+            r.id === reviewId ? { ...r, likesCount: (r.likesCount || 0) + 1 } : r
+          )
+        );
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Action failed!");
+    }
+  };
+
+  // Toggle comments
+  const toggleComments = async (reviewId: string) => {
+    const newExpanded = new Set(expandedComments);
+    if (newExpanded.has(reviewId)) {
+      newExpanded.delete(reviewId);
+    } else {
+      newExpanded.add(reviewId);
+      // Fetch comments
+      try {
+        const res = await commentService.getCommentsByReview(reviewId);
+        setReviews((prev) =>
+          prev.map((r) =>
+            r.id === reviewId ? { ...r, comments: res || [] } : r
+          )
+        );
+      } catch (error) {
+        console.error("Comment fetch error:", error);
+      }
+    }
+    setExpandedComments(newExpanded);
+  };
+
+  // Add comment
+  const handleAddComment = async (reviewId: string) => {
+    if (!user) {
+      toast.error("Please login to comment!");
+      return;
+    }
+    const content = commentInputs[reviewId]?.trim();
+    if (!content) return;
+
+    try {
+      setCommentLoading(reviewId);
+      const newComment = await commentService.createComment({ reviewId, content });
+      setReviews((prev) =>
+        prev.map((r) =>
+          r.id === reviewId
+            ? {
+                ...r,
+                comments: [...(r.comments || []), newComment.data],
+                commentsCount: (r.commentsCount || 0) + 1,
+              }
+            : r
+        )
+      );
+      setCommentInputs((prev) => ({ ...prev, [reviewId]: "" }));
+      toast.success("Comment added!");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to add comment!");
+    } finally {
+      setCommentLoading(null);
+    }
+  };
+
   if (loading)
     return (
       <div className="h-screen flex items-center justify-center bg-black">
@@ -103,6 +292,27 @@ export default function MovieDetailsPage({
     if (purchaseType === "RENT") return "Rented (7 Days)";
     return "";
   };
+
+  // Rating stars component
+  const RatingStars = ({ rating, onRate, interactive = false }: { rating: number; onRate?: (r: number) => void; interactive?: boolean }) => (
+    <div className="flex gap-1">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <button
+          key={i}
+          type="button"
+          disabled={!interactive}
+          onClick={() => onRate?.(i + 1)}
+          className={`${interactive ? "cursor-pointer hover:scale-125" : "cursor-default"} transition-transform`}
+        >
+          <Star
+            className={`w-5 h-5 ${
+              i < rating ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
+            }`}
+          />
+        </button>
+      ))}
+    </div>
+  );
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -186,6 +396,252 @@ export default function MovieDetailsPage({
                     </span>
                   ))}
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* ════════════════════════════════════════════════════════════ */}
+          {/* REVIEW SECTION */}
+          {/* ════════════════════════════════════════════════════════════ */}
+          <div className="pt-10 border-t border-white/5">
+            <h2 className="text-2xl font-bold mb-8 italic uppercase flex items-center gap-3">
+              <MessageCircle className="w-6 h-6 text-purple-500" />
+              Reviews
+            </h2>
+
+            {/* Write Review Form */}
+            {user && (
+              <form onSubmit={handleSubmitReview} className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 md:p-8 mb-10 space-y-5">
+                <h3 className="text-lg font-bold uppercase tracking-wider text-gray-300">Write a Review</h3>
+
+                <div>
+                  <label className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 block">Rating</label>
+                  <RatingStars rating={reviewForm.rating} onRate={(r) => setReviewForm({ ...reviewForm, rating: r })} interactive />
+                </div>
+
+                <div>
+                  <label className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 block">Title</label>
+                  <input
+                    type="text"
+                    value={reviewForm.title}
+                    onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })}
+                    placeholder="Give your review a title (min 5 chars)..."
+                    className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder:text-gray-600"
+                    required
+                    minLength={5}
+                    maxLength={100}
+                  />
+                </div>
+
+                <div>
+                  <label className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 block">Your Review</label>
+                  <textarea
+                    value={reviewForm.content}
+                    onChange={(e) => setReviewForm({ ...reviewForm, content: e.target.value })}
+                    placeholder="Share your thoughts about this movie (min 20 chars)..."
+                    rows={4}
+                    className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder:text-gray-600 resize-none"
+                    required
+                    minLength={20}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={reviewForm.hasSpoiler}
+                      onChange={(e) => setReviewForm({ ...reviewForm, hasSpoiler: e.target.checked })}
+                      className="w-4 h-4 rounded border-gray-600 accent-purple-600"
+                    />
+                    <span className="flex items-center gap-2 text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                      <AlertTriangle className="w-4 h-4 text-yellow-500" />
+                      Contains Spoilers
+                    </span>
+                  </label>
+
+                  <button
+                    type="submit"
+                    disabled={submitLoading}
+                    className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold uppercase tracking-wider rounded-xl transition-all flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {submitLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                    Submit Review
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {!user && (
+              <div className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 mb-10 text-center">
+                <p className="text-gray-400 mb-3">Login to write a review</p>
+                <Link href="/login" className="text-purple-400 font-bold hover:text-purple-300 underline underline-offset-4">
+                  Sign In
+                </Link>
+              </div>
+            )}
+
+            {/* Reviews List */}
+            {reviewLoading ? (
+              <div className="py-10 flex justify-center">
+                <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+              </div>
+            ) : reviews.length > 0 ? (
+              <div className="space-y-6">
+                {reviews.map((review: any) => (
+                  <div key={review.id} className="bg-gray-900/30 border border-gray-800/50 rounded-2xl p-6 transition-all hover:border-gray-700/50">
+                    {/* Review Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-black text-sm">
+                          {review.user?.name?.[0]?.toUpperCase() || "U"}
+                        </div>
+                        <div>
+                          <p className="font-bold text-white text-sm">{review.user?.name || "User"}</p>
+                          <p className="text-gray-500 text-xs">
+                            {new Date(review.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 10 }).map((_, i) => (
+                          <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "text-yellow-500 fill-yellow-500" : "text-gray-800"}`} />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Review Title */}
+                    <h4 className="font-bold text-lg mb-2 text-white">{review.title}</h4>
+
+                    {/* Spoiler Warning */}
+                    {review.hasSpoiler && (
+                      <div className="flex items-center gap-2 text-yellow-500 text-xs font-bold uppercase tracking-wider mb-2">
+                        <AlertTriangle className="w-4 h-4" /> Spoiler Warning
+                      </div>
+                    )}
+
+                    {/* Review Content */}
+                    <p className={`text-gray-400 leading-relaxed text-sm ${review.hasSpoiler ? "blur-sm hover:blur-none transition-all cursor-pointer" : ""}`}>
+                      {review.content}
+                    </p>
+
+                    {/* Review Actions */}
+                    <div className="flex items-center gap-6 mt-5 pt-4 border-t border-gray-800/50">
+                      <button
+                        onClick={() => handleToggleLike(review.id)}
+                        className={`flex items-center gap-2 text-sm transition-all ${
+                          likedReviews.has(review.id)
+                            ? "text-pink-500"
+                            : "text-gray-500 hover:text-pink-500"
+                        }`}
+                      >
+                        <Heart className={`w-4 h-4 ${likedReviews.has(review.id) ? "fill-pink-500" : ""}`} />
+                        <span className="font-bold">{review.likesCount || 0}</span>
+                      </button>
+
+                      <button
+                        onClick={() => toggleComments(review.id)}
+                        className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-all"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span className="font-bold">{review.commentsCount || 0}</span>
+                        {expandedComments.has(review.id) ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </button>
+
+                      {user && review.user?.id === user.id && (
+                        <button
+                          onClick={async () => {
+                            try {
+                              await reviewService.deleteReview(review.id);
+                              setReviews((prev) => prev.filter((r) => r.id !== review.id));
+                              toast.success("Review deleted!");
+                            } catch (error: any) {
+                              toast.error(error?.response?.data?.message || "Failed to delete!");
+                            }
+                          }}
+                          className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-500 transition-all ml-auto"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Comments Section */}
+                    {expandedComments.has(review.id) && (
+                      <div className="mt-4 pt-4 border-t border-gray-800/30 space-y-3">
+                        {review.comments && review.comments.length > 0 ? (
+                          review.comments.map((comment: any) => (
+                            <div key={comment.id} className="flex gap-3 items-start">
+                              <div className="w-7 h-7 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 font-bold text-[10px] shrink-0">
+                                {comment.user?.name?.[0]?.toUpperCase() || "U"}
+                              </div>
+                              <div>
+                                <p className="text-xs">
+                                  <span className="font-bold text-gray-300">{comment.user?.name || "User"}</span>
+                                  <span className="text-gray-600 ml-2">
+                                    {new Date(comment.createdAt).toLocaleDateString()}
+                                  </span>
+                                </p>
+                                <p className="text-gray-400 text-sm mt-1">{comment.content}</p>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-gray-600 text-sm italic">No comments yet.</p>
+                        )}
+
+                        {/* Add Comment Input */}
+                        {user && (
+                          <div className="flex gap-2 mt-3">
+                            <input
+                              type="text"
+                              value={commentInputs[review.id] || ""}
+                              onChange={(e) => setCommentInputs({ ...commentInputs, [review.id]: e.target.value })}
+                              onKeyDown={(e) => e.key === "Enter" && handleAddComment(review.id)}
+                              placeholder="Write a comment..."
+                              className="flex-1 bg-black border border-gray-800 text-white text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-purple-500 placeholder:text-gray-600"
+                            />
+                            <button
+                              onClick={() => handleAddComment(review.id)}
+                              disabled={commentLoading === review.id}
+                              className="px-4 py-2.5 bg-purple-600/20 border border-purple-500/30 text-purple-400 rounded-xl hover:bg-purple-600/30 transition-all disabled:opacity-50"
+                            >
+                              {commentLoading === review.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Review Pagination */}
+                {reviewMeta && reviewMeta.totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-3 pt-6">
+                    <button
+                      onClick={() => setReviewPage((p) => Math.max(1, p - 1))}
+                      disabled={reviewPage === 1}
+                      className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-400 disabled:opacity-30 hover:bg-gray-800 transition-all text-sm font-bold"
+                    >
+                      Previous
+                    </button>
+                    <span className="text-gray-500 text-sm">
+                      Page {reviewMeta.page} of {reviewMeta.totalPages}
+                    </span>
+                    <button
+                      onClick={() => setReviewPage((p) => Math.min(reviewMeta.totalPages, p + 1))}
+                      disabled={reviewPage === reviewMeta.totalPages}
+                      className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-400 disabled:opacity-30 hover:bg-gray-800 transition-all text-sm font-bold"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <MessageCircle className="w-12 h-12 text-gray-800 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg italic">No reviews yet. Be the first to review!</p>
               </div>
             )}
           </div>

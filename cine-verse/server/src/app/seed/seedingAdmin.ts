@@ -5,14 +5,33 @@ import { prisma } from "../lib/prisma";
 
 export const Admin = async () => {
   try {
-    const isExists = await prisma.user.findFirst({
+    const existingUser = await prisma.user.findFirst({
       where: {
-        role: UserRole.ADMIN,
+        email: envConfig.ADMIN_EMAIL,
       },
     });
 
-    if (isExists) {
-      console.log("admin already exists");
+    if (existingUser) {
+      if (existingUser.role !== UserRole.ADMIN) {
+        await prisma.user.update({
+          where: { id: existingUser.id },
+          data: { role: UserRole.ADMIN },
+        });
+      }
+      
+      const adminEntry = await prisma.admin.findFirst({
+        where: { userId: existingUser.id },
+      });
+      if (!adminEntry) {
+        await prisma.admin.create({
+          data: {
+            userId: existingUser.id,
+            name: "Admin",
+            email: envConfig.ADMIN_EMAIL,
+          },
+        });
+      }
+      console.log("Admin already exists (role ensured)");
       return;
     }
 
@@ -21,7 +40,6 @@ export const Admin = async () => {
         email: envConfig.ADMIN_EMAIL,
         password: envConfig.ADMIN_PASSWORD,
         name: "Admin",
-        role: UserRole.ADMIN,
       },
     });
 
@@ -32,6 +50,7 @@ export const Admin = async () => {
         },
         data: {
           emailVerified: true,
+          role: UserRole.ADMIN,
         },
       });
 

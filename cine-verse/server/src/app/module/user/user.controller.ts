@@ -35,9 +35,19 @@ const updateUserProfile = catchFunction(async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(result);
 });
 
+const getAllUsers = catchFunction(async (req: Request, res: Response) => {
+  const result = await userService.getAllUsers(req.query);
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Users retrieved successfully",
+    ...result,
+  });
+});
+
 export const userController = {
   getUserDashboard,
   getUserStats,
   getUserProfile,
   updateUserProfile,
+  getAllUsers,
 };
