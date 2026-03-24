@@ -24,6 +24,7 @@ export default function EditorsPicksSection({ movies }: { movies: any[] }) {
             type={movie.type}
             year={movie.releaseYear}
             genres={movie.genre || []}
+            language={movie.language}
             isPremium={movie.pricing === "PREMIUM"}
           />
         ))}

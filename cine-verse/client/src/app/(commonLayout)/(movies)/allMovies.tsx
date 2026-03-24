@@ -30,6 +30,7 @@ export default function AllMoviesSection({ movies }: { movies: any[] }) {
               type={movie.type}
               year={movie.releaseYear}
               genres={movie.genre}
+                    language={movie.language}
               isPremium={movie.pricing === "PREMIUM"}
             />
           ))

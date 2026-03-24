@@ -1452,6 +1452,7 @@ export const MovieScalarFieldEnum = {
   synopsis: 'synopsis',
   thumbnail: 'thumbnail',
   genre: 'genre',
+  language: 'language',
   releaseYear: 'releaseYear',
   director: 'director',
   cast: 'cast',

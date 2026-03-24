@@ -5,6 +5,13 @@ import { uploadImage } from "../../config/cloudinary.config";
 import { stripe } from "../../config/stripe";
 import { prisma } from "../../lib/prisma";
 
+const formatTags = (tags: string[]) => 
+  tags.map(tag => {
+    const trimmed = tag.trim();
+    if (!trimmed) return "";
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+  }).filter(Boolean);
+
 const toNumber = (val: any) => {
   if (val === undefined || val === null || val === "") return null;
   const num = Number(val);
@@ -74,11 +81,12 @@ const createMovie = async (payload: any, file?: Express.Multer.File) => {
       title: payload.title,
       synopsis: payload.synopsis,
       thumbnail,
-      genre: payload.genre || [],
+      genre: payload.genre ? formatTags(payload.genre) : [],
+      language: payload.language ? formatTags(payload.language) : [],
       releaseYear: payload.releaseYear,
       director: payload.director,
-      cast: payload.cast || [],
-      streamingPlatform: payload.streamingPlatform || [],
+      cast: payload.cast ? formatTags(payload.cast) : [],
+      streamingPlatform: payload.streamingPlatform ? formatTags(payload.streamingPlatform) : [],
 
       type: payload.type,
 
@@ -109,6 +117,7 @@ const getAllMovies = async (queryParams: any) => {
     ratingFrom,
     ratingTo,
     popularity,
+    language,
     sortBy = "avgRating",
     sortOrder = "desc",
     page = 1,
@@ -124,6 +133,7 @@ const getAllMovies = async (queryParams: any) => {
       { title: { contains: searchTerms, mode: "insensitive" } },
       { director: { contains: searchTerms, mode: "insensitive" } },
       { cast: { hasSome: [searchTerms] } },
+      { language: { hasSome: [searchTerms] } },
     ];
   }
 
@@ -138,6 +148,7 @@ const getAllMovies = async (queryParams: any) => {
   }
 
   if (popularity) where.reviewCount = { gte: parseInt(popularity) };
+  if (language) where.language = { hasSome: [language] };
 
   if (queryParams.streamingPlatform) {
     where.streamingPlatform = { hasSome: [queryParams.streamingPlatform] };
@@ -176,6 +187,7 @@ const getAllMovies = async (queryParams: any) => {
         synopsis: true,
         thumbnail: true,
         genre: true,
+        language: true,
         releaseYear: true,
         type: true,
         pricing: true,
@@ -276,12 +288,12 @@ const updateMovie = async (id: string, payload: any, file?: Express.Multer.File)
     thumbnail = await uploadImage(file);
   }
   if (thumbnail) updateData.thumbnail = thumbnail;
-  if (payload.genre) updateData.genre = payload.genre;
+  if (payload.genre) updateData.genre = formatTags(payload.genre);
+  if (payload.language) updateData.language = formatTags(payload.language);
+  if (payload.cast) updateData.cast = formatTags(payload.cast);
+  if (payload.streamingPlatform) updateData.streamingPlatform = formatTags(payload.streamingPlatform);
   if (payload.releaseYear) updateData.releaseYear = Number(payload.releaseYear);
   if (payload.director) updateData.director = payload.director;
-  if (payload.cast) updateData.cast = payload.cast;
-  if (payload.streamingPlatform)
-    updateData.streamingPlatform = payload.streamingPlatform;
   if (payload.streamingLink) updateData.streamingLink = payload.streamingLink;
   if (payload.pricing) updateData.pricing = payload.pricing;
 

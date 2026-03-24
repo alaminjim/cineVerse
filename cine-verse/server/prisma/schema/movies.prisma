@@ -3,7 +3,8 @@ model Movie {
   title             String         @unique
   synopsis          String         @db.Text
   thumbnail         String?
-  genre             String[]                    
+  genre             String[]
+  language          String[]
   releaseYear       Int                         
   director          String                      
   cast              String[]                   

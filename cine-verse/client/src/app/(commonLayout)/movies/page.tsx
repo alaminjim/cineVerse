@@ -10,6 +10,7 @@ import MovieCard from "@/components/card/movies";
 const GENRES = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Thriller", "Romance", "Adventure", "Fantasy", "Animation", "Crime", "Mystery"];
 const TYPES = ["MOVIE", "SERIES"];
 const PLATFORMS = ["Netflix", "Disney+", "Amazon Prime", "Hulu", "HBO Max", "Apple TV+", "Paramount+", "Crunchyroll"];
+const LANGUAGES = ["English", "Hindi", "Spanish", "French", "Japanese", "Korean", "German", "Bengali"];
 const RATINGS = [
   { label: "Any Rating", value: "" },
   { label: "5+ Stars", value: "5" },
@@ -40,6 +41,7 @@ function MoviesContent() {
   const [releaseYear, setReleaseYear] = useState("");
   const [ratingFrom, setRatingFrom] = useState("");
   const [streamingPlatform, setStreamingPlatform] = useState("");
+  const [language, setLanguage] = useState("");
   const [activeSort, setActiveSort] = useState(0);
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
@@ -66,6 +68,7 @@ function MoviesContent() {
           releaseYear,
           ratingFrom,
           streamingPlatform,
+          language,
           sortBy: sortOpt.value,
           sortOrder: sortOpt.order,
           page,
@@ -81,7 +84,7 @@ function MoviesContent() {
       }
     };
     fetchMovies();
-  }, [debouncedSearch, genre, type, releaseYear, ratingFrom, streamingPlatform, activeSort, page]);
+  }, [debouncedSearch, genre, type, releaseYear, ratingFrom, streamingPlatform, language, activeSort, page]);
 
   const clearFilters = () => {
     setSearchTerms("");
@@ -90,6 +93,7 @@ function MoviesContent() {
     setReleaseYear("");
     setRatingFrom("");
     setStreamingPlatform("");
+    setLanguage("");
     setActiveSort(0);
     setPage(1);
   };
@@ -232,6 +236,20 @@ function MoviesContent() {
                   ))}
                 </select>
               </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Language</label>
+                <select
+                  value={language}
+                  onChange={(e) => { setLanguage(e.target.value); setPage(1); }}
+                  className="w-full bg-gray-900/50 border border-gray-800 text-gray-300 text-sm rounded-xl p-3 outline-none focus:border-purple-500 transition-colors appearance-none"
+                >
+                  <option value="">Any Language</option>
+                  {LANGUAGES.map((l) => (
+                    <option key={l} value={l}>{l}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-800/50">
@@ -278,6 +296,7 @@ function MoviesContent() {
                   type={movie.type}
                   year={movie.releaseYear}
                   genres={movie.genre || []}
+                  language={movie.language}
                   isPremium={movie.pricing === "PREMIUM"}
                 />
               ))}

@@ -23,6 +23,7 @@ export default function EditMoviePage() {
       title: "",
       synopsis: "",
       genre: "",
+      language: "",
       releaseYear: new Date().getFullYear(),
       director: "",
       cast: "",
@@ -52,6 +53,7 @@ export default function EditMoviePage() {
           type: value.type,
           pricing: value.pricing,
           genre: value.genre.split(",").map((s: string) => s.trim()).filter(Boolean),
+          language: value.language.split(",").map((s: string) => s.trim()).filter(Boolean),
           cast: value.cast.split(",").map((s: string) => s.trim()).filter(Boolean),
           streamingPlatform: value.streamingPlatform.split(",").map((s: string) => s.trim()).filter(Boolean),
         };
@@ -86,6 +88,7 @@ export default function EditMoviePage() {
           form.setFieldValue("title", data.title || "");
           form.setFieldValue("synopsis", data.synopsis || "");
           form.setFieldValue("genre", data.genre?.join(", ") || "");
+          form.setFieldValue("language", data.language?.join(", ") || "");
           form.setFieldValue("releaseYear", data.releaseYear || new Date().getFullYear());
           form.setFieldValue("director", data.director || "");
           form.setFieldValue("cast", data.cast?.join(", ") || "");
@@ -243,6 +246,22 @@ export default function EditMoviePage() {
                         onChange={(e) => field.handleChange(e.target.value)}
                         className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
                         placeholder="Action, Sci-Fi"
+                        required
+                      />
+                      <span className="text-[10px] text-gray-600">Comma separated</span>
+                    </div>
+                  )}
+                </form.Field>
+
+                <form.Field name="language">
+                  {(field) => (
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 block">Language(s) *</label>
+                      <input
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        className="w-full bg-black border border-gray-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-purple-500 transition-all"
+                        placeholder="English, Spanish, Hindi"
                         required
                       />
                       <span className="text-[10px] text-gray-600">Comma separated</span>

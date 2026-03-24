@@ -432,6 +432,11 @@ export default function MovieDetailsPage({
               </div>
             </div>
 
+            <div>
+              <h3 className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-2">Language</h3>
+              <p className="font-medium text-lg text-gray-200">{movie?.language && movie.language.length > 0 ? movie.language.join(", ") : "N/A"}</p>
+            </div>
+
             <div className="col-span-2 md:col-span-3">
               <h3 className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-3">Cast</h3>
               <div className="flex flex-wrap gap-2">

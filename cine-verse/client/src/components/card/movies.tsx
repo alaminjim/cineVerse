@@ -16,6 +16,7 @@ interface MovieCardProps {
   type: "MOVIE" | "SERIES";
   year?: number;
   genres?: string[];
+  language?: string[];
   isPremium?: boolean;
 }
 
@@ -27,6 +28,7 @@ export default function MovieCard({
   type,
   year,
   genres = [],
+  language = [],
   isPremium = false,
 }: MovieCardProps) {
   const { user } = useAuthStore();
@@ -81,9 +83,9 @@ export default function MovieCard({
       <motion.div
         whileHover={{ scale: 1.05, y: -8 }}
         whileTap={{ scale: 0.95 }}
-        className="group cursor-pointer"
+        className="group cursor-pointer h-full"
       >
-        <div className="rounded-xl overflow-hidden bg-gray-900 shadow-xl border border-gray-800 hover:border-primary/50 transition-colors duration-300">
+        <div className="h-full flex flex-col rounded-xl overflow-hidden bg-gray-900 shadow-xl border border-gray-800 hover:border-primary/50 transition-colors duration-300">
           <div className="relative h-80 overflow-hidden bg-gray-800">
             <img
               src={posterUrl}
@@ -127,17 +129,25 @@ export default function MovieCard({
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
 
-          <div className="p-4 bg-gradient-to-b from-gray-800 to-gray-900">
-            <h3 className="text-white font-bold text-sm line-clamp-2 mb-2 group-hover:text-primary transition-colors">
-              {title}
-            </h3>
+          <div className="p-4 bg-gradient-to-b from-gray-800 to-gray-900 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 className="text-white font-extrabold text-base line-clamp-2 mb-3 group-hover:text-primary transition-colors min-h-[48px]">
+                {title}
+              </h3>
 
             <div className="flex items-center justify-between mb-3">
-              {year && (
-                <span className="text-xs text-gray-400 font-semibold">
-                  {year}
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {year && (
+                  <span className="text-xs text-gray-400 font-semibold">
+                    {year}
+                  </span>
+                )}
+                {language && language.length > 0 && (
+                  <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
+                    {language[0]}
+                  </span>
+                )}
+              </div>
               <span className="text-xs text-gray-500">
                 {type === "MOVIE" ? "Movie" : "Series"}
               </span>
@@ -155,6 +165,7 @@ export default function MovieCard({
                 ))}
               </div>
             )}
+            </div>
           </div>
         </div>
       </motion.div>

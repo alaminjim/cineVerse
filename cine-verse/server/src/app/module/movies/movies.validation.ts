@@ -11,6 +11,7 @@ export const createMovieValidationSchema = z.object({
     .min(10, "Synopsis min 10 characters"),
 
   genre: z.array(z.string()).min(1, "At least one genre required"),
+  language: z.array(z.string()).min(1, "At least one language required"),
 
   releaseYear: z.coerce
     .number()
