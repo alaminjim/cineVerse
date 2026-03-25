@@ -7,7 +7,7 @@
       "config": {
         "includeFiles": [
           "src/app/template/**",
-          "prisma/schema.prisma"
+          "prisma/**"
         ]
       }
     }
