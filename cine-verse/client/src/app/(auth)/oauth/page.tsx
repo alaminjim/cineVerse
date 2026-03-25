@@ -18,6 +18,17 @@ export default function OAuthPage() {
     const handleOAuth = async () => {
       try {
         const mode = searchParams?.get("mode");
+        const token = searchParams?.get("token");
+
+        // Fallback: If token is in URL, set it in cookies manually
+        if (token) {
+          const jsCookie = (await import("js-cookie")).default;
+          jsCookie.set("accessToken", token, {
+            expires: 1,
+            secure: true,
+            sameSite: "none",
+          });
+        }
 
         await new Promise((resolve) => setTimeout(resolve, 500));
 
