@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { ReviewStatus } from "@prisma/client";
+
+import { ReviewStatus } from "../../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
 
 const createReview = async (userId: string, payload: any) => {
@@ -112,7 +113,7 @@ const getReviewsByMovieId = async (movieId: string, queryParams: any) => {
 
   return {
     success: true,
-    data: reviews.map((review) => ({
+    data: reviews.map((review: any) => ({
       ...review,
       likesCount: review.likes.length,
       commentsCount: review.comments.length,
@@ -265,7 +266,7 @@ const updateMovieRating = async (movieId: string) => {
 
   const avgRating =
     reviews.length > 0
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+      ? reviews.reduce((sum: any, r: any) => sum + r.rating, 0) / reviews.length
       : 0;
 
   await prisma.movie.update({

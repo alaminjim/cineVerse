@@ -1,6 +1,7 @@
 import { UserStatus } from "../../../generated/prisma/enums.js";
 
 
+
 export interface IAdminUpdate {
   name: string;
   profilePhoto?: string;

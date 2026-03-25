@@ -2,6 +2,7 @@ import { PurchaseStatus, PurchaseType } from "../../../generated/prisma/enums.js
 
 
 
+
 export interface ICreatePurchase {
   movieId: string;
   purchaseType: PurchaseType;

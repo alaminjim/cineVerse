@@ -2,13 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 
-import {
-  PurchaseStatus,
-  ReviewStatus,
-  SubscriptionStatus,
-  UserRole,
-  UserStatus,
-} from "@prisma/client";
+
+import { PurchaseStatus, ReviewStatus, SubscriptionStatus, UserRole, UserStatus } from "../../../../generated/prisma/enums.js";
 import { prisma } from "../../../lib/prisma.js";
 
 const getAnalyticsStats = async () => {

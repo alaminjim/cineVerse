@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { UserRole } from "../../generated/prisma/enums.js";
 import { envConfig } from "../config/env.js";

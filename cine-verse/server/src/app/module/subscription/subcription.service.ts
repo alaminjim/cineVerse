@@ -2,7 +2,8 @@ import { envConfig } from "../../config/env.js";
 import { prisma } from "../../lib/prisma.js";
 import { stripe, STRIPE_PLANS } from "../../config/stripe.js";
 import { ICreateSubscription } from "./subcription.interface.js";
-import { SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
+import { SubscriptionPlan, SubscriptionStatus } from "../../../generated/prisma/enums.js";
+
 
 const createSubscription = async (
   payload: ICreateSubscription,
@@ -122,7 +123,8 @@ const getActiveSubscription = async (userId: string) => {
       data: null,
       message: "No active subscription",
     };
-  }
+  }
+
   if (subscription.endDate && new Date() > new Date(subscription.endDate)) {
     await prisma.subscription.update({
       where: { id: subscription.id },

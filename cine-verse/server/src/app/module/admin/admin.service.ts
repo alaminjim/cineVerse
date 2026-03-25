@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { prisma } from "../../lib/prisma.js";
-import { UserRole, UserStatus } from "@prisma/client";
+
 import { IRequestUser } from "../../interface/requestUser.interface.js";
 import { IAdminUpdate } from "./admin.interface.js";
+import { UserStatus } from "../../../generated/prisma/enums.js";
 
 const getAllAdmin = async () => {
   const result = await prisma.admin.findMany({
@@ -94,7 +95,7 @@ const adminDeleted = async (id: string, user: IRequestUser) => {
     throw new Error("You cannot delete yourself");
   }
 
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: any) => {
     await tx.admin.update({
       where: {
         id,

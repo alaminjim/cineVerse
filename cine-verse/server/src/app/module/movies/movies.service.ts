@@ -5,7 +5,7 @@ import { uploadImage } from "../../config/cloudinary.config.js";
 import { stripe } from "../../config/stripe.js";
 import { prisma } from "../../lib/prisma.js";
 
-const formatTags = (tags: string[]) => 
+const formatTags = (tags: string[]) =>
   tags.map(tag => {
     const trimmed = tag.trim();
     if (!trimmed) return "";
@@ -260,7 +260,7 @@ const getMovieById = async (id: string) => {
     success: true,
     data: {
       ...movie,
-      reviews: movie.reviews.map((review) => ({
+      reviews: movie.reviews.map((review: any) => ({
         ...review,
         likesCount: review._count.likes,
         commentsCount: review._count.comments,
