@@ -2,10 +2,7 @@ import { envConfig } from "../../config/env.js";
 import { prisma } from "../../lib/prisma.js";
 import { stripe, STRIPE_PLANS } from "../../config/stripe.js";
 import { ICreateSubscription } from "./subcription.interface.js";
-import {
-  SubscriptionPlan,
-  SubscriptionStatus,
-} from "../../../generated/prisma/enums.js";
+import { SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
 
 const createSubscription = async (
   payload: ICreateSubscription,

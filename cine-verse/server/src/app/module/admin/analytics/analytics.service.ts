@@ -8,7 +8,7 @@ import {
   SubscriptionStatus,
   UserRole,
   UserStatus,
-} from "../../../../generated/prisma/enums.js";
+} from "@prisma/client";
 import { prisma } from "../../../lib/prisma.js";
 
 const getAnalyticsStats = async () => {

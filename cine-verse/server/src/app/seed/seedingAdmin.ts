@@ -1,3 +1,4 @@
+
 import { UserRole } from "../../generated/prisma/enums.js";
 import { envConfig } from "../config/env.js";
 import { auth } from "../lib/auth.js";
@@ -18,7 +19,7 @@ export const Admin = async () => {
           data: { role: UserRole.ADMIN },
         });
       }
-      
+
       const adminEntry = await prisma.admin.findFirst({
         where: { userId: existingUser.id },
       });
@@ -43,7 +44,7 @@ export const Admin = async () => {
       },
     });
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       await tx.user.update({
         where: {
           id: adminData.user.id,

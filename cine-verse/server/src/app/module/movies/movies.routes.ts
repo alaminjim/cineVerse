@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
-import { UserRole } from "../../../generated/prisma/enums.js";
+import { UserRole } from "@prisma/client";
 import { movieController } from "./movies.controller.js";
 import { upload } from "../../config/multer.js";
 import { zodValidation } from "../../middleware/zod.validation.js";

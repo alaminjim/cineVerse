@@ -4,7 +4,7 @@ import { jwtUtils } from "../utils/jwt.js";
 import { cookieUtils } from "../utils/cookie.js";
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
-import { UserRole, UserStatus } from "../../generated/prisma/enums.js";
+import { UserRole, UserStatus } from "@prisma/client";
 
 export const authMiddleware =
   (...userRole: UserRole[]) =>

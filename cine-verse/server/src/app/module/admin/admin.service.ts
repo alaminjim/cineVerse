@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { prisma } from "../../lib/prisma.js";
-import { UserStatus } from "../../../generated/prisma/enums.js";
+import { UserRole, UserStatus } from "@prisma/client";
 import { IRequestUser } from "../../interface/requestUser.interface.js";
 import { IAdminUpdate } from "./admin.interface.js";
 

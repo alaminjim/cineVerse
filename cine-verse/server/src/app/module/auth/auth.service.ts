@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { UserStatus } from "../../../generated/prisma/enums.js";
+import { UserStatus } from "@prisma/client";
 import { auth } from "../../lib/auth.js";
 import { ILogin, IRegister } from "./auth.interface.js";
 import { IRequestUser } from "../../interface/requestUser.interface.js";
