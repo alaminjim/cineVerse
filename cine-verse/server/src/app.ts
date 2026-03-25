@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { envConfig } from "./app/config/env";
-import { indexRouter } from "./app/routes";
+import { indexRouter } from "./app/routes/index";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./app/lib/auth";
 import notFound from "./app/middleware/notFound";
@@ -17,7 +17,7 @@ const app: Application = express();
 Admin();
 
 app.set("view engine", "ejs");
-app.set("views", path.resolve(process.cwd(), "src/app/template"));
+app.set("views", path.join(process.cwd(), "src/app/template"));
 
 app.use(
   cors({
