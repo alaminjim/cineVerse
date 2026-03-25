@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/lib/store";
 import { Loader2, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function OAuthPage() {
+function OAuthContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setUser } = useAuthStore();
@@ -80,5 +80,20 @@ export default function OAuthPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function OAuthPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-black">
+          <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+          <p className="text-gray-300">Loading Authentication...</p>
+        </div>
+      }
+    >
+      <OAuthContent />
+    </Suspense>
   );
 }
