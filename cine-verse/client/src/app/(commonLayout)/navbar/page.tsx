@@ -95,25 +95,25 @@ export default function Navbar() {
       }`}
     >
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2 group z-50">
-          <div className="bg-primary/20 p-1.5 rounded-lg transition-colors group-hover:bg-primary/30">
+        <Link href="/" className="flex items-center gap-1.5 md:gap-2 group z-50 shrink-0">
+          <div className="bg-primary/20 p-1 rounded-lg md:p-1.5 transition-colors group-hover:bg-primary/30">
             <img
               src="/logo.png"
               alt="CineVerse Logo"
-              className="w-8 h-8 object-contain rounded-md"
+              className="w-6 h-6 md:w-8 md:h-8 object-contain rounded-md"
             />
           </div>
-          <span className="text-2xl font-black uppercase italic tracking-tighter text-white">
+          <span className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-white">
             Cine<span className="text-primary italic">Verse</span>
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+        <div className="hidden md:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2 items-center gap-4 lg:gap-10">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               href={link.path}
-              className={`relative text-sm font-medium transition-all duration-300 hover:text-primary ${
+              className={`relative text-[13px] lg:text-sm font-medium transition-all duration-300 hover:text-primary ${
                 isActive(link.path) ? "text-primary" : "text-muted-foreground"
               }`}
             >
@@ -126,11 +126,11 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-2 lg:gap-4 shrink-0">
           {/* Subscription Button — always visible */}
           <Link
             href="/subscription"
-            className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-4 py-2.5 rounded-full border transition-all ${
+            className={`flex items-center gap-1.5 text-[10px] lg:text-xs font-bold uppercase tracking-widest px-3 py-2 lg:px-4 lg:py-2.5 rounded-full border transition-all ${
               isActive("/subscription")
                 ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white border-transparent shadow-lg shadow-purple-500/20"
                 : "border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/50"
@@ -140,34 +140,34 @@ export default function Navbar() {
           </Link>
 
           {user ? (
-            <>
+            <div className="flex items-center gap-3 lg:gap-4">
               <Link
                 href={
                   user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"
                 }
-                className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-1.5 text-xs lg:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 <LayoutDashboard className="w-4 h-4" />
                 {user.role === "ADMIN" ? "Admin" : "Dashboard"}
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-destructive transition-colors"
+                className="flex items-center gap-1.5 text-xs lg:text-sm font-medium text-muted-foreground hover:text-destructive transition-colors"
               >
                 <LogOut className="w-4 h-4" /> Log Out
               </button>
-            </>
+            </div>
           ) : (
             <>
               <Link
                 href="/login"
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-1.5 text-xs lg:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 <LogIn className="w-4 h-4" /> Sign In
               </Link>
               <Link
                 href="/register"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium py-2.5 px-6 rounded-full transition-all shadow-md active:scale-95"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs lg:text-sm font-medium py-2 lg:py-2.5 px-4 lg:px-6 rounded-full transition-all shadow-md active:scale-95"
               >
                 Sign Up
               </Link>

@@ -11,12 +11,15 @@ import {
   LogOut,
   ShoppingBag,
   Crown,
+  Menu,
+  X,
 } from "lucide-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 const sidebarLinks = [
   { href: "/user/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -34,6 +37,7 @@ export default function UserLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -47,10 +51,34 @@ export default function UserLayout({
   };
 
   return (
-    <div className="min-h-screen bg-black flex">
+    <div className="min-h-screen bg-black flex overflow-x-hidden">
+      {/* Mobile Header */}
+      <header className="lg:hidden fixed top-0 w-full h-16 bg-[#0A0A0A] border-b border-gray-800/50 flex items-center justify-between px-6 z-40">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center">
+            <Film className="w-4 h-4 text-white" />
+          </div>
+          <h1 className="text-white font-black text-base tracking-tight italic">CineVerse</h1>
+        </Link>
+        <button 
+          onClick={() => setIsSidebarOpen(true)}
+          className="p-2 text-gray-400 hover:text-white transition-colors"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      </header>
+
+      {/* Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-45 lg:hidden animate-in fade-in duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-[#0A0A0A] border-r border-gray-800/50 flex flex-col fixed h-screen z-30">
-        <div className="p-6 border-b border-gray-800/50">
+      <aside className={`w-64 bg-[#0A0A0A] border-r border-gray-800/50 flex flex-col fixed h-screen z-50 transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className="p-6 border-b border-gray-800/50 flex items-center justify-between lg:block">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
               <Film className="w-5 h-5 text-white" />
@@ -60,9 +88,15 @@ export default function UserLayout({
               <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest">My Dashboard</p>
             </div>
           </Link>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden p-2 text-gray-500 hover:text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {sidebarLinks.map((link) => {
             const isActive = pathname === link.href;
             const Icon = link.icon;
@@ -70,6 +104,7 @@ export default function UserLayout({
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
                   isActive
                     ? "bg-blue-600/15 text-blue-400 border border-blue-500/20"
@@ -111,8 +146,8 @@ export default function UserLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 min-h-screen">
-        <div className="p-8 md:p-12">{children}</div>
+      <main className="flex-1 lg:ml-64 min-h-screen pt-16 lg:pt-0">
+        <div className="p-4 sm:p-8 md:p-12">{children}</div>
       </main>
     </div>
   );

@@ -64,12 +64,12 @@ export default function FAQPage() {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                className="w-full text-left p-8 flex items-center justify-between group"
+                className="w-full text-left p-6 sm:p-8 flex items-center justify-between group"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                   <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
                     openIndex === idx ? "bg-purple-500 border-purple-400 text-white" : "bg-gray-800 border-gray-700 text-gray-500"
-                  } transition-all`}>
+                  } transition-all w-max`}>
                     {faq.category}
                   </span>
                   <h3 className={`font-bold text-lg md:text-xl transition-colors ${openIndex === idx ? "text-white" : "text-gray-400 group-hover:text-gray-200"}`}>

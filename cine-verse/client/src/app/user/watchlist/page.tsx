@@ -9,7 +9,6 @@ import {
   Bookmark,
   Star,
   Trash2,
-  Film,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -74,15 +73,15 @@ export default function WatchlistPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {items.map((item) => (
             <div key={item.id} className="group relative">
               <Link href={`/movies/${item.movie?.id}`}>
-                <div className="relative overflow-hidden rounded-xl">
+                <div className="relative overflow-hidden rounded-xl aspect-[2/3]">
                   <img
                     src={item.movie?.thumbnail}
                     alt={item.movie?.title}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">

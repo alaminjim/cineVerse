@@ -59,7 +59,7 @@ export default function ContactPage() {
              <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-8">Send a Message</h3>
              
              <form className="space-y-6">
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Full Name</label>
                     <input type="text" placeholder="John Doe" className="w-full bg-black border border-gray-800 text-white p-4 rounded-xl focus:outline-none focus:border-blue-500 transition-colors" />

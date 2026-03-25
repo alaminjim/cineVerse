@@ -356,17 +356,17 @@ export default function MovieDetailsPage({
 
   // Rating stars component
   const RatingStars = ({ rating, onRate, interactive = false }: { rating: number; onRate?: (r: number) => void; interactive?: boolean }) => (
-    <div className="flex gap-1">
+    <div className="flex gap-0.5 sm:gap-1 overflow-x-auto pb-1 no-scrollbar">
       {Array.from({ length: 10 }).map((_, i) => (
         <button
           key={i}
           type="button"
           disabled={!interactive}
           onClick={() => onRate?.(i + 1)}
-          className={`${interactive ? "cursor-pointer hover:scale-125" : "cursor-default"} transition-transform`}
+          className={`${interactive ? "cursor-pointer hover:scale-125" : "cursor-default"} transition-transform shrink-0`}
         >
           <Star
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 sm:w-5 sm:h-5 ${
               i < rating ? "text-yellow-500 fill-yellow-500" : "text-gray-700"
             }`}
           />
@@ -378,12 +378,12 @@ export default function MovieDetailsPage({
   return (
     <main className="min-h-screen bg-black text-white">
       {/* Banner */}
-      <div className="relative h-[55vh] w-full">
+      <div className="relative h-[40vh] md:h-[55vh] w-full">
         <button
           onClick={() => router.back()}
-          className="absolute top-8 left-8 z-20 p-3 bg-black/50 rounded-full hover:bg-white hover:text-black transition-all"
+          className="absolute top-4 left-4 md:top-8 md:left-8 z-20 p-2.5 md:p-3 bg-black/50 rounded-full hover:bg-white hover:text-black transition-all"
         >
-          <ChevronLeft size={24} />
+          <ChevronLeft size={20} className="md:w-6 md:h-6" />
         </button>
         <img
           src={movie?.thumbnail}
@@ -391,17 +391,17 @@ export default function MovieDetailsPage({
           className="w-full h-full object-cover opacity-50"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-        <div className="absolute bottom-10 left-12">
-          <h1 className="text-5xl md:text-6xl font-black uppercase italic tracking-tighter mb-2">
+        <div className="absolute bottom-6 left-6 md:bottom-10 md:left-12 pr-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase italic tracking-tighter mb-2 leading-tight">
             {movie?.title}
           </h1>
-          <p className="text-purple-500 font-bold uppercase tracking-widest text-sm">
+          <p className="text-purple-500 font-bold uppercase tracking-widest text-[10px] sm:text-xs md:text-sm">
             {movie?.genre?.join(" • ")} • {movie?.type === "SERIES" ? `${movie?.seasons} SEASONS` : `${movie?.runtime} MINS`}
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 grid lg:grid-cols-3 gap-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 md:py-16 grid lg:grid-cols-3 gap-10 lg:gap-16">
         {/* Storyline & Details */}
         <div className="lg:col-span-2 space-y-10">
           <div>
@@ -470,15 +470,15 @@ export default function MovieDetailsPage({
           {/* REVIEW SECTION */}
           {/* ════════════════════════════════════════════════════════════ */}
           <div className="pt-10 border-t border-white/5">
-            <h2 className="text-2xl font-bold mb-8 italic uppercase flex items-center gap-3">
-              <MessageCircle className="w-6 h-6 text-purple-500" />
+            <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 italic uppercase flex items-center gap-3">
+              <MessageCircle className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
               Reviews
             </h2>
 
             {/* Write Review Form */}
             {user && (
-              <form onSubmit={handleSubmitReview} className="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 md:p-8 mb-10 space-y-5">
-                <h3 className="text-lg font-bold uppercase tracking-wider text-gray-300">Write a Review</h3>
+              <form onSubmit={handleSubmitReview} className="bg-gray-900/40 border border-gray-800 rounded-2xl p-5 sm:p-6 md:p-8 mb-10 space-y-5">
+                <h3 className="text-base md:text-lg font-bold uppercase tracking-wider text-gray-300">Write a Review</h3>
 
                 <div>
                   <label className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2 block">Rating</label>
@@ -584,21 +584,21 @@ export default function MovieDetailsPage({
                 {reviews.map((review: any) => (
                   <div key={review.id} className="bg-gray-900/30 border border-gray-800/50 rounded-2xl p-6 transition-all hover:border-gray-700/50">
                     {/* Review Header */}
-                    <div className="flex items-start justify-between mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-black text-sm">
+                        <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-black text-xs md:text-sm">
                           {review.user?.name?.[0]?.toUpperCase() || "U"}
                         </div>
                         <div>
-                          <p className="font-bold text-white text-sm">{review.user?.name || "User"}</p>
-                          <p className="text-gray-500 text-xs">
+                          <p className="font-bold text-white text-xs md:text-sm">{review.user?.name || "User"}</p>
+                          <p className="text-gray-500 text-[10px] md:text-xs">
                             {new Date(review.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-0.5 sm:gap-1">
                         {Array.from({ length: 10 }).map((_, i) => (
-                          <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "text-yellow-500 fill-yellow-500" : "text-gray-800"}`} />
+                          <Star key={i} className={`w-3 h-3 md:w-3.5 md:h-3.5 ${i < review.rating ? "text-yellow-500 fill-yellow-500" : "text-gray-800"}`} />
                         ))}
                       </div>
                     </div>
@@ -778,10 +778,10 @@ export default function MovieDetailsPage({
 
         {/* Access Panel */}
         <div className="lg:col-span-1">
-          <div className="bg-[#0A0A0A] border border-white/5 p-8 md:p-10 rounded-[2.5rem] sticky top-28 shadow-2xl">
+          <div className="bg-[#0A0A0A] border border-white/5 p-6 sm:p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] lg:sticky lg:top-28 shadow-2xl">
             {isPurchased || movie?.pricing === "FREE" ? (
               /* ✅ ACCESS GRANTED — Watch Now */
-              <div className="text-center py-4">
+              <div className="text-center py-2 sm:py-4">
                 <div className="relative inline-block mb-6">
                   {subscriptionPlan ? (
                     <div className="bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-purple-500/20">

@@ -82,14 +82,14 @@ export default function ProfilePage() {
 
       {/* Profile Card */}
       <div className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-8 mb-8">
-        <div className="flex items-center gap-6 mb-8">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white font-black text-3xl shadow-lg shadow-blue-500/20">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8 text-center sm:text-left">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white font-black text-3xl shadow-lg shadow-blue-500/20 shrink-0">
             {profile?.name?.[0]?.toUpperCase() || "U"}
           </div>
           <div>
             <h2 className="text-xl font-bold">{profile?.name}</h2>
-            <p className="text-gray-500 text-sm">{profile?.email}</p>
-            <div className="flex items-center gap-4 mt-2">
+            <p className="text-gray-500 text-sm truncate max-w-xs">{profile?.email}</p>
+            <div className="flex items-center justify-center sm:justify-start gap-4 mt-2">
               <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-blue-400">
                 <Shield className="w-3 h-3" /> {profile?.role}
               </span>

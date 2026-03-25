@@ -86,7 +86,7 @@ export default function MovieCard({
         className="group cursor-pointer h-full"
       >
         <div className="h-full flex flex-col rounded-xl overflow-hidden bg-gray-900 shadow-xl border border-gray-800 hover:border-primary/50 transition-colors duration-300">
-          <div className="relative h-80 overflow-hidden bg-gray-800">
+          <div className="relative aspect-[2/3] overflow-hidden bg-gray-800">
             <img
               src={posterUrl}
               alt={title}

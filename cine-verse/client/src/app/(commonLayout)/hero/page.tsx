@@ -37,7 +37,7 @@ export default function HeroSection() {
           Premium Cinema Experience
         </div>
 
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tighter text-foreground max-w-5xl">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tighter text-foreground max-w-5xl">
           Unlimited <br className="hidden sm:block" />
           <span className="text-primary">Entertainment</span>
         </h1>
@@ -47,21 +47,21 @@ export default function HeroSection() {
           in one place.
         </p>
 
-        <div className="w-full max-w-2xl relative mb-12">
+        <div className="w-full max-w-2xl relative mb-12 group">
           <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-muted-foreground" />
+            <Search className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
           </div>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-secondary/50 border border-border text-foreground text-base rounded-full focus:ring-2 focus:ring-primary focus:border-transparent outline-none py-4 pl-14 pr-32"
-            placeholder="Search for movies, TV shows, genres..."
+            className="w-full bg-secondary/50 border border-secondary text-foreground text-sm sm:text-base rounded-full focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none py-4 sm:py-5 pl-14 pr-28 sm:pr-36 transition-all shadow-2xl"
+            placeholder="Search for movies, TV shows..."
           />
           <button
             onClick={handleSearch}
-            className="absolute right-2 top-2 bottom-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-full px-8 transition-colors"
+            className="absolute right-1.5 top-1.5 bottom-1.5 bg-primary hover:bg-primary/90 text-primary-foreground text-[10px] sm:text-sm font-black uppercase tracking-widest rounded-full px-5 sm:px-10 transition-all active:scale-95 shadow-lg shadow-primary/20"
           >
             Search
           </button>

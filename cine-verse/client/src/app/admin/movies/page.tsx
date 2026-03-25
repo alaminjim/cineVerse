@@ -84,7 +84,73 @@ export default function AdminMoviesPage() {
         </Link>
       </div>
 
-      <div className="bg-gray-900/40 border border-gray-800/50 rounded-2xl overflow-hidden">
+      {/* Mobile Card View (Tablet & below) */}
+      <div className="lg:hidden space-y-4">
+        {movies.length > 0 ? (
+          movies.map((movie) => (
+            <div key={movie.id} className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-5 hover:border-gray-700/50 transition-all">
+              <div className="flex gap-4">
+                <img
+                  src={movie.thumbnail}
+                  alt={movie.title}
+                  className="w-20 h-28 object-cover rounded-xl shrink-0 border border-gray-800"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="font-bold text-white text-lg leading-tight mb-1">{movie.title}</h3>
+                      <p className="text-xs text-gray-500 line-clamp-1">{movie.genre?.join(", ")}</p>
+                    </div>
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg shrink-0 ${
+                      movie.type === "SERIES" ? "bg-blue-600/15 text-blue-400 border border-blue-500/10" : "bg-purple-600/15 text-purple-400 border border-purple-500/10"
+                    }`}>
+                      {movie.type}
+                    </span>
+                  </div>
+                  
+                  <div className="mt-4 flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 bg-gray-800/50 px-2 py-1 rounded-lg border border-gray-700/50">
+                      <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+                      <span className="text-yellow-500 font-bold text-xs">{movie.avgRating?.toFixed(1) || "0.0"}</span>
+                    </div>
+                    <span className="text-gray-400 text-xs font-medium">
+                      Release: {movie.releaseYear}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-5 pt-5 border-t border-gray-800/50 grid grid-cols-2 gap-3">
+                <Link
+                  href={`/admin/movies/edit/${movie.id}`}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-gray-800 hover:bg-blue-600/20 text-gray-400 hover:text-blue-400 border border-gray-700 hover:border-blue-500/30 rounded-xl transition-all text-xs font-black uppercase tracking-widest"
+                >
+                  <Pencil className="w-4 h-4" /> Edit
+                </Link>
+                <button
+                  onClick={() => confirmDelete(movie.id)}
+                  disabled={deleteLoading === movie.id}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-gray-800 hover:bg-red-600/20 text-gray-400 hover:text-red-400 border border-gray-700 hover:border-red-500/30 rounded-xl transition-all text-xs font-black uppercase tracking-widest disabled:opacity-50"
+                >
+                  {deleteLoading === movie.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-10 text-center text-gray-500 italic">
+            No movies found.
+          </div>
+        )}
+      </div>
+
+      {/* Desktop Table View (lg & above) */}
+      <div className="hidden lg:block bg-gray-900/40 border border-gray-800/50 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-black/40 border-b border-gray-800/50 text-gray-400 font-bold uppercase tracking-widest text-xs">

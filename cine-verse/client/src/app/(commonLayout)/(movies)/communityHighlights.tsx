@@ -12,9 +12,12 @@ export default function CommunityHighlightsSection({ reviews }: { reviews: any[]
       
       <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h2 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter flex items-center gap-3">
-            <MessageCircle className="text-purple-500 w-8 h-8" />
-            Community <span className="text-purple-500">Highlights</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black uppercase italic tracking-tighter flex flex-wrap items-center gap-x-3 gap-y-2 leading-none">
+            <div className="flex items-center gap-3">
+              <MessageCircle className="text-purple-500 w-6 h-6 md:w-8 md:h-8" />
+              Community
+            </div>
+            <span className="text-purple-500">Highlights</span>
           </h2>
           <p className="text-gray-500 text-sm font-bold uppercase tracking-widest mt-2">What our members are saying</p>
         </div>
@@ -24,7 +27,7 @@ export default function CommunityHighlightsSection({ reviews }: { reviews: any[]
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {reviews.map((review: any) => (
+        {reviews.slice(0, 5).map((review: any) => (
           <div
             key={review.id}
             className="group bg-gray-900/40 border border-gray-800/50 rounded-3xl p-8 hover:border-purple-500/30 transition-all duration-500 relative"

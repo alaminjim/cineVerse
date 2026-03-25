@@ -252,14 +252,14 @@ function MoviesContent() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-800/50">
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-8 pt-6 border-t border-gray-800/50 gap-6">
                <button 
                 onClick={clearFilters}
                 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
                >
                  <X className="w-3 h-3" /> Reset Filters
                </button>
-               <div className="flex gap-2">
+               <div className="flex flex-wrap justify-center sm:justify-end gap-2">
                  {SORT_OPTIONS.map((opt, idx) => (
                     <button
                       key={opt.label}
@@ -285,7 +285,7 @@ function MoviesContent() {
           </div>
         ) : movies.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-12">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-12">
               {movies.map((movie: any) => (
                 <MovieCard
                   key={movie.id || movie._id}
