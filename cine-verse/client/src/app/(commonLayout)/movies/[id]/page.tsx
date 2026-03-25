@@ -345,7 +345,10 @@ export default function MovieDetailsPage({
       </div>
     );
 
+  const isComingSoon = movie?.releaseYear > new Date().getFullYear();
+
   const getAccessLabel = () => {
+    if (isComingSoon) return "Coming Soon • Stay Tuned";
     if (movie?.pricing === "FREE") return "Free to Watch";
     if (purchaseType === "ADMIN_ACCESS") return "Administrator Access";
     if (subscriptionPlan) return `${subscriptionPlan} Subscriber`;
@@ -392,8 +395,13 @@ export default function MovieDetailsPage({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
         <div className="absolute bottom-6 left-6 md:bottom-10 md:left-12 pr-6">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase italic tracking-tighter mb-2 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase italic tracking-tighter mb-2 leading-tight flex items-center gap-4">
             {movie?.title}
+            {isComingSoon && (
+              <span className="bg-orange-500 text-white text-[10px] font-black px-3 py-1 rounded-full not-italic tracking-widest shadow-lg shadow-orange-500/20">
+                COMING SOON
+              </span>
+            )}
           </h1>
           <p className="text-purple-500 font-bold uppercase tracking-widest text-[10px] sm:text-xs md:text-sm">
             {movie?.genre?.join(" • ")} • {movie?.type === "SERIES" ? `${movie?.seasons} SEASONS` : `${movie?.runtime} MINS`}
@@ -779,7 +787,41 @@ export default function MovieDetailsPage({
         {/* Access Panel */}
         <div className="lg:col-span-1">
           <div className="bg-[#0A0A0A] border border-white/5 p-6 sm:p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] lg:sticky lg:top-28 shadow-2xl">
-            {isPurchased || movie?.pricing === "FREE" ? (
+            {isComingSoon ? (
+              /* ⏳ COMING SOON — STAY TUNED */
+              <div className="text-center py-6">
+                <div className="bg-orange-500/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto border border-orange-500/20 mb-6">
+                  <Clock className="text-orange-500 w-10 h-10" />
+                </div>
+                <h3 className="text-2xl font-black italic uppercase mb-2">Coming Soon</h3>
+                <p className="text-gray-500 text-[10px] uppercase mb-8 tracking-widest">
+                  Stay tuned! This title will be available for streaming once it releases.
+                </p>
+                
+                <button
+                  onClick={handleToggleWatchlist}
+                  disabled={watchlistLoading}
+                  className={`w-full py-4 rounded-2xl font-black uppercase italic flex items-center justify-center gap-3 transition-all border ${
+                    isWatchlisted
+                      ? "bg-purple-600/10 border-purple-500/30 text-purple-400"
+                      : "bg-white text-black hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  {watchlistLoading ? (
+                    <Loader2 className="animate-spin w-5 h-5" />
+                  ) : isWatchlisted ? (
+                    <Check size={20} />
+                  ) : (
+                    <Plus size={20} />
+                  )}
+                  {isWatchlisted ? "In Watchlist" : "Add to Watchlist"}
+                </button>
+                
+                <p className="text-[9px] text-gray-700 mt-6 uppercase tracking-widest font-bold">
+                  Release Year: {movie?.releaseYear}
+                </p>
+              </div>
+            ) : isPurchased || movie?.pricing === "FREE" ? (
               /* ✅ ACCESS GRANTED — Watch Now */
               <div className="text-center py-2 sm:py-4">
                 <div className="relative inline-block mb-6">
@@ -915,7 +957,6 @@ export default function MovieDetailsPage({
                   </Link>
                 </div>
 
-                {/* Stripe badge */}
                 <p className="text-center text-gray-700 text-[9px] uppercase tracking-widest pt-2">
                   Secure payment powered by Stripe
                 </p>
