@@ -27,22 +27,31 @@ app.use(
         envConfig.BETTER_AUTH_URL,
         "http://localhost:3000",
         "http://localhost:5000",
-      ].filter(Boolean).map(url => url.trim().replace(/\/$/, ""));
+      ]
+        .filter(Boolean)
+        .map((url) => url.trim().replace(/\/$/, ""));
 
-      if (!origin || allowed.includes(origin.replace(/\/$/, ""))) {
+      // Allow if origin is in list, or if it's a Vercel/Netlify preview
+      if (
+        !origin ||
+        allowed.includes(origin.replace(/\/$/, "")) ||
+        origin.endsWith(".vercel.app") ||
+        origin.endsWith(".netlify.app")
+      ) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
       "Cache-Control",
       "cache",
       "Pragma",
+      "x-requested-with",
     ],
   }),
 );
