@@ -94,11 +94,11 @@ export const auth = betterAuth({
   },
 
   trustedOrigins: [
+    ...envConfig.FRONTEND_URL.split(","),
     envConfig.BETTER_AUTH_URL,
-    envConfig.FRONTEND_URL,
     "http://localhost:3000",
     "http://localhost:5000",
-  ],
+  ].filter(Boolean).map(url => url.trim().replace(/\/$/, "")),
 
   session: {
     expiresIn: 60 * 60 * 24,

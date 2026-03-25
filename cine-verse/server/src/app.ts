@@ -21,12 +21,20 @@ app.set("views", path.join(process.cwd(), "src/app/template"));
 
 app.use(
   cors({
-    origin: [
-      envConfig.FRONTEND_URL,
-      envConfig.BETTER_AUTH_URL,
-      "http://localhost:3000",
-      "http://localhost:5000",
-    ].filter(Boolean),
+    origin: (origin, callback) => {
+      const allowed = [
+        ...envConfig.FRONTEND_URL.split(","),
+        envConfig.BETTER_AUTH_URL,
+        "http://localhost:3000",
+        "http://localhost:5000",
+      ].filter(Boolean).map(url => url.trim().replace(/\/$/, ""));
+
+      if (!origin || allowed.includes(origin.replace(/\/$/, ""))) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: [
