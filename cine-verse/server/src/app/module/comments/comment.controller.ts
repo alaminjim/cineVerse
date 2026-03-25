@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { commentService } from "./comment.service";
-import catchFunction from "../../shared/catchFunction";
+import { commentService } from "./comment.service.js";
+import catchFunction from "../../shared/catchFunction.js";
 import { StatusCodes } from "http-status-codes";
 
 const createComment = catchFunction(async (req: Request, res: Response) => {

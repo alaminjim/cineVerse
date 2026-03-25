@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
 
 const likeReview = async (reviewId: string, userId: string) => {
   const existingLike = await prisma.like.findUnique({

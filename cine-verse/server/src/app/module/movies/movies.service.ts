@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { uploadImage } from "../../config/cloudinary.config";
-import { stripe } from "../../config/stripe";
-import { prisma } from "../../lib/prisma";
+import { uploadImage } from "../../config/cloudinary.config.js";
+import { stripe } from "../../config/stripe.js";
+import { prisma } from "../../lib/prisma.js";
 
 const formatTags = (tags: string[]) => 
   tags.map(tag => {

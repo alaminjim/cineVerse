@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import catchFunction from "../../shared/catchFunction";
-import { subscriptionService } from "./subcription.service";
+import catchFunction from "../../shared/catchFunction.js";
+import { subscriptionService } from "./subcription.service.js";
 
 const createSubscription = catchFunction(
   async (req: Request, res: Response) => {

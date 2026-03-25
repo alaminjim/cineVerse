@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { envConfig } from "./env";
+import { envConfig } from "./env.js";
 
 if (!envConfig.STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");

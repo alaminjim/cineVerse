@@ -1,6 +1,6 @@
 import { JwtPayload, SignOptions } from "jsonwebtoken";
-import { jwtUtils } from "./jwt";
-import { envConfig } from "../config/env";
+import { jwtUtils } from "./jwt.js";
+import { envConfig } from "../config/env.js";
 
 const accessToken = (data: JwtPayload) => {
   const token = jwtUtils.createToken(data, envConfig.ACCESS_TOKEN, {

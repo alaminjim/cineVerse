@@ -1,7 +1,7 @@
-import { UserRole } from "../../generated/prisma/enums";
-import { envConfig } from "../config/env";
-import { auth } from "../lib/auth";
-import { prisma } from "../lib/prisma";
+import { UserRole } from "../../generated/prisma/enums.js";
+import { envConfig } from "../config/env.js";
+import { auth } from "../lib/auth.js";
+import { prisma } from "../lib/prisma.js";
 
 export const Admin = async () => {
   try {

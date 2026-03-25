@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { envConfig } from "../config/env";
-import { jwtUtils } from "../utils/jwt";
-import { cookieUtils } from "../utils/cookie";
+import { envConfig } from "../config/env.js";
+import { jwtUtils } from "../utils/jwt.js";
+import { cookieUtils } from "../utils/cookie.js";
 import { NextFunction, Request, Response } from "express";
-import { prisma } from "../lib/prisma";
-import { UserRole, UserStatus } from "../../generated/prisma/enums";
+import { prisma } from "../lib/prisma.js";
+import { UserRole, UserStatus } from "../../generated/prisma/enums.js";
 
 export const authMiddleware =
   (...userRole: UserRole[]) =>

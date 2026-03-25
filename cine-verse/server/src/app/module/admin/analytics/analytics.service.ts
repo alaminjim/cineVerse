@@ -8,8 +8,8 @@ import {
   SubscriptionStatus,
   UserRole,
   UserStatus,
-} from "../../../../generated/prisma/enums";
-import { prisma } from "../../../lib/prisma";
+} from "../../../../generated/prisma/enums.js";
+import { prisma } from "../../../lib/prisma.js";
 
 const getAnalyticsStats = async () => {
   const totalMovies = await prisma.movie.count();

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { analyticsService } from "./analytics.service";
-import catchFunction from "../../../shared/catchFunction";
+import { analyticsService } from "./analytics.service.js";
+import catchFunction from "../../../shared/catchFunction.js";
 
 const getAnalyticsStats = catchFunction(async (req: Request, res: Response) => {
   const result = await analyticsService.getAnalyticsStats();

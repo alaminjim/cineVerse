@@ -1,4 +1,4 @@
-import { prisma } from "./app/lib/prisma";
+import { prisma } from "./app/lib/prisma.js";
 
 async function main() {
   console.log("Finalizing review approvals and rating updates...");

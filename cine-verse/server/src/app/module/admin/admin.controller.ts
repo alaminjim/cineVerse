@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import { adminService } from "./admin.service";
+import { adminService } from "./admin.service.js";
 import { Request, Response } from "express";
-import catchFunction from "../../shared/catchFunction";
+import catchFunction from "../../shared/catchFunction.js";
 
 const getAllAdmin = catchFunction(async (req: Request, res: Response) => {
   const result = await adminService.getAllAdmin();

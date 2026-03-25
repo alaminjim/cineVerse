@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
 
 const addToWatchList = async (movieId: string, userId: string) => {
   const movie = await prisma.movie.findUnique({

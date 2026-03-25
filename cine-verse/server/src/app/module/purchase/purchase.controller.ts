@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { purchaseService } from "./purchase.service";
-import catchFunction from "../../shared/catchFunction";
+import { purchaseService } from "./purchase.service.js";
+import catchFunction from "../../shared/catchFunction.js";
 
 const createPurchaseCheckout = catchFunction(
   async (req: Request, res: Response) => {

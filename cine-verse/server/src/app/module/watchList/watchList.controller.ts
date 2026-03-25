@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import catchFunction from "../../shared/catchFunction";
-import { watchlistService } from "./watchList.service";
+import catchFunction from "../../shared/catchFunction.js";
+import { watchlistService } from "./watchList.service.js";
 
 const addToWatchlist = catchFunction(async (req: Request, res: Response) => {
   const { movieId } = req.params;

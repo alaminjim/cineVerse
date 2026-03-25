@@ -1,5 +1,5 @@
-import app from "./app";
-import { Admin } from "./app/seed/seedingAdmin";
+import app from "./app.js";
+import { Admin } from "./app/seed/seedingAdmin.js";
 
 const port = 5000;
 

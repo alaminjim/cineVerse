@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { prisma } from "../../lib/prisma";
-import { UserStatus } from "../../../generated/prisma/enums";
-import { IRequestUser } from "../../interface/requestUser.interface";
-import { IAdminUpdate } from "./admin.interface";
+import { prisma } from "../../lib/prisma.js";
+import { UserStatus } from "../../../generated/prisma/enums.js";
+import { IRequestUser } from "../../interface/requestUser.interface.js";
+import { IAdminUpdate } from "./admin.interface.js";
 
 const getAllAdmin = async () => {
   const result = await prisma.admin.findMany({

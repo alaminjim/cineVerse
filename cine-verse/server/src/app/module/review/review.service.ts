@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { ReviewStatus } from "../../../generated/prisma/enums";
-import { prisma } from "../../lib/prisma";
+import { ReviewStatus } from "../../../generated/prisma/enums.js";
+import { prisma } from "../../lib/prisma.js";
 
 const createReview = async (userId: string, payload: any) => {
   const { movieId, title, rating, content, hasSpoiler, tags } = payload;

@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import catchFunction from "../../shared/catchFunction";
+import catchFunction from "../../shared/catchFunction.js";
 import { StatusCodes } from "http-status-codes";
-import { authService } from "./auth.service";
-import { setCookieUtils } from "../../utils/cookiesSet";
-import { cookieUtils } from "../../utils/cookie";
-import { envConfig } from "../../config/env";
-import { auth } from "../../lib/auth";
+import { authService } from "./auth.service.js";
+import { setCookieUtils } from "../../utils/cookiesSet.js";
+import { cookieUtils } from "../../utils/cookie.js";
+import { envConfig } from "../../config/env.js";
+import { auth } from "../../lib/auth.js";
 
 const authRegister = catchFunction(async (req: Request, res: Response) => {
   const payload = req.body;

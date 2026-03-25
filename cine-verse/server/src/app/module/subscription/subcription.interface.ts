@@ -1,7 +1,7 @@
 import {
   SubscriptionPlan,
   SubscriptionStatus,
-} from "../../../generated/prisma/enums";
+} from "../../../generated/prisma/enums.js";
 
 export interface ICreateSubscription {
   planType: SubscriptionPlan;

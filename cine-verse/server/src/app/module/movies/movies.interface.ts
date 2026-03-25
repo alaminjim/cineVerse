@@ -1,4 +1,4 @@
-import { PricingType, ContentType } from "../../../generated/prisma/enums";
+import { PricingType, ContentType } from "../../../generated/prisma/enums.js";
 
 export interface ICreateMovie {
   title: string;

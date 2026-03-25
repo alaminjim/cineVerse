@@ -1,15 +1,15 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { envConfig } from "./app/config/env";
-import { indexRouter } from "./app/routes/index";
+import { envConfig } from "./app/config/env.js";
+import { indexRouter } from "./app/routes/index.js";
 import { toNodeHandler } from "better-auth/node";
-import { auth } from "./app/lib/auth";
-import notFound from "./app/middleware/notFound";
+import { auth } from "./app/lib/auth.js";
+import notFound from "./app/middleware/notFound.js";
 import path from "path";
-import errorHandler from "./app/middleware/errorHandler";
+import errorHandler from "./app/middleware/errorHandler.js";
 
-import { Admin } from "./app/seed/seedingAdmin";
+import { Admin } from "./app/seed/seedingAdmin.js";
 
 const app: Application = express();
 

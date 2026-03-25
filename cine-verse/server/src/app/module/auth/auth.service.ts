@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { UserStatus } from "../../../generated/prisma/enums";
-import { auth } from "../../lib/auth";
-import { ILogin, IRegister } from "./auth.interface";
-import { IRequestUser } from "../../interface/requestUser.interface";
-import { prisma } from "../../lib/prisma";
-import { tokenUtils } from "../../utils/token";
+import { UserStatus } from "../../../generated/prisma/enums.js";
+import { auth } from "../../lib/auth.js";
+import { ILogin, IRegister } from "./auth.interface.js";
+import { IRequestUser } from "../../interface/requestUser.interface.js";
+import { prisma } from "../../lib/prisma.js";
+import { tokenUtils } from "../../utils/token.js";
 
 const authRegister = async (payload: IRegister) => {
   const { name, email, password } = payload;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { likeService } from "./likes.service";
-import catchFunction from "../../shared/catchFunction";
+import { likeService } from "./likes.service.js";
+import catchFunction from "../../shared/catchFunction.js";
 
 const likeReview = catchFunction(async (req: Request, res: Response) => {
   const { reviewId } = req.params;

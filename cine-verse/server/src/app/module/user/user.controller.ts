@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import catchFunction from "../../shared/catchFunction";
-import { userService } from "./user.service";
+import catchFunction from "../../shared/catchFunction.js";
+import { userService } from "./user.service.js";
 
 const getUserDashboard = catchFunction(async (req: Request, res: Response) => {
   const user = req.user;

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { cookieUtils } from "./cookie";
+import { cookieUtils } from "./cookie.js";
 
 const isProduction = process.env.NODE_ENV === "production";
 

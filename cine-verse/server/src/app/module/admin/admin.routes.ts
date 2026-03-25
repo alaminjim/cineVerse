@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { adminController } from "./admin.controller";
-import { authMiddleware } from "../../middleware/authMiddleware";
-import { UserRole } from "../../../generated/prisma/enums";
-import { zodValidation } from "../../middleware/zod.validation";
-import { IAdminUpdateValidation } from "./admin.validation";
+import { adminController } from "./admin.controller.js";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
+import { UserRole } from "../../../generated/prisma/enums.js";
+import { zodValidation } from "../../middleware/zod.validation.js";
+import { IAdminUpdateValidation } from "./admin.validation.js";
 
 const router = Router();
 

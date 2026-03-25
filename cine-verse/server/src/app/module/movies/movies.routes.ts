@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { authMiddleware } from "../../middleware/authMiddleware";
-import { UserRole } from "../../../generated/prisma/enums";
-import { movieController } from "./movies.controller";
-import { upload } from "../../config/multer";
-import { zodValidation } from "../../middleware/zod.validation";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
+import { UserRole } from "../../../generated/prisma/enums.js";
+import { movieController } from "./movies.controller.js";
+import { upload } from "../../config/multer.js";
+import { zodValidation } from "../../middleware/zod.validation.js";
 import {
   createMovieValidationSchema,
   updateMovieValidationSchema,
-} from "./movies.validation";
+} from "./movies.validation.js";
 
 const router = Router();
 

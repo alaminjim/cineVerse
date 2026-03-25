@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { commentController } from "./comment.controller";
+import { commentController } from "./comment.controller.js";
 import {
   createCommentValidationSchema,
   updateCommentValidationSchema,
-} from "./comment.validation";
-import { authMiddleware } from "../../middleware/authMiddleware";
-import { zodValidation } from "../../middleware/zod.validation";
-import { UserRole } from "../../../generated/prisma/enums";
+} from "./comment.validation.js";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
+import { zodValidation } from "../../middleware/zod.validation.js";
+import { UserRole } from "../../../generated/prisma/enums.js";
 
 const router = Router();
 

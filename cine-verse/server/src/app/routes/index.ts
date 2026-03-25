@@ -1,15 +1,15 @@
 import { Router } from "express";
-import { authRoute } from "../module/auth/auth.routes";
-import { adminRoute } from "../module/admin/admin.routes";
-import { movieRouter } from "../module/movies/movies.routes";
-import { reviewRoute } from "../module/review/review.routes";
-import { commentRoute } from "../module/comments/comment.route";
-import { likeRoute } from "../module/likes/likes.route";
-import { watchListRoute } from "../module/watchList/watchList.route";
-import { subscriptionRoute } from "../module/subscription/subcription.route";
-import { purchaseRoute } from "../module/purchase/purchase.route";
-import { adminAnalytics } from "../module/admin/analytics/analytics.routes";
-import { userRoute } from "../module/user/user.routes";
+import { authRoute } from "../module/auth/auth.routes.js";
+import { adminRoute } from "../module/admin/admin.routes.js";
+import { movieRouter } from "../module/movies/movies.routes.js";
+import { reviewRoute } from "../module/review/review.routes.js";
+import { commentRoute } from "../module/comments/comment.route.js";
+import { likeRoute } from "../module/likes/likes.route.js";
+import { watchListRoute } from "../module/watchList/watchList.route.js";
+import { subscriptionRoute } from "../module/subscription/subcription.route.js";
+import { purchaseRoute } from "../module/purchase/purchase.route.js";
+import { adminAnalytics } from "../module/admin/analytics/analytics.routes.js";
+import { userRoute } from "../module/user/user.routes.js";
 
 const router = Router();
 

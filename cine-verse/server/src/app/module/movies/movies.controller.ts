@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import catchFunction from "../../shared/catchFunction";
-import { movieService } from "./movies.service";
+import catchFunction from "../../shared/catchFunction.js";
+import { movieService } from "./movies.service.js";
 
 const createMovie = catchFunction(async (req, res) => {
   const result = await movieService.createMovie(req.body, req.file);
