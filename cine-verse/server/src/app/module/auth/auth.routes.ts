@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { authController } from "./auth.controller.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
-import { UserRole } from "../../../generated/prisma/enums.js";
 import { zodValidation } from "../../middleware/zod.validation.js";
 import {
   authLoginValidationSchema,
   authRegisterValidationSchema,
 } from "./auth.validation.js";
+import { UserRole } from "../../../generated/prisma/enums.js";
 
 const router = Router();
 
