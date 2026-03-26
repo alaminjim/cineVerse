@@ -3,7 +3,7 @@
 
 
 
-import { PurchaseStatus, ReviewStatus, SubscriptionStatus, UserRole, UserStatus } from "../../../../generated/prisma/enums.js";
+import { PurchaseStatus, ReviewStatus, SubscriptionStatus, UserRole, UserStatus } from "@prisma/client";
 import { prisma } from "../../../lib/prisma.js";
 
 const getAnalyticsStats = async () => {

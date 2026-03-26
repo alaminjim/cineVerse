@@ -2,7 +2,7 @@ import { prisma } from "../../lib/prisma.js";
 import { stripe } from "../../config/stripe.js";
 import { envConfig } from "../../config/env.js";
 import { ICreatePurchase } from "./purchase.interface.js";
-import { PurchaseStatus, PurchaseType } from "../../../generated/prisma/enums.js";
+import { PurchaseStatus, PurchaseType } from "@prisma/client";
 
 
 

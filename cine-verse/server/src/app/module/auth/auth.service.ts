@@ -7,7 +7,7 @@ import { ILogin, IRegister } from "./auth.interface.js";
 import { IRequestUser } from "../../interface/requestUser.interface.js";
 import { prisma } from "../../lib/prisma.js";
 import { tokenUtils } from "../../utils/token.js";
-import { UserStatus } from "../../../generated/prisma/enums.js";
+import { UserStatus } from "@prisma/client";
 
 const authRegister = async (payload: IRegister) => {
   const { name, email, password } = payload;

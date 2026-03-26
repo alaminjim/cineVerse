@@ -1,4 +1,4 @@
-import { PurchaseStatus, PurchaseType } from "../../../generated/prisma/enums.js";
+import { PurchaseStatus, PurchaseType } from "@prisma/client";
 
 
 

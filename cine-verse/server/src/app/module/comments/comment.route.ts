@@ -6,7 +6,7 @@ import {
 } from "./comment.validation.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
 import { zodValidation } from "../../middleware/zod.validation.js";
-import { UserRole } from "../../../generated/prisma/enums.js";
+import { UserRole } from "@prisma/client";
 
 
 

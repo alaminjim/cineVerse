@@ -6,7 +6,7 @@ import {
   updateReviewValidationSchema,
 } from "./review.validation.js";
 import { reviewController } from "./review.controller.js";
-import { UserRole } from "../../../generated/prisma/enums.js";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 

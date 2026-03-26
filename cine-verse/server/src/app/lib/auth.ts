@@ -4,7 +4,7 @@ import { prisma } from "./prisma.js";
 import { envConfig } from "../config/env.js";
 import { bearer, emailOTP } from "better-auth/plugins";
 import { sendEmail } from "../utils/email.js";
-import { UserRole, UserStatus } from "../../generated/prisma/enums.js";
+import { UserRole, UserStatus } from "@prisma/client";
 
 export const auth = betterAuth({
   baseURL: envConfig.BETTER_AUTH_URL,

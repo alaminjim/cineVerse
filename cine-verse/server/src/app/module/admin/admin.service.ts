@@ -4,7 +4,7 @@ import { prisma } from "../../lib/prisma.js";
 
 import { IRequestUser } from "../../interface/requestUser.interface.js";
 import { IAdminUpdate } from "./admin.interface.js";
-import { UserStatus } from "../../../generated/prisma/enums.js";
+import { UserStatus } from "@prisma/client";
 
 const getAllAdmin = async () => {
   const result = await prisma.admin.findMany({

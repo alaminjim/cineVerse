@@ -3,7 +3,7 @@ import { adminController } from "./admin.controller.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
 import { zodValidation } from "../../middleware/zod.validation.js";
 import { IAdminUpdateValidation } from "./admin.validation.js";
-import { UserRole } from "../../../generated/prisma/enums.js";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 

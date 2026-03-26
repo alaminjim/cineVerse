@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
-import { ReviewStatus } from "../../../generated/prisma/enums.js";
+import { ReviewStatus } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 
 const createReview = async (userId: string, payload: any) => {

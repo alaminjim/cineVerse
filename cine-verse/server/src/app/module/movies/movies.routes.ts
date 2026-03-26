@@ -8,7 +8,7 @@ import {
   createMovieValidationSchema,
   updateMovieValidationSchema,
 } from "./movies.validation.js";
-import { UserRole } from "../../../generated/prisma/enums.js";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 

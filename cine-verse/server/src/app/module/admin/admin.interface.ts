@@ -1,4 +1,4 @@
-import { UserStatus } from "../../../generated/prisma/enums.js";
+import { UserStatus } from "@prisma/client";
 
 
 
