@@ -6,19 +6,24 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { UserRole, UserStatus } from "@prisma/client";
 
-
 export const authMiddleware =
   (...userRole: UserRole[]) =>
     async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const accessToken = cookieUtils.getCookies(req, "accessToken");
+        let accessToken = cookieUtils.getCookies(req, "accessToken");
         const sessionToken = cookieUtils.getCookies(
           req,
           "better-auth.session_token",
         );
 
+        if (!accessToken && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+          accessToken = req.headers.authorization.split(" ")[1];
+        }
+
         if (!accessToken && !sessionToken) {
-          throw new Error("Unauthorized access! No tokens provided.");
+          const error: any = new Error("Unauthorized access! No tokens provided.");
+          error.statusCode = 401;
+          throw error;
         }
 
         let userData: any = null;
@@ -55,11 +60,15 @@ export const authMiddleware =
         }
 
         if (!userData) {
-          throw new Error("Unauthorized access! Invalid session.");
+          const error: any = new Error("Unauthorized access! Invalid session.");
+          error.statusCode = 401;
+          throw error;
         }
 
         if (userData.status === UserStatus.SUSPENDED || userData.isDeleted) {
-          throw new Error("Unauthorized access! User is not active.");
+          const error: any = new Error("Unauthorized access! User is not active.");
+          error.statusCode = 403;
+          throw error;
         }
 
         if (
