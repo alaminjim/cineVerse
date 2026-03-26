@@ -16,7 +16,7 @@ const createReview = catchFunction(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await reviewService.createReview(user.userId, {
+  const result = await reviewService.createReview(user.userId, user.role, {
     movieId,
     title,
     rating,

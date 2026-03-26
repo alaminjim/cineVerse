@@ -228,11 +228,11 @@ export default function MovieDetailsPage({
     }
     try {
       setSubmitLoading(true);
-      await reviewService.createReview({
+      const res = await reviewService.createReview({
         movieId: id,
         ...reviewForm,
       });
-      toast.success("Review submitted! Pending admin approval.");
+      toast.success(res?.message || "Review submitted successfully.");
       setReviewForm({ title: "", rating: 0, content: "", hasSpoiler: false, tags: [] });
       // Refresh reviews and movie data
       const [reviewRes, movieRes] = await Promise.all([

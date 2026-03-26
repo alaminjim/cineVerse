@@ -5,7 +5,7 @@
 import { ReviewStatus } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 
-const createReview = async (userId: string, payload: any) => {
+const createReview = async (userId: string, userRole: string, payload: any) => {
   const { movieId, title, rating, content, hasSpoiler, tags } = payload;
 
   if (!movieId || !title || !rating || !content) {
@@ -27,6 +27,10 @@ const createReview = async (userId: string, payload: any) => {
     throw new Error("You already reviewed this movie");
   }
 
+  const status = userRole === "ADMIN" || userRole === "SUPER_ADMIN" 
+    ? ReviewStatus.APPROVED 
+    : ReviewStatus.PENDING;
+
   const review = await prisma.review.create({
     data: {
       userId,
@@ -36,7 +40,7 @@ const createReview = async (userId: string, payload: any) => {
       content,
       hasSpoiler: hasSpoiler || false,
       tags: tags || [],
-      status: ReviewStatus.APPROVED,
+      status,
     },
     include: {
       user: {
@@ -56,9 +60,16 @@ const createReview = async (userId: string, payload: any) => {
     },
   });
 
-  await updateMovieRating(movieId);
+  if (status === ReviewStatus.APPROVED) {
+    await updateMovieRating(movieId);
+  }
 
-  return review;
+  return {
+    ...review,
+    message: status === ReviewStatus.PENDING 
+      ? "Review submitted successfully and is pending admin approval." 
+      : "Review published successfully."
+  };
 };
 
 const getReviewsByMovieId = async (movieId: string, queryParams: any) => {
