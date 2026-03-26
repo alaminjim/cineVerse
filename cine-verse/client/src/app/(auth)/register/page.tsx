@@ -109,7 +109,7 @@ export default function RegisterPage() {
   });
 
   const handleGoogleRegister = () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://cine-verse-server-pi.vercel.app/api/v1";
     window.location.href = `${apiUrl}/auth/login/google`;
   };
 

@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       const allowed = [
-        ...envConfig.FRONTEND_URL.split(","),
+        ...(envConfig.FRONTEND_URL ? envConfig.FRONTEND_URL.split(",") : []),
         envConfig.BETTER_AUTH_URL,
         "http://localhost:3000",
         "http://localhost:5000",
