@@ -154,6 +154,7 @@ export default function MovieDetailsPage({
   const handleToggleWatchlist = async () => {
     if (!user) {
       toast.error("Please login to manage watchlist!");
+      router.push("/login");
       return;
     }
     try {
@@ -197,6 +198,11 @@ export default function MovieDetailsPage({
   const { isPurchased, purchaseType, subscriptionPlan } = access;
 
   const handlePurchase = async (type: "BUY" | "RENT") => {
+    if (!user) {
+      toast.error("Please login to purchase!");
+      router.push("/login");
+      return;
+    }
     try {
       setPurchaseLoading(type);
       const res = await purchaseService.createCheckout(id, type);
@@ -220,6 +226,7 @@ export default function MovieDetailsPage({
     e.preventDefault();
     if (!user) {
       toast.error("Please login to write a review!");
+      router.push("/login");
       return;
     }
     if (reviewForm.rating === 0) {
@@ -255,6 +262,7 @@ export default function MovieDetailsPage({
   const handleToggleLike = async (reviewId: string) => {
     if (!user) {
       toast.error("Please login to like reviews!");
+      router.push("/login");
       return;
     }
     try {
@@ -310,6 +318,7 @@ export default function MovieDetailsPage({
   const handleAddComment = async (reviewId: string) => {
     if (!user) {
       toast.error("Please login to comment!");
+      router.push("/login");
       return;
     }
     const content = commentInputs[reviewId]?.trim();
