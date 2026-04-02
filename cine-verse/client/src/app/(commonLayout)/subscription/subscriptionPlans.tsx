@@ -14,7 +14,7 @@ const plans = [
   },
   {
     name: "Monthly",
-    price: "499",
+    price: "999",
     description: "Full cinematic experience",
     features: ["HD quality (1080p)", "No ads", "3 devices support", "Priority support", "Early access to reviews", "Exclusive badges"],
     icon: Zap,

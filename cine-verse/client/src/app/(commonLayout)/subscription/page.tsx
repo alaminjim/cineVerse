@@ -20,7 +20,7 @@ const plans = [
   {
     id: "MONTHLY",
     name: "Monthly",
-    price: "৳499",
+    price: "৳999",
     period: "/month",
     description: "Perfect for casual viewers",
     features: [
