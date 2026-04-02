@@ -66,6 +66,11 @@ export default function SubscriptionPage() {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
+    if (!user) {
+      setChecking(false);
+      return;
+    }
+
     const checkActive = async () => {
       try {
         const res = await subscriptionService.getActiveSubscription();
@@ -79,7 +84,7 @@ export default function SubscriptionPage() {
       }
     };
     checkActive();
-  }, []);
+  }, [user]);
 
   const handleSubscribe = async (planType: "MONTHLY" | "YEARLY") => {
     if (!user) {
