@@ -5,8 +5,6 @@ import type { NextRequest } from "next/server";
 const protectedPaths = [
   "/user",
   "/admin",
-  "/purchase",
-  "/subscription",
 ];
 
 // Auth pages - redirect to home if already logged in
