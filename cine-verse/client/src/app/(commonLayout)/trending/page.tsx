@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { TrendingUp, Flame, Star } from "lucide-react";
@@ -13,7 +14,10 @@ export default function TrendingPage() {
     const fetchTrending = async () => {
       try {
         setLoading(true);
-        const res = await moviesService.getAllMovies({ sortBy: "avgRating", limit: 10 });
+        const res = await moviesService.getAllMovies({
+          sortBy: "avgRating",
+          limit: 10,
+        });
         setMovies(res?.data || []);
       } catch (err) {
         console.error(err);
@@ -33,30 +37,34 @@ export default function TrendingPage() {
               <TrendingUp className="w-8 h-8 text-orange-500" />
             </div>
             <div>
-              <h1 className="text-4xl font-black uppercase italic tracking-tighter">Trending Now</h1>
-              <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">Most popular titles this week</p>
+              <h1 className="text-4xl font-black uppercase italic tracking-tighter">
+                Trending Now
+              </h1>
+              <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">
+                Most popular titles this week
+              </p>
             </div>
           </div>
         </div>
 
         {loading ? (
-             <div className="py-20 text-center text-gray-500 uppercase tracking-widest text-xs font-bold animate-pulse">
-                Fetching Current Trends...
-             </div>
+          <div className="py-20 text-center text-gray-500 uppercase tracking-widest text-xs font-bold animate-pulse">
+            Fetching Current Trends...
+          </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {movies.map((item: any) => (
-               <MovieCard
-               key={item.id}
-               id={item.id}
-               title={item.title}
-               posterUrl={item.thumbnail}
-               rating={item.avgRating}
-               type={item.type}
-               year={item.releaseYear}
-               genres={item.genre}
-               isPremium={item.pricing === "PREMIUM"}
-             />
+              <MovieCard
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                posterUrl={item.thumbnail}
+                rating={item.avgRating}
+                type={item.type}
+                year={item.releaseYear}
+                genres={item.genre}
+                isPremium={item.pricing === "PREMIUM"}
+              />
             ))}
           </div>
         )}
