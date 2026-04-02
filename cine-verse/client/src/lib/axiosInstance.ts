@@ -14,8 +14,7 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// Routes that are public and should NOT force redirect on 401
-const publicPaths = ["/", "/movies", "/info", "/about", "/contact", "/privacy", "/terms", "/faq", "/series", "/trending"];
+const publicPaths = ["/", "/movies", "/info", "/about", "/contact", "/privacy", "/terms", "/faq", "/series", "/trending", "/subscription"];
 
 axiosInstance.interceptors.response.use(
   (response) => response,
