@@ -13,13 +13,14 @@ import {
   Crown,
   Menu,
   X,
+  Loader2,
 } from "lucide-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const sidebarLinks = [
   { href: "/user/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -36,8 +37,47 @@ export default function UserLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { user, setUser, logout } = useAuthStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Client-side auth guard
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (user) {
+        setAuthChecked(true);
+        return;
+      }
+      try {
+        const res = await authService.getMe();
+        if (res?.success && res.data) {
+          setUser(res.data);
+          setAuthChecked(true);
+        } else {
+          Cookies.remove("accessToken");
+          Cookies.remove("refreshToken");
+          logout();
+          toast.error("Please login to access dashboard");
+          router.replace("/login");
+        }
+      } catch {
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
+        logout();
+        router.replace("/login");
+      }
+    };
+    checkAuth();
+  }, [user, setUser, logout, router]);
+
+  if (!authChecked) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-black">
+        <Loader2 className="animate-spin text-blue-500 w-12 h-12 mb-4" />
+        <p className="text-gray-500 font-medium animate-pulse">Verifying access...</p>
+      </div>
+    );
+  }
 
   const handleLogout = async () => {
     try {

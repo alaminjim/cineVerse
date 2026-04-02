@@ -14,15 +14,32 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+// Routes that are public and should NOT force redirect on 401
+const publicPaths = ["/", "/movies", "/info", "/about", "/contact", "/privacy", "/terms", "/faq", "/series", "/trending"];
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       Cookies.remove("accessToken");
-      window.location.href = "/login";
+      
+      // Only redirect to login if on a protected route
+      if (typeof window !== "undefined") {
+        const currentPath = window.location.pathname;
+        const isPublicPage =
+          publicPaths.some((path) => currentPath === path) ||
+          currentPath.startsWith("/movies/") ||
+          currentPath.startsWith("/login") ||
+          currentPath.startsWith("/register");
+        
+        if (!isPublicPage) {
+          window.location.href = "/login";
+        }
+      }
     }
     return Promise.reject(error);
   },
 );
 
 export default axiosInstance;
+
