@@ -36,8 +36,8 @@ const createPurchaseCheckout = async (
   const amount =
     payload.purchaseType === "BUY" ? movie.buyPrice : movie.rentPrice;
 
-  if (!amount || amount <= 0) {
-    throw new Error(`Price not set for this movie`);
+  if (!amount || amount < 50) {
+    throw new Error(`Price for this movie must be at least 50 BDT, currently ${amount || 0}`);
   }
 
   const movieImages = movie.thumbnail ? [movie.thumbnail] : [];
@@ -61,7 +61,7 @@ const createPurchaseCheckout = async (
     mode: "payment",
     success_url: `${envConfig.FRONTEND_URL}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${envConfig.FRONTEND_URL}/purchase/cancel`,
-    customer_email: userEmail,
+    ...(userEmail ? { customer_email: userEmail } : {}),
     metadata: {
       userId,
       movieId: payload.movieId,

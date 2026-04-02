@@ -141,11 +141,13 @@ const googleLoginSuccess = async (session: any) => {
 
   const accessToken = tokenUtils.accessToken({
     userId: user.id,
+    email: user.email,
     role: user.role || "USER",
   });
 
   const refreshToken = tokenUtils.refreshToken({
     userId: user.id,
+    email: user.email,
     role: user.role || "USER",
   });
 
