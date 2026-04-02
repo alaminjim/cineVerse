@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/lib/store";
-import { Film, Mail, Lock, User, Loader2, AlertCircle } from "lucide-react";
+import { Film, Mail, Lock, User, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { useForm } from "@tanstack/react-form";
@@ -38,6 +38,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { setUser } = useAuthStore();
   const [serverErrors, setServerErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -266,7 +267,7 @@ export default function RegisterPage() {
                         <Lock className="h-5 w-5 text-muted-foreground" />
                       </div>
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         id="password"
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -275,10 +276,21 @@ export default function RegisterPage() {
                           isInvalid || serverErrors.password
                             ? "border-red-500"
                             : "border-border"
-                        } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-4`}
+                        } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-11`}
                         placeholder="••••••••"
                         required
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
                     </div>
                     {(isInvalid || serverErrors.password) && errorMessage && (
                       <motion.div
