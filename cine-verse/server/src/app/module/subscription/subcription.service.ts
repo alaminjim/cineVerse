@@ -38,7 +38,7 @@ const createSubscription = async (
     mode: "subscription",
     success_url: `${envConfig.FRONTEND_URL}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${envConfig.FRONTEND_URL}/subscription/cancel`,
-    customer_email: userEmail,
+    ...(userEmail ? { customer_email: userEmail } : {}),
     metadata: {
       userId,
       planType: payload.planType,

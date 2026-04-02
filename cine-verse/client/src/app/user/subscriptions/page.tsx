@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   XCircle,
   Calendar,
+  AlertTriangle,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -18,6 +19,7 @@ export default function SubscriptionHistoryPage() {
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   const fetchSubscription = async () => {
     try {
@@ -34,10 +36,14 @@ export default function SubscriptionHistoryPage() {
     fetchSubscription();
   }, []);
 
-  const handleCancel = async () => {
-    if (!subscription?.id) return;
-    if (!confirm("Are you sure you want to cancel your subscription?")) return;
+  const handleCancelClick = () => {
+    setShowCancelModal(true);
+  };
 
+  const confirmCancel = async () => {
+    if (!subscription?.id) return;
+    
+    setShowCancelModal(false);
     try {
       setCancelling(true);
       await subscriptionService.cancelSubscription(subscription.id);
@@ -130,7 +136,7 @@ export default function SubscriptionHistoryPage() {
             <div className="flex items-center">
               <button
                 disabled={cancelling}
-                onClick={handleCancel}
+                onClick={handleCancelClick}
                 className="w-full sm:w-auto flex items-center justify-center gap-2 bg-red-600/10 text-red-400 border border-red-500/20 px-8 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all disabled:opacity-50 shadow-lg shadow-red-600/5"
               >
                 {cancelling ? (
@@ -153,6 +159,35 @@ export default function SubscriptionHistoryPage() {
             <Link href="/subscription" className="w-full sm:w-auto text-center px-6 py-2.5 bg-purple-600/10 text-purple-400 hover:bg-purple-600 hover:text-white rounded-xl font-black uppercase tracking-widest text-[10px] border border-purple-500/20 transition-all">
                Upgrade Plan
             </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel Confirmation Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#111] border border-gray-800 rounded-3xl p-6 sm:p-8 max-w-sm w-full relative transform transition-all shadow-2xl shadow-red-900/10">
+            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-red-500/20">
+              <AlertTriangle className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-center text-white uppercase tracking-tight mb-2">Cancel Subscription?</h3>
+            <p className="text-gray-400 text-sm text-center mb-8 leading-relaxed">
+              Are you sure you want to cancel your active subscription? You will lose premium access at the end of your billing cycle.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="w-full py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-all"
+              >
+                Keep It
+              </button>
+              <button
+                onClick={confirmCancel}
+                className="w-full py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs bg-red-600 text-white hover:bg-red-700 hover:scale-[1.02] shadow-lg shadow-red-600/20 transition-all"
+              >
+                Yes, Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
