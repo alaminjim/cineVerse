@@ -1,42 +1,46 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-
-const modelsToTry = [
-  "gemini-2.0-flash",
-  "gemini-1.5-flash",
-];
-
 /**
- * AI Service: Handles all communication with Google Gemini.
- * - CineBuddy chatbot (conversational)
+ * AI Service: Handles all AI capabilities via an open model provider (Pollinations AI)
+ * - CineBuddy chatbot (conversational, like ChatGPT)
  * - Movie recommendations
  * - Synopsis generation
  * - Search suggestions
  */
 
-const generateWithFallback = async (prompt: string): Promise<string> => {
-  let lastError = null;
+const generateWithOpenModel = async (systemPrompt: string, userPrompt: string, history: any[] = []): Promise<string> => {
+  const messages = [
+    { role: "system", content: systemPrompt },
+    ...history.map((msg) => ({
+      role: msg.role === "bot" || msg.role === "assistant" ? "assistant" : "user",
+      content: msg.content
+    })),
+    { role: "user", content: userPrompt }
+  ];
 
-  for (const modelName of modelsToTry) {
-    try {
-      const model = genAI.getGenerativeModel({ model: modelName });
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      return response.text().trim();
-    } catch (err: any) {
-      console.warn(`AI Model ${modelName} failed:`, err.message);
-      lastError = err;
+  try {
+    const response = await fetch("https://text.pollinations.ai/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages,
+        model: "openai", // Uses a fast reliable open model provided by Pollinations
+        seed: Math.floor(Math.random() * 1000000)
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Open model API error: ${response.statusText}`);
     }
-  }
 
-  throw (
-    lastError ||
-    new Error("All AI models failed. Please check your API key permissions.")
-  );
+    const text = await response.text();
+    return text.trim();
+  } catch (error: any) {
+    console.error("Open Model API Error:", error.message);
+    throw new Error("Our AI engines are currently cooling down. Please try again in a moment.");
+  }
 };
 
 /**
@@ -80,7 +84,7 @@ User says: "${userMessage}"
 Respond naturally as CineBuddy. If the user asks about a movie not on our platform, you can still discuss it but mention they can find similar titles on CineVerse. Never break character. Never use markdown headers or bullet point symbols like * or -. Use plain text with line breaks.`;
 
   try {
-    return await generateWithFallback(prompt);
+    return await generateWithOpenModel(prompt, userMessage, conversationHistory);
   } catch (err: any) {
     // Graceful fallback for common questions
     const lower = userMessage.toLowerCase();
@@ -108,7 +112,7 @@ If no matches, return an empty array. Example: ["Movie A", "Movie B"]
 Return ONLY the JSON array, nothing else.`;
 
   try {
-    const text = await generateWithFallback(prompt);
+    const text = await generateWithOpenModel("You are a search assistant that only responds in valid JSON format.", prompt);
     const cleanText = text
       .replace(/```json/g, "")
       .replace(/```/g, "")
@@ -121,12 +125,10 @@ Return ONLY the JSON array, nothing else.`;
 };
 
 const analyzeReviewSentiment = async (content: string) => {
-  const prompt = `
-    Analyze the following movie review for offensive language.
-    Safe -> SAFE, Unsafe -> FLAGGED.
-    Review: "${content}"
-  `;
-  return await generateWithFallback(prompt);
+  const prompt = `Review: "${content}"`;
+  const systemPrompt = "Analyze the following movie review for offensive language. Respond ONLY with SAFE or FLAGGED.";
+  
+  return await generateWithOpenModel(systemPrompt, prompt);
 };
 
 const generateMovieRecommendation = async (
@@ -147,7 +149,7 @@ const generateMovieRecommendation = async (
     Recommend 3 movies as a JSON array of strings: ["Title A", "Title B", "Title C"].
   `;
 
-  const text = await generateWithFallback(finalPrompt);
+  const text = await generateWithOpenModel("You are an AI that only returns valid JSON arrays of strings.", finalPrompt);
   const cleanText = text
     .replace(/```json/g, "")
     .replace(/```/g, "")
@@ -162,8 +164,8 @@ const generateMovieRecommendation = async (
 };
 
 const generateSynopsis = async (title: string, director: string) => {
-  const prompt = `Engaging 2-3 sentence synopsis for "${title}" by "${director}".`;
-  return await generateWithFallback(prompt);
+  const prompt = `Generate an engaging 2-3 sentence synopsis for "${title}" by "${director}".`;
+  return await generateWithOpenModel("You are an expert movie reviewer.", prompt);
 };
 
 export const aiService = {

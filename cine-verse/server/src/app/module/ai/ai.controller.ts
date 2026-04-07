@@ -51,16 +51,16 @@ const chatWithBot = async (req: Request, res: Response) => {
 
     const allMovies = await prisma.movie.findMany({
       take: 50,
-      select: { title: true },
-      orderBy: { avgRating: "desc" },
+      select: { title: true, releaseYear: true, genre: true },
+      orderBy: { createdAt: "desc" }, // Order by newest movies so the AI sees "new releases" easily
     });
 
-    const movieTitles = allMovies.map((m) => m.title);
+    const moviesContext = allMovies.map((m) => `${m.title} (${m.releaseYear || "N/A"}) - ${m.genre.slice(0, 2).join(", ")}`);
 
     const reply = await aiService.chatWithCineBuddy(
       message.trim(),
       history,
-      movieTitles,
+      moviesContext,
       userInterests
     );
 
