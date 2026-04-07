@@ -49,14 +49,14 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="w-full bg-[#040d21] relative overflow-hidden pt-32 pb-10">
+    <footer className="w-full bg-black relative overflow-hidden pt-32 pb-10">
       {/* --- GLOWING GLOBE & EFFECTS SECTION --- */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[500px] pointer-events-none flex justify-center items-center">
         {/* Main Glowing Sphere */}
-        <div className="relative w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-blue-900 via-indigo-800 to-purple-600 opacity-40 blur-3xl mix-blend-screen" />
+        <div className="relative w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-purple-900 via-fuchsia-800 to-pink-600 opacity-40 blur-3xl mix-blend-screen" />
         
         {/* Core Planet (Solid, subtle inner glow) */}
-        <div className="absolute top-[10%] w-[400px] h-[400px] rounded-full bg-gradient-to-b from-[#1e3a8a] to-[#040d21] shadow-[inset_0_-20px_50px_rgba(0,0,0,0.8),0_0_50px_rgba(124,58,237,0.5)] border border-indigo-500/20" />
+        <div className="absolute top-[10%] w-[400px] h-[400px] rounded-full bg-gradient-to-b from-[#4c1d95] to-black shadow-[inset_0_-20px_50px_rgba(0,0,0,0.9),0_0_50px_rgba(168,85,247,0.4)] border border-purple-500/20" />
 
         {/* Orbit Lines */}
         <div className="absolute top-[10%] w-[600px] h-[150px] rounded-[100%] border border-pink-500/30 -rotate-12 shadow-[0_0_15px_rgba(236,72,153,0.2)]" />
@@ -66,7 +66,7 @@ export default function Footer() {
         <motion.div
           animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[20%] left-[15%] w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 blur-[2px] opacity-80 shadow-[0_0_30px_rgba(6,182,212,0.6)] flex items-center justify-center transform -rotate-12"
+          className="absolute top-[20%] left-[15%] w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-600 blur-[2px] opacity-80 shadow-[0_0_30px_rgba(168,85,247,0.6)] flex items-center justify-center transform -rotate-12"
         >
           <Play className="w-8 h-8 text-white fill-white/20" />
         </motion.div>
@@ -145,7 +145,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[12px] text-gray-500 bg-[#040d21]">
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[12px] text-gray-500 bg-black">
           <div className="flex items-center gap-4 flex-wrap justify-center">
             <span>&copy; {new Date().getFullYear()} CineVerse, Inc.</span>
             <Link href="/terms" className="hover:text-blue-400 transition-colors">Terms</Link>
