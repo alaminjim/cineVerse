@@ -5,7 +5,12 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-const modelsToTry = ["gemini-1.5-flash-latest", "gemini-1.5-flash", "gemini-pro", "gemini-1.0-pro"];
+const modelsToTry = [
+  "gemini-1.5-flash-latest", 
+  "gemini-1.5-flash", 
+  "gemini-pro", 
+  "gemini-1.0-pro"
+];
 
 /**
  * AI Service: Handles all communication with Google Gemini.
@@ -13,6 +18,7 @@ const modelsToTry = ["gemini-1.5-flash-latest", "gemini-1.5-flash", "gemini-pro"
 
 const generateWithFallback = async (prompt: string): Promise<string> => {
   let lastError = null;
+  
   for (const modelName of modelsToTry) {
     try {
       const model = genAI.getGenerativeModel({ model: modelName });
@@ -20,11 +26,12 @@ const generateWithFallback = async (prompt: string): Promise<string> => {
       const response = await result.response;
       return response.text().trim();
     } catch (err: any) {
-      console.warn(`AI Model ${modelName} failed, trying next... Error:`, err.message);
+      console.warn(`AI Model ${modelName} failed:`, err.message);
       lastError = err;
     }
   }
-  throw lastError || new Error("All AI models failed");
+
+  throw lastError || new Error("All AI models failed. Please check your API key permissions.");
 };
 
 const analyzeReviewSentiment = async (content: string) => {
