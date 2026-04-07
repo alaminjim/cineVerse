@@ -9,7 +9,7 @@ export default function TopRatedSection({ movies }: { movies: any[] }) {
   return (
     <section className="py-8">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className="text-2xl font-bold text-white">
           Top <span className="text-yellow-500">Rated</span>
         </h2>
       </div>

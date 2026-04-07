@@ -10,7 +10,7 @@ export default function ComingSoonSection({ movies }: { movies: any[] }) {
     <section className="py-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">
+          <h2 className="text-2xl font-bold text-white">
             <Clock className="text-orange-500 w-6 h-6" />
             Coming <span className="text-orange-500">Soon</span>
           </h2>

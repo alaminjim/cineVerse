@@ -8,7 +8,7 @@ export default function NewReleaseSection({ movies }: { movies: any[] }) {
   return (
     <section className="py-8">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className="text-2xl font-bold text-white">
           New <span className="text-blue-500">Releases</span>
         </h2>
       </div>

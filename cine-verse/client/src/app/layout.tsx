@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 import { Toaster } from "react-hot-toast";
 import Chatbot from "@/components/shared/Chatbot";
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/providers/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,12 +22,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.className}>
-      <body suppressHydrationWarning className="bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <Toaster position="top-center" reverseOrder={false} />
-          {children}
-          <Chatbot />
-        </ThemeProvider>
+      <body suppressHydrationWarning className="bg-black text-white">
+        <Toaster position="top-center" reverseOrder={false} />
+        {children}
+        <Chatbot />
       </body>
     </html>
   );

@@ -70,8 +70,8 @@ function MoviesContent() {
       try {
         setAiLoading(true);
         const res = await aiService.getMovieRecommendations(debouncedSearch);
-        const suggestions = res.data?.recommendation?.split('\n').filter((s: string) => s.trim()).slice(0, 3) || [];
-        setAiSuggestions(suggestions);
+        const movieTitles = res.data?.movies?.map((m: any) => m.title) || [];
+        setAiSuggestions(movieTitles.slice(0, 3));
         setShowAiSuggestions(true);
       } catch (err) {
         console.error("AI Search Error:", err);

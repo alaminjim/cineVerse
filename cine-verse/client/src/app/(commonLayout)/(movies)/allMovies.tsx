@@ -15,7 +15,7 @@ export default function AllMoviesSection({ movies }: { movies: any[] }) {
           <span className="text-gray-500 text-[10px] font-black tracking-widest uppercase">
             CineVerse Library
           </span>
-          <h2 className="text-2xl font-bold text-foreground">
+          <h2 className="text-2xl font-bold text-white">
           Discover <span className="text-emerald-500">More</span>
         </h2>
         </div>

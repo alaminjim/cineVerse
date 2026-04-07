@@ -65,7 +65,7 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <main className="bg-background min-h-screen pt-20">
+      <main className="bg-black min-h-screen pt-20">
         <div className="max-w-7xl mx-auto px-6 space-y-24 pb-20">
           <div className="animate-pulse space-y-8">
              <div className="h-64 bg-gray-900/50 rounded-[40px] w-full mb-12" />
@@ -96,7 +96,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="bg-background min-h-screen">
+    <main className="bg-black min-h-screen text-white">
       <Hero />
 
       <div className="max-w-7xl mx-auto px-6 space-y-24 pb-20">
@@ -117,8 +117,8 @@ export default function HomePage() {
         <FAQSection />
 
         {/* Contact Support CTA Block */}
-        <div className="bg-card border border-border rounded-3xl p-10 md:p-16 text-center shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-black uppercase italic tracking-tight text-foreground mb-4">
+        <div className="bg-[#0b0f19] border border-white/5 rounded-3xl p-10 md:p-16 text-center shadow-xl">
+          <h2 className="text-2xl md:text-3xl font-black uppercase italic tracking-tight text-white mb-4">
             Still Have Questions?
           </h2>
           <p className="text-gray-400 text-sm md:text-base font-medium max-w-2xl mx-auto mb-10">

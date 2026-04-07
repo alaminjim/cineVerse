@@ -12,7 +12,7 @@ export default function CommunityHighlightsSection({ reviews }: { reviews: any[]
       
       <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">
+          <h2 className="text-2xl font-bold text-white">
             Community <span className="text-pink-500">Highlights</span>
           </h2>
           <p className="text-gray-500 text-sm font-bold uppercase tracking-widest mt-2">What our members are saying</p>

@@ -13,7 +13,7 @@ export default function HeroSection() {
             "url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop')",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-background dark:to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-[#000]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/10 via-transparent to-transparent" />
       </div>
 
@@ -28,7 +28,7 @@ export default function HeroSection() {
             Premium Cinema Experience
           </span>
 
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tight text-white dark:text-white whitespace-pre-line">
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tight text-white whitespace-pre-line">
             {"Unlimited \n"}
             <span className="bg-gradient-to-r from-purple-400 via-purple-500 to-blue-500 bg-clip-text text-transparent">
               Entertainment
@@ -46,7 +46,7 @@ export default function HeroSection() {
             </div>
             <input
               type="text"
-              className="w-full bg-card border border-border text-foreground text-base rounded-full focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 block pl-14 pr-[130px] py-4 transition-all outline-none"
+              className="w-full bg-[#0f0f13] border border-gray-800 text-white text-base rounded-full focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 block pl-14 pr-[130px] py-4 transition-all outline-none"
               placeholder="Search for movies, TV shows, genres..."
             />
             <button className="absolute right-2 top-2 bottom-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold rounded-full px-6 transition-colors shadow-lg shadow-purple-900/40 flex items-center justify-center">
@@ -58,8 +58,8 @@ export default function HeroSection() {
             <button className="flex items-center justify-center gap-2 text-base font-semibold py-4 px-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white transition-all shadow-[0_0_20px_rgba(147,51,234,0.4)] hover:shadow-[0_0_30px_rgba(147,51,234,0.6)] hover:-translate-y-1 w-full sm:w-auto">
               <Play fill="currentColor" className="w-5 h-5" /> Start Watching
             </button>
-            <button className="flex items-center justify-center gap-2 text-base font-semibold py-4 px-8 rounded-full bg-card hover:bg-muted border border-border text-foreground transition-all hover:-translate-y-1 w-full sm:w-auto">
-              <Info className="w-5 h-5 text-muted-foreground" /> More Info
+            <button className="flex items-center justify-center gap-2 text-base font-semibold py-4 px-8 rounded-full bg-[#15151a] hover:bg-[#1f1f26] border border-gray-800 hover:border-gray-700 text-white transition-all hover:-translate-y-1 w-full sm:w-auto">
+              <Info className="w-5 h-5 text-gray-400" /> More Info
             </button>
           </div>
         </motion.div>

@@ -8,7 +8,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
 import SearchBar from "@/components/shared/SearchBar";
-import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import {
   Menu,
   X,
@@ -98,7 +97,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
         isScrolled
-          ? "bg-background/95 backdrop-blur-md border-border py-4 shadow-lg"
+          ? "bg-black/95 backdrop-blur-md border-white/10 py-4 shadow-lg"
           : "bg-transparent border-transparent py-6"
       }`}
     >
@@ -111,7 +110,7 @@ export default function Navbar() {
               className="w-6 h-6 md:w-8 md:h-8 object-contain rounded-md"
             />
           </div>
-          <span className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-foreground">
+          <span className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-white">
             Cine<span className="text-primary italic">Verse</span>
           </span>
         </Link>
@@ -137,8 +136,6 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
           {/* Search Bar */}
           <SearchBar />
-          {/* Theme Toggle */}
-          <ThemeToggle />
           {/* Subscription Button — always visible */}
           <Link
             href="/subscription"
@@ -155,7 +152,7 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all text-foreground border border-black/10 dark:border-white/10"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-white/5 transition-all text-white border border-white/10"
               >
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center font-bold text-xs">
                   {user.name?.[0].toUpperCase()}
@@ -174,14 +171,14 @@ export default function Navbar() {
                       className="fixed inset-0 z-[-1]" 
                       onClick={() => setIsProfileOpen(false)}
                     />
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute right-0 mt-2 w-56 bg-background/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl p-2 z-50 overflow-hidden"
-                    >
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute right-0 mt-2 w-56 bg-[#0f1117] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-2 z-50 overflow-hidden"
+                      >
                       <div className="px-3 py-2 border-b border-border/50 mb-1">
-                        <p className="text-xs font-bold text-foreground truncate">{user.name}</p>
+                        <p className="text-xs font-bold text-white truncate">{user.name}</p>
                         <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
                       </div>
 
@@ -259,7 +256,7 @@ export default function Navbar() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-background flex flex-col items-center justify-center gap-8 animate-in slide-in-from-top duration-300">
+        <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-black flex flex-col items-center justify-center gap-8 animate-in slide-in-from-top duration-300">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -278,19 +275,14 @@ export default function Navbar() {
             <SearchBar />
           </div>
 
-          <div className="flex items-center gap-6">
-            {/* Theme Toggle inside mobile menu */}
-            <ThemeToggle />
-
-            {/* Subscription in mobile menu */}
-            <Link
-              href="/subscription"
-              className="flex items-center gap-2 text-xl font-bold text-purple-400"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <Crown className="w-5 h-5" /> Premium
-            </Link>
-          </div>
+          {/* Subscription in mobile menu */}
+          <Link
+            href="/subscription"
+            className="flex items-center gap-2 text-xl font-bold text-purple-400"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <Crown className="w-5 h-5" /> Premium
+          </Link>
 
           <div className="h-px w-20 bg-border my-2" />
 

@@ -36,8 +36,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-background">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background z-0" />
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-black">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-black to-black z-0" />
 
       <div className="relative z-10 w-full max-w-md px-6">
         <div className="flex flex-col items-center mb-8">
@@ -45,11 +45,11 @@ export default function ForgotPasswordPage() {
             <div className="bg-primary/20 p-3 rounded-xl text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
               <Film className="w-8 h-8" />
             </div>
-            <span className="text-3xl font-bold tracking-tight text-foreground">
+            <span className="text-3xl font-bold tracking-tight text-white">
               Cine<span className="text-primary">Verse</span>
             </span>
           </Link>
-          <h1 className="text-2xl font-semibold text-foreground tracking-tight">
+          <h1 className="text-2xl font-semibold text-white tracking-tight">
             Reset Password
           </h1>
           <p className="text-sm text-muted-foreground mt-2 text-center">
@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
-        <div className="bg-card/50 backdrop-blur-xl border border-border p-8 rounded-2xl shadow-2xl">
+        <div className="bg-[#0f1117]/50 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl">
           {error && (
             <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 flex items-center gap-3 text-destructive text-sm font-medium">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -70,12 +70,12 @@ export default function ForgotPasswordPage() {
               <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center text-green-500 mb-2">
                 <CheckCircle className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-medium text-foreground">
+              <h3 className="text-lg font-medium text-white">
                 Check your email
               </h3>
               <p className="text-sm text-muted-foreground">
                 We've sent an OTP to{" "}
-                <span className="text-foreground font-medium">{email}</span>.
+                <span className="text-white font-medium">{email}</span>.
                 Use it to create a new password.
               </p>
               <Link
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
+                <label className="text-sm font-medium text-white">
                   Email Address
                 </label>
                 <div className="relative">
@@ -99,7 +99,7 @@ export default function ForgotPasswordPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-secondary/50 border border-border text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none py-3 pl-11 pr-4 transition-all"
+                    className="w-full bg-[#15171e]/50 border border-white/10 text-white text-sm rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none py-3 pl-11 pr-4 transition-all"
                     placeholder="name@example.com"
                     required
                   />

@@ -122,8 +122,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-background">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background z-0" />
+    <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-black">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-black to-black z-0" />
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -135,11 +135,11 @@ export default function LoginPage() {
             <div className="bg-primary/20 p-3 rounded-xl text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
               <Film className="w-8 h-8" />
             </div>
-            <span className="text-3xl font-bold tracking-tight text-foreground">
+            <span className="text-3xl font-bold tracking-tight text-white">
               Cine<span className="text-primary">Verse</span>
             </span>
           </Link>
-          <h1 className="text-2xl font-semibold text-foreground tracking-tight">
+          <h1 className="text-2xl font-semibold text-white tracking-tight">
             Welcome back
           </h1>
           <p className="text-sm text-muted-foreground mt-2 text-center">
@@ -147,7 +147,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="bg-card/50 backdrop-blur-xl border border-border p-8 rounded-2xl shadow-2xl">
+        <div className="bg-[#0f1117]/50 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -167,7 +167,7 @@ export default function LoginPage() {
 
                 return (
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">
+                    <label className="text-sm font-medium text-white">
                       Email Address
                     </label>
                     <div className="relative">
@@ -180,11 +180,11 @@ export default function LoginPage() {
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
-                        className={`w-full bg-secondary/50 border-2 transition-colors ${
+                        className={`w-full bg-[#15171e]/50 border-2 transition-colors ${
                           isInvalid || serverErrors.email
                             ? "border-red-500"
-                            : "border-border"
-                        } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-4`}
+                            : "border-white/10"
+                        } text-white text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-4`}
                         placeholder="name@example.com"
                         required
                       />
@@ -217,7 +217,7 @@ export default function LoginPage() {
                 return (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium text-foreground">
+                      <label className="text-sm font-medium text-white">
                         Password
                       </label>
                       <Link
@@ -237,11 +237,11 @@ export default function LoginPage() {
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
-                        className={`w-full bg-secondary/50 border-2 transition-colors ${
+                        className={`w-full bg-[#15171e]/50 border-2 transition-colors ${
                           isInvalid || serverErrors.password
                             ? "border-red-500"
-                            : "border-border"
-                        } text-foreground text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-11`}
+                            : "border-white/10"
+                        } text-white text-sm rounded-xl focus:ring-2 focus:ring-primary/20 outline-none py-3 pl-11 pr-11`}
                         placeholder="••••••••"
                         required
                       />
@@ -291,10 +291,10 @@ export default function LoginPage() {
           <div className="mt-6">
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border" />
+                <div className="w-full border-t border-white/10" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-card/50 text-muted-foreground">
+                <span className="px-2 bg-[#0f1117] text-muted-foreground">
                   Or continue with
                 </span>
               </div>
@@ -304,7 +304,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleLogin}
               disabled={googleLoading || form.state.isSubmitting}
-              className="w-full bg-secondary hover:bg-secondary/80 disabled:bg-secondary/50 text-secondary-foreground font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-3 border border-border disabled:cursor-not-allowed"
+              className="w-full bg-[#15171e] hover:bg-[#1c1f28] disabled:bg-[#15171e]/50 text-white font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-3 border border-white/10 disabled:cursor-not-allowed"
             >
               {googleLoading ? (
                 <>
