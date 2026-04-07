@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
+import SearchBar from "@/components/shared/SearchBar";
 import {
   Menu,
   X,
@@ -132,7 +133,9 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-2 lg:gap-4 shrink-0">
+        <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
+          {/* Search Bar */}
+          <SearchBar />
           {/* Subscription Button — always visible */}
           <Link
             href="/subscription"
@@ -266,6 +269,11 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+
+          {/* Search in mobile menu */}
+          <div onClick={() => setIsMobileMenuOpen(false)}>
+            <SearchBar />
+          </div>
 
           {/* Subscription in mobile menu */}
           <Link
