@@ -4,7 +4,8 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { moviesService } from "@/services/movies.service";
-import { Loader2, Clapperboard, Search, ChevronLeft, ChevronRight, Filter, X } from "lucide-react";
+import { aiService } from "@/services/ai.service";
+import { Loader2, Clapperboard, Search, ChevronLeft, ChevronRight, Filter, X, Sparkles, Wand2 } from "lucide-react";
 import MovieCard from "@/components/card/movies";
 
 const GENRES = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Thriller", "Romance", "Adventure", "Fantasy", "Animation", "Crime", "Mystery"];
@@ -36,6 +37,10 @@ function MoviesContent() {
 
   const [searchTerms, setSearchTerms] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showAiSuggestions, setShowAiSuggestions] = useState(false);
+  
   const [genre, setGenre] = useState("");
   const [type, setType] = useState("");
   const [releaseYear, setReleaseYear] = useState("");
@@ -54,6 +59,28 @@ function MoviesContent() {
     }, 500);
     return () => clearTimeout(handler);
   }, [searchTerms]);
+
+  // AI Smart Suggestions Logic
+  useEffect(() => {
+    const fetchAiSuggestions = async () => {
+      if (debouncedSearch.length < 3) {
+        setAiSuggestions([]);
+        return;
+      }
+      try {
+        setAiLoading(true);
+        const res = await aiService.getMovieRecommendations(debouncedSearch);
+        const suggestions = res.data?.recommendation?.split('\n').filter((s: string) => s.trim()).slice(0, 3) || [];
+        setAiSuggestions(suggestions);
+        setShowAiSuggestions(true);
+      } catch (err) {
+        console.error("AI Search Error:", err);
+      } finally {
+        setAiLoading(false);
+      }
+    };
+    fetchAiSuggestions();
+  }, [debouncedSearch]);
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -145,16 +172,53 @@ function MoviesContent() {
           </div>
 
           <div className="flex items-center gap-3">
-             <div className="relative w-full md:w-80">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Titles, people, stories..."
-                  value={searchTerms}
-                  className="w-full bg-gray-900/40 border border-gray-800 text-white pl-11 pr-4 py-3 rounded-2xl focus:outline-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600/50 transition-all placeholder:text-gray-600 text-sm font-medium"
-                  onChange={(e) => setSearchTerms(e.target.value)}
-                />
-              </div>
+              <form 
+                onSubmit={(e) => e.preventDefault()}
+                onBlur={() => setTimeout(() => setShowAiSuggestions(false), 200)}
+                className="relative w-full md:w-80"
+              >
+                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4" />
+                 <input
+                   type="text"
+                   placeholder="Titles, people, stories..."
+                   value={searchTerms}
+                   onFocus={() => searchTerms.length > 2 && setShowAiSuggestions(true)}
+                   className="w-full bg-gray-900/40 border border-gray-800 text-white pl-11 pr-4 py-3 rounded-2xl focus:outline-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600/50 transition-all placeholder:text-gray-600 text-sm font-medium"
+                   onChange={(e) => setSearchTerms(e.target.value)}
+                 />
+                 
+                 {/* AI Suggestions Dropdown */}
+                 {showAiSuggestions && (aiLoading || aiSuggestions.length > 0) && (
+                   <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="p-3 bg-purple-600/10 border-b border-gray-800 flex items-center gap-2">
+                         <Sparkles className="w-3 h-3 text-purple-400" />
+                         <span className="text-[10px] font-black uppercase tracking-widest text-purple-400">AI Smart Suggestions</span>
+                      </div>
+                      <div className="p-2">
+                        {aiLoading ? (
+                          <div className="p-4 flex items-center justify-center gap-3">
+                             <Loader2 className="w-4 h-4 text-purple-500 animate-spin" />
+                             <span className="text-xs text-gray-500 font-medium italic">Gemini is thinking...</span>
+                          </div>
+                        ) : (
+                          aiSuggestions.map((s, i) => (
+                            <button
+                              key={i}
+                              onClick={() => {
+                                setSearchTerms(s.replace(/^\d+\.\s*/, ''));
+                                setShowAiSuggestions(false);
+                              }}
+                              className="w-full text-left p-3 rounded-xl hover:bg-white/5 transition-all group flex items-start gap-3"
+                            >
+                               <Wand2 className="w-4 h-4 text-gray-600 group-hover:text-purple-500 transition-colors mt-0.5 shrink-0" />
+                               <span className="text-sm text-gray-400 group-hover:text-white transition-colors line-clamp-2">{s.replace(/^\d+\.\s*/, '')}</span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                   </div>
+                 )}
+              </form>
               <button 
                 onClick={() => setShowFilters(!showFilters)}
                 className={`p-3 rounded-2xl border transition-all ${showFilters ? 'bg-purple-600 border-purple-500 text-white' : 'bg-gray-900/40 border-gray-800 text-gray-500 hover:text-white'}`}

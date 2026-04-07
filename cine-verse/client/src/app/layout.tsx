@@ -10,6 +10,10 @@ export const metadata: Metadata = {
 };
 
 import { Toaster } from "react-hot-toast";
+import Chatbot from "@/components/shared/Chatbot";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -17,10 +21,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={inter.className}>
+      <body suppressHydrationWarning className="bg-black">
         <Toaster position="top-center" reverseOrder={false} />
         {children}
+        <Chatbot />
       </body>
     </html>
   );

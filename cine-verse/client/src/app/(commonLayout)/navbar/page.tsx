@@ -189,7 +189,7 @@ export default function Navbar() {
                       </Link>
 
                       <Link
-                         href={user.role === "ADMIN" ? "/admin/profile" : "/user/profile"}
+                        href="/user/profile"
                         className="flex items-center gap-2 px-3 py-2 text-sm rounded-xl hover:bg-white/5 transition-colors group"
                         onClick={() => setIsProfileOpen(false)}
                       >

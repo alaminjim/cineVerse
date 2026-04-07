@@ -87,7 +87,10 @@ export default function AdminMoviesPage() {
 
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
           {/* Search Bar */}
-          <div className="relative group w-full sm:w-64">
+          <form 
+            onSubmit={(e) => e.preventDefault()}
+            className="relative group w-full sm:w-64"
+          >
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
               <Loader2 className={`w-4 h-4 text-gray-500 transition-colors group-focus-within:text-purple-500 ${loading ? "animate-spin" : ""}`} />
             </div>
@@ -101,7 +104,7 @@ export default function AdminMoviesPage() {
               }}
               className="w-full bg-gray-900/40 border border-gray-800/50 rounded-2xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all placeholder:text-gray-600"
             />
-          </div>
+          </form>
 
           <Link
             href="/admin/movies/create"
