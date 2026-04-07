@@ -16,14 +16,24 @@ import toast from "react-hot-toast";
 export default function AdminMoviesPage() {
   const [movies, setMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
+  const limit = 10;
 
   const fetchMovies = async () => {
     try {
-      const res = await moviesService.getAllMovies({ limit: 100 });
+      setLoading(true);
+      const res = await moviesService.getAllMovies({ 
+        page, 
+        limit, 
+        searchTerm 
+      });
       setMovies(res?.data || []);
+      setTotalPages(res?.meta?.totalPages || 1);
     } catch (error) {
       console.error("Error fetching movies:", error);
     } finally {
@@ -33,7 +43,7 @@ export default function AdminMoviesPage() {
 
   useEffect(() => {
     fetchMovies();
-  }, []);
+  }, [page, searchTerm]);
 
   const confirmDelete = (id: string) => {
     setSelectedMovieId(id);
@@ -65,9 +75,9 @@ export default function AdminMoviesPage() {
 
   return (
     <div className="text-white">
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-black uppercase italic tracking-tighter">
+          <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white">
             Manage Movies
           </h1>
           <p className="text-gray-500 text-sm mt-1">
@@ -75,13 +85,32 @@ export default function AdminMoviesPage() {
           </p>
         </div>
 
-        <Link
-          href="/admin/movies/create"
-          className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-3 rounded-xl font-bold uppercase tracking-wider text-sm hover:opacity-90 transition-all shadow-lg shadow-purple-500/20"
-        >
-          <Plus className="w-5 h-5" />
-          Add Movie
-        </Link>
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+          {/* Search Bar */}
+          <div className="relative group w-full sm:w-64">
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+              <Loader2 className={`w-4 h-4 text-gray-500 transition-colors group-focus-within:text-purple-500 ${loading ? "animate-spin" : ""}`} />
+            </div>
+            <input
+              type="text"
+              placeholder="Search movies..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+              }}
+              className="w-full bg-gray-900/40 border border-gray-800/50 rounded-2xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all placeholder:text-gray-600"
+            />
+          </div>
+
+          <Link
+            href="/admin/movies/create"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-2.5 rounded-xl font-black uppercase tracking-wider text-[10px] hover:opacity-90 transition-all shadow-lg shadow-purple-500/20"
+          >
+            <Plus className="w-4 h-4" />
+            Add Movie
+          </Link>
+        </div>
       </div>
 
       {/* Mobile Card View (Tablet & below) */}
@@ -227,6 +256,29 @@ export default function AdminMoviesPage() {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-gray-800/50">
+        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+          Showing Page <span className="text-white">{page}</span> of <span className="text-white">{totalPages}</span>
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1 || loading}
+            className="px-6 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-black uppercase tracking-widest hover:border-purple-500/50 transition-all disabled:opacity-30"
+          >
+            Prev
+          </button>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages || loading}
+            className="px-6 py-2.5 bg-purple-600/10 border border-purple-500/20 text-purple-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-purple-600 hover:text-white transition-all disabled:opacity-30"
+          >
+            Next
+          </button>
         </div>
       </div>
 

@@ -28,8 +28,12 @@ export const userService = {
     return response.data;
   },
 
-  getAllUsers: async (page = 1, limit = 10) => {
-    const response = await axiosInstance.get(`/user/all?page=${page}&limit=${limit}`, noStoreConfig);
+  getAllUsers: async (page = 1, limit = 10, searchTerm = "") => {
+    let url = `/user/all?page=${page}&limit=${limit}`;
+    if (searchTerm) {
+      url += `&searchTerms=${encodeURIComponent(searchTerm)}`;
+    }
+    const response = await axiosInstance.get(url, noStoreConfig);
     return response.data;
   },
 };

@@ -4,6 +4,7 @@
 
 import { ReviewStatus } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
+import { aiService } from "../ai/ai.service.js";
 
 const createReview = async (userId: string, userRole: string, payload: any) => {
   const { movieId, title, rating, content, hasSpoiler, tags } = payload;
@@ -27,9 +28,20 @@ const createReview = async (userId: string, userRole: string, payload: any) => {
     throw new Error("You already reviewed this movie");
   }
 
-  const status = userRole === "ADMIN" || userRole === "SUPER_ADMIN" 
+  let status: ReviewStatus = userRole === "ADMIN" || userRole === "SUPER_ADMIN" 
     ? ReviewStatus.APPROVED 
     : ReviewStatus.PENDING;
+
+  // AI Sentiment Analysis (Moderation)
+  try {
+    const sentiment = await aiService.analyzeReviewSentiment(content);
+    if (sentiment === "FLAGGED") {
+      status = ReviewStatus.REJECTED;
+    }
+  } catch (error) {
+    console.error("AI Sentiment Analysis failed:", error);
+    // Fallback to PENDING if AI fails
+  }
 
   const review = await prisma.review.create({
     data: {
@@ -68,6 +80,8 @@ const createReview = async (userId: string, userRole: string, payload: any) => {
     ...review,
     message: status === ReviewStatus.PENDING 
       ? "Review submitted successfully and is pending admin approval." 
+      : status === ReviewStatus.REJECTED
+      ? "Review submitted but flagged by AI for moderation and currently rejected."
       : "Review published successfully."
   };
 };

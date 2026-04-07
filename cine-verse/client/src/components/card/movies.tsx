@@ -172,3 +172,21 @@ export default function MovieCard({
     </Link>
   );
 }
+export function MovieCardSkeleton() {
+  return (
+    <div className="h-full flex flex-col rounded-xl overflow-hidden bg-gray-900 shadow-xl border border-gray-800 animate-pulse">
+      <div className="relative aspect-[2/3] bg-gray-800/50" />
+      <div className="p-4 space-y-3">
+        <div className="h-4 bg-gray-800 rounded w-3/4" />
+        <div className="flex justify-between">
+          <div className="h-3 bg-gray-800 rounded w-1/4" />
+          <div className="h-3 bg-gray-800 rounded w-1/4" />
+        </div>
+        <div className="flex gap-1">
+          <div className="h-4 bg-gray-800 rounded w-12" />
+          <div className="h-4 bg-gray-800 rounded w-12" />
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -13,6 +13,12 @@ router.get(
 );
 
 router.get(
+  "/chart-data",
+  authMiddleware(UserRole.ADMIN),
+  analyticsController.getChartData,
+);
+
+router.get(
   "/activity-logs",
   authMiddleware(UserRole.ADMIN),
   analyticsController.getActivityLogs,

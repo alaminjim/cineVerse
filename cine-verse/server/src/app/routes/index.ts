@@ -10,6 +10,7 @@ import { subscriptionRoute } from "../module/subscription/subcription.route.js";
 import { purchaseRoute } from "../module/purchase/purchase.route.js";
 import { adminAnalytics } from "../module/admin/analytics/analytics.routes.js";
 import { userRoute } from "../module/user/user.routes.js";
+import { aiRouter } from "../module/ai/ai.routes.js";
 
 const router = Router();
 
@@ -34,5 +35,7 @@ router.use("/purchase", purchaseRoute);
 router.use("/admin-analytics", adminAnalytics);
 
 router.use("/user", userRoute);
+
+router.use("/ai", aiRouter);
 
 export const indexRouter = router;

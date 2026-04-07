@@ -11,11 +11,17 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
 
   const fetchUsers = async () => {
     try {
-      const res = await userService.getAllUsers(1, 100);
+      setLoading(true);
+      const res = await userService.getAllUsers(page, limit, searchTerm);
       setUsers(res?.data || []);
+      setTotalPages(res?.meta?.totalPages || 1);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -25,7 +31,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [page, searchTerm]);
 
   const handleStatusChange = async (userId: string, status: string) => {
     try {
@@ -65,13 +71,32 @@ export default function AdminUsersPage() {
 
   return (
     <div className="text-white">
-      <div className="mb-10">
-        <h1 className="text-3xl font-black uppercase italic tracking-tighter">
-          User Management
-        </h1>
-        <p className="text-gray-500 text-sm mt-1">
-          Monitor and manage user accounts and access
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <div>
+          <h1 className="text-3xl font-black uppercase italic tracking-tighter">
+            User Management
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Monitor and manage user accounts and access
+          </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative group max-w-md w-full">
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <Loader2 className={`w-4 h-4 text-gray-500 transition-colors group-focus-within:text-purple-500 ${loading ? "animate-spin" : ""}`} />
+          </div>
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
+            className="w-full bg-gray-900/40 border border-gray-800/50 rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all placeholder:text-gray-600"
+          />
+        </div>
       </div>
 
       {/* Mobile Card View (Tablet & below) */}
@@ -234,6 +259,29 @@ export default function AdminUsersPage() {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-gray-800/50">
+        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+          Showing Page <span className="text-white">{page}</span> of <span className="text-white">{totalPages}</span>
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1 || loading}
+            className="px-6 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-xs font-black uppercase tracking-widest hover:border-purple-500/50 transition-all disabled:opacity-30"
+          >
+            Prev
+          </button>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages || loading}
+            className="px-6 py-2.5 bg-purple-600/10 border border-purple-500/20 text-purple-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-purple-600 hover:text-white transition-all disabled:opacity-30"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

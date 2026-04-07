@@ -101,6 +101,53 @@ const getAnalyticsStats = async () => {
   };
 };
 
+const getChartData = async () => {
+  // Last 7 days user registration
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    return d.toISOString().split("T")[0];
+  }).reverse();
+
+  const userStats = await Promise.all(
+    last7Days.map(async (date) => {
+      const count = await prisma.user.count({
+        where: {
+          createdAt: {
+            gte: new Date(date),
+            lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
+          },
+        },
+      });
+      return { date, users: count };
+    })
+  );
+
+  const revenueStats = await Promise.all(
+    last7Days.map(async (date) => {
+      const result = await prisma.purchase.aggregate({
+        where: {
+          status: PurchaseStatus.ACTIVE,
+          updatedAt: {
+            gte: new Date(date),
+            lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
+          },
+        },
+        _sum: { amount: true },
+      });
+      return { date, revenue: result._sum.amount || 0 };
+    })
+  );
+
+  return {
+    success: true,
+    data: {
+      userStats,
+      revenueStats,
+    },
+  };
+};
+
 const getActivityLogs = async (queryParams: any) => {
   const { page = 1, limit = 20 } = queryParams;
 
@@ -246,4 +293,5 @@ export const analyticsService = {
   getPendingReviews,
   approveReview,
   rejectReview,
+  getChartData,
 };

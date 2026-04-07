@@ -13,6 +13,11 @@ export const adminService = {
     return response.data;
   },
 
+  getChartData: async () => {
+    const response = await axiosInstance.get("/admin-analytics/chart-data", noStoreConfig);
+    return response.data;
+  },
+
   getPendingReviews: async (page = 1, limit = 10) => {
     const response = await axiosInstance.get(
       `/admin-analytics/pending-reviews?page=${page}&limit=${limit}`,

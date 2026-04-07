@@ -13,23 +13,43 @@ import {
   ShoppingBag,
   Loader2,
 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+} from "recharts";
+import { motion } from "framer-motion";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<any>(null);
+  const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const res = await adminService.getAnalyticsStats();
-        setStats(res?.data || null);
+        const [statsRes, chartRes] = await Promise.all([
+          adminService.getAnalyticsStats(),
+          adminService.getChartData(),
+        ]);
+        setStats(statsRes?.data || null);
+        setChartData(chartRes?.data || null);
       } catch (error) {
-        console.error("Failed to load stats:", error);
+        console.error("Failed to load dashboard data:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+    fetchData();
   }, []);
 
   if (loading)
@@ -59,25 +79,94 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {statCards.map((card) => {
+        {statCards.map((card, i) => {
           const Icon = card.icon;
           return (
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
               key={card.label}
-              className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-6 hover:border-gray-700/50 transition-all"
+              className="bg-gray-900/40 border border-gray-800/50 rounded-2xl p-6 hover:border-gray-700/50 transition-all group"
             >
               <div className="flex items-center justify-between mb-4">
                 <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">
                   {card.label}
                 </span>
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${card.color} flex items-center justify-center`}>
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${card.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                   <Icon className="w-5 h-5 text-white" />
                 </div>
               </div>
               <p className="text-3xl font-black text-white">{card.value}</p>
-            </div>
+            </motion.div>
           );
         })}
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        {/* Revenue Chart */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gray-900/40 border border-gray-800/50 rounded-3xl p-8"
+        >
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400">Revenue Trend (7 Days)</h3>
+            <div className="bg-green-500/10 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full border border-green-500/20">
+              Real-time Data
+            </div>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData?.revenueStats || []}>
+                <defs>
+                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
+                <XAxis dataKey="date" stroke="#9ca3af" fontSize={10} tickFormatter={(val) => val.split('-').slice(1).join('/')} />
+                <YAxis stroke="#9ca3af" fontSize={10} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px' }}
+                  itemStyle={{ color: '#10b981', fontSize: '12px', fontWeight: 'bold' }}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#10b981" fillOpacity={1} fill="url(#colorRev)" strokeWidth={3} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        {/* User Stats Chart */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gray-900/40 border border-gray-800/50 rounded-3xl p-8"
+        >
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400">User Signups (7 Days)</h3>
+            <div className="bg-blue-500/10 text-blue-400 text-[10px] font-bold px-2 py-1 rounded-full border border-blue-500/20">
+              New Growth
+            </div>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData?.userStats || []}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
+                <XAxis dataKey="date" stroke="#9ca3af" fontSize={10} tickFormatter={(val) => val.split('-').slice(1).join('/')} />
+                <YAxis stroke="#9ca3af" fontSize={10} />
+                <Tooltip 
+                  cursor={{ fill: '#374151', opacity: 0.1 }}
+                  contentStyle={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px' }}
+                  itemStyle={{ color: '#8b5cf6', fontSize: '12px', fontWeight: 'bold' }}
+                />
+                <Bar dataKey="users" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
       </div>
 
       {/* User Status */}

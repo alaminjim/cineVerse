@@ -15,12 +15,17 @@ import {
   Film,
   Crown,
   LayoutDashboard,
+  User as UserIcon,
+  Settings,
+  ChevronDown,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -83,7 +88,8 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Movies", path: "/movies" },
-    { name: "Info", path: "/info" },
+    { name: "Series", path: "/series" },
+    { name: "Trending", path: "/trending" },
   ];
 
   return (
@@ -140,22 +146,81 @@ export default function Navbar() {
           </Link>
 
           {user ? (
-            <div className="flex items-center gap-3 lg:gap-4">
-              <Link
-                href={
-                  user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"
-                }
-                className="flex items-center gap-1.5 text-xs lg:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                {user.role === "ADMIN" ? "Admin" : "Dashboard"}
-              </Link>
+            <div className="relative">
               <button
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 text-xs lg:text-sm font-medium text-muted-foreground hover:text-destructive transition-colors"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-white/5 transition-all text-white border border-white/10"
               >
-                <LogOut className="w-4 h-4" /> Log Out
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center font-bold text-xs">
+                  {user.name?.[0].toUpperCase()}
+                </div>
+                <div className="hidden lg:block text-left">
+                  <p className="text-xs font-bold truncate max-w-[80px]">{user.name}</p>
+                  <p className="text-[10px] text-muted-foreground capitalize">{user.role?.toLowerCase()}</p>
+                </div>
+                <ChevronDown className={`w-4 h-4 transition-transform ${isProfileOpen ? "rotate-180" : ""}`} />
               </button>
+
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-[-1]" 
+                      onClick={() => setIsProfileOpen(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 mt-2 w-56 bg-background/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl p-2 z-50 overflow-hidden"
+                    >
+                      <div className="px-3 py-2 border-b border-border/50 mb-1">
+                        <p className="text-xs font-bold text-white truncate">{user.name}</p>
+                        <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
+                      </div>
+
+                      <Link
+                        href={user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"}
+                        className="flex items-center gap-2 px-3 py-2 text-sm rounded-xl hover:bg-white/5 transition-colors group"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <LayoutDashboard className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
+                        <span>Dashboard</span>
+                      </Link>
+
+                      <Link
+                         href={user.role === "ADMIN" ? "/admin/profile" : "/user/profile"}
+                        className="flex items-center gap-2 px-3 py-2 text-sm rounded-xl hover:bg-white/5 transition-colors group"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <UserIcon className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+                        <span>My Profile</span>
+                      </Link>
+
+                      {user.role === "ADMIN" && (
+                        <Link
+                          href="/admin/settings"
+                          className="flex items-center gap-2 px-3 py-2 text-sm rounded-xl hover:bg-white/5 transition-colors group"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <Settings className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+                          <span>Settings</span>
+                        </Link>
+                      )}
+
+                      <div className="h-px bg-border/50 my-1" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive rounded-xl hover:bg-destructive/10 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Log Out</span>
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
           ) : (
             <>

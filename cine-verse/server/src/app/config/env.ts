@@ -34,6 +34,7 @@ interface EnvConfig {
     SMTP_PORT: string;
     SMTP_FROM: string;
   };
+  GEMINI_API_KEY: string;
 }
 
 const envVariables = (): EnvConfig => {
@@ -65,6 +66,7 @@ const envVariables = (): EnvConfig => {
     "EMAIL_SENDER_SMTP_HOST",
     "EMAIL_SENDER_SMTP_PORT",
     "EMAIL_SENDER_SMTP_FROM",
+    "GEMINI_API_KEY",
   ];
 
   requireEnv.forEach((variable) => {
@@ -105,6 +107,7 @@ const envVariables = (): EnvConfig => {
       SMTP_PORT: process.env.EMAIL_SENDER_SMTP_PORT as string,
       SMTP_FROM: process.env.EMAIL_SENDER_SMTP_FROM as string,
     },
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
   };
 };
 

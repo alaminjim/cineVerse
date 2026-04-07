@@ -12,6 +12,7 @@ import EditorsPicksSection from "./(movies)/editorsPicks";
 import ComingSoonSection from "./(movies)/comingSoon";
 import CommunityHighlightsSection from "./(movies)/communityHighlights";
 import SubscriptionPlansSection from "./subscription/subscriptionPlans";
+import FAQSection from "./faqSection";
 import StreamingMarquee from "@/components/StreamingMarquee";
 import { Loader2 } from "lucide-react";
 
@@ -63,12 +64,33 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center bg-black">
-        <Loader2 className="animate-spin text-primary w-12 h-12 mb-4" />
-        <p className="text-gray-500 font-medium animate-pulse">
-          Loading CineVerse...
-        </p>
-      </div>
+      <main className="bg-black min-h-screen pt-20">
+        <div className="max-w-7xl mx-auto px-6 space-y-24 pb-20">
+          <div className="animate-pulse space-y-8">
+             <div className="h-64 bg-gray-900/50 rounded-[40px] w-full mb-12" />
+             <div className="flex items-center justify-between">
+                <div className="h-8 bg-gray-800 rounded w-1/4" />
+                <div className="h-4 bg-gray-800 rounded w-20" />
+             </div>
+             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {[1, 2, 3, 4, 5, 6].map(i => (
+                  <div key={i} className="aspect-[2/3] bg-gray-900/50 rounded-xl" />
+                ))}
+             </div>
+          </div>
+          <div className="animate-pulse space-y-8 pt-12">
+             <div className="flex items-center justify-between">
+                <div className="h-8 bg-gray-800 rounded w-1/5" />
+                <div className="h-4 bg-gray-800 rounded w-20" />
+             </div>
+             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="aspect-[2/3] bg-gray-900/50 rounded-xl" />
+                ))}
+             </div>
+          </div>
+        </div>
+      </main>
     );
   }
 
@@ -90,6 +112,8 @@ export default function HomePage() {
         {recentReviews.length > 0 && <CommunityHighlightsSection reviews={recentReviews} />}
 
         {allMovies.length > 0 && <AllMoviesSection movies={allMovies} />}
+
+        <FAQSection />
 
         {!newReleases.length && !featured.length && !allMovies.length && !comingSoon.length && (
           <div className="text-center py-20">

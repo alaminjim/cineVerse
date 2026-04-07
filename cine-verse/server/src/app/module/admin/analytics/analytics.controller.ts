@@ -31,10 +31,16 @@ const rejectReview = catchFunction(async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(result);
 });
 
+const getChartData = catchFunction(async (req: Request, res: Response) => {
+  const result = await analyticsService.getChartData();
+  res.status(StatusCodes.OK).json(result);
+});
+
 export const analyticsController = {
   getAnalyticsStats,
   getActivityLogs,
   getPendingReviews,
   approveReview,
   rejectReview,
+  getChartData,
 };
