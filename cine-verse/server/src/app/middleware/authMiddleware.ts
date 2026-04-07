@@ -20,7 +20,12 @@ export const authMiddleware =
           accessToken = req.headers.authorization.split(" ")[1];
         }
 
+        const isOptional = (req as any).isOptional;
+
         if (!accessToken && !sessionToken) {
+          if (isOptional) {
+            return next();
+          }
           const error: any = new Error("Unauthorized access! No tokens provided.");
           error.statusCode = 401;
           throw error;

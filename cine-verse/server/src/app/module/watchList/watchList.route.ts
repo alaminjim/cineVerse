@@ -22,7 +22,8 @@ router.get("/", authMiddleware(), watchlistController.getWatchlist);
 
 router.get(
   "/check/:movieId",
-  authMiddleware(UserRole.USER, UserRole.ADMIN),
+  (req, res, next) => { (req as any).isOptional = true; next(); },
+  authMiddleware(),
   watchlistController.isInWatchlist,
 );
 

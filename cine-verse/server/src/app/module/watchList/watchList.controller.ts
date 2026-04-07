@@ -29,9 +29,15 @@ const getWatchlist = catchFunction(async (req: Request, res: Response) => {
 
 const isInWatchlist = catchFunction(async (req: Request, res: Response) => {
   const { movieId } = req.params;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.json({ success: true, data: false });
+  }
+
   const result = await watchlistService.isInWatchList(
     movieId as string,
-    req.user.userId,
+    userId,
   );
   res.json(result);
 });
