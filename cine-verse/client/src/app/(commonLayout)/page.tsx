@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { moviesService } from "@/services/movies.service";
 import { reviewService } from "@/services/review.service";
 import Hero from "./hero/page";
@@ -114,6 +115,22 @@ export default function HomePage() {
         {allMovies.length > 0 && <AllMoviesSection movies={allMovies} />}
 
         <FAQSection />
+
+        {/* Contact Support CTA Block */}
+        <div className="bg-[#0b0f19] border border-white/5 rounded-3xl p-10 md:p-16 text-center shadow-xl">
+          <h2 className="text-2xl md:text-3xl font-black uppercase italic tracking-tight text-white mb-4">
+            Still Have Questions?
+          </h2>
+          <p className="text-gray-400 text-sm md:text-base font-medium max-w-2xl mx-auto mb-10">
+            If you couldn't find the answer you're looking for, please contact our support team.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-block bg-white text-black font-black uppercase italic tracking-wider px-8 py-4 rounded-2xl hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+          >
+            Contact Support Team
+          </Link>
+        </div>
 
         {!newReleases.length && !featured.length && !allMovies.length && !comingSoon.length && (
           <div className="text-center py-20">
