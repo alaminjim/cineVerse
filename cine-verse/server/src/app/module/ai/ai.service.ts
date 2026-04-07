@@ -5,11 +5,7 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-const modelsToTry = [
-  "gemini-1.5-flash",
-  "gemini-1.5-flash-8b",
-  "gemini-2.0-flash-exp",
-];
+const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b"];
 
 /**
  * AI Service: Handles all communication with Google Gemini.
