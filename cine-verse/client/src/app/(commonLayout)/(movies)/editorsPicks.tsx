@@ -8,7 +8,7 @@ export default function EditorsPicksSection({ movies }: { movies: any[] }) {
   return (
     <section className="py-8">
       <div className="mb-6">
-        <h2 className="text-2xl font-black uppercase italic tracking-tighter">
+        <h2 className="text-2xl font-bold text-foreground">
           Editor&apos;s <span className="text-purple-500">Picks</span>
         </h2>
         <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">Hand-picked for you</p>

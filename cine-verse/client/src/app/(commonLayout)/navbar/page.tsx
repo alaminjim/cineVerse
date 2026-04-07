@@ -111,7 +111,7 @@ export default function Navbar() {
               className="w-6 h-6 md:w-8 md:h-8 object-contain rounded-md"
             />
           </div>
-          <span className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-white">
+          <span className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-foreground">
             Cine<span className="text-primary italic">Verse</span>
           </span>
         </Link>
@@ -155,7 +155,7 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-white/5 transition-all text-white border border-white/10"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all text-foreground border border-black/10 dark:border-white/10"
               >
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center font-bold text-xs">
                   {user.name?.[0].toUpperCase()}
@@ -181,7 +181,7 @@ export default function Navbar() {
                       className="absolute right-0 mt-2 w-56 bg-background/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl p-2 z-50 overflow-hidden"
                     >
                       <div className="px-3 py-2 border-b border-border/50 mb-1">
-                        <p className="text-xs font-bold text-white truncate">{user.name}</p>
+                        <p className="text-xs font-bold text-foreground truncate">{user.name}</p>
                         <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
                       </div>
 

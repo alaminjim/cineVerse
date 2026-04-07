@@ -12,12 +12,8 @@ export default function CommunityHighlightsSection({ reviews }: { reviews: any[]
       
       <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black uppercase italic tracking-tighter flex flex-wrap items-center gap-x-3 gap-y-2 leading-none">
-            <div className="flex items-center gap-3">
-              <MessageCircle className="text-purple-500 w-6 h-6 md:w-8 md:h-8" />
-              Community
-            </div>
-            <span className="text-purple-500">Highlights</span>
+          <h2 className="text-2xl font-bold text-foreground">
+            Community <span className="text-pink-500">Highlights</span>
           </h2>
           <p className="text-gray-500 text-sm font-bold uppercase tracking-widest mt-2">What our members are saying</p>
         </div>
