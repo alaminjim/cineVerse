@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { userService } from "@/services/user.service";
 
 export default function UserProfilePage() {
   const { user } = useAuthStore();
@@ -197,7 +198,5 @@ export default function UserProfilePage() {
         </div>
       </div>
     </div>
-  );
-}
   );
 }
