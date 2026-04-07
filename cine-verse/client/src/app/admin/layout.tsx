@@ -35,6 +35,7 @@ const sidebarLinks = [
   { href: "/admin/my-activity", label: "Personal Dashboard", icon: User },
   { href: "/admin/purchases", label: "Purchase History", icon: ShoppingBag },
   { href: "/admin/subscriptions", label: "My Subscription", icon: Crown },
+  { href: "/admin/profile", label: "My Profile", icon: User },
   { href: "/admin/settings", label: "Settings", icon: SettingsIcon },
 ];
 

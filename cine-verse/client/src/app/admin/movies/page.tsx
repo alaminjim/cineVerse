@@ -16,7 +16,9 @@ import toast from "react-hot-toast";
 export default function AdminMoviesPage() {
   const [movies, setMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
@@ -24,13 +26,24 @@ export default function AdminMoviesPage() {
   const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const limit = 10;
 
-  const fetchMovies = async () => {
+  // Debounce search term
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setPage(1);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
+  const fetchMovies = async (showFullLoader = false) => {
     try {
-      setLoading(true);
+      if (showFullLoader) setLoading(true);
+      else setIsSearching(true);
+      
       const res = await moviesService.getAllMovies({ 
         page, 
         limit, 
-        searchTerm 
+        searchTerm: debouncedSearch 
       });
       setMovies(res?.data || []);
       setTotalPages(res?.meta?.totalPages || 1);
@@ -38,12 +51,13 @@ export default function AdminMoviesPage() {
       console.error("Error fetching movies:", error);
     } finally {
       setLoading(false);
+      setIsSearching(false);
     }
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, [page, searchTerm]);
+    fetchMovies(page === 1 && movies.length === 0);
+  }, [page, debouncedSearch]);
 
   const confirmDelete = (id: string) => {
     setSelectedMovieId(id);
@@ -92,16 +106,13 @@ export default function AdminMoviesPage() {
             className="relative group w-full sm:w-64"
           >
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <Loader2 className={`w-4 h-4 text-gray-500 transition-colors group-focus-within:text-purple-500 ${loading ? "animate-spin" : ""}`} />
+              <Loader2 className={`w-4 h-4 text-gray-500 transition-colors group-focus-within:text-purple-500 ${isSearching ? "animate-spin" : ""}`} />
             </div>
             <input
               type="text"
               placeholder="Search movies..."
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setPage(1);
-              }}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-gray-900/40 border border-gray-800/50 rounded-2xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all placeholder:text-gray-600"
             />
           </form>

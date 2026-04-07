@@ -81,7 +81,9 @@ export default function LoginPage() {
 
           setUser(res.data.user);
           toast.success("Welcome back!", { id: toastId });
-          setTimeout(() => router.push("/"), 500);
+          
+          const redirectPath = res.data.user.role === "ADMIN" ? "/admin/dashboard" : "/";
+          setTimeout(() => router.push(redirectPath), 500);
         } else {
           const errorField = res.field || "email";
           setServerErrors({
