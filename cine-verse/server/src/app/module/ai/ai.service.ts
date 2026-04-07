@@ -6,10 +6,9 @@ dotenv.config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 const modelsToTry = [
-  "gemini-1.5-flash-latest", 
-  "gemini-1.5-flash", 
-  "gemini-pro", 
-  "gemini-1.0-pro"
+  "gemini-1.5-flash",
+  "gemini-1.5-flash-8b",
+  "gemini-2.0-flash-exp",
 ];
 
 /**
@@ -18,7 +17,7 @@ const modelsToTry = [
 
 const generateWithFallback = async (prompt: string): Promise<string> => {
   let lastError = null;
-  
+
   for (const modelName of modelsToTry) {
     try {
       const model = genAI.getGenerativeModel({ model: modelName });
@@ -31,7 +30,10 @@ const generateWithFallback = async (prompt: string): Promise<string> => {
     }
   }
 
-  throw lastError || new Error("All AI models failed. Please check your API key permissions.");
+  throw (
+    lastError ||
+    new Error("All AI models failed. Please check your API key permissions.")
+  );
 };
 
 const analyzeReviewSentiment = async (content: string) => {
@@ -43,9 +45,13 @@ const analyzeReviewSentiment = async (content: string) => {
   return await generateWithFallback(prompt);
 };
 
-const generateMovieRecommendation = async (userInterests: string[], allMovies: string[], promptInput?: string) => {
+const generateMovieRecommendation = async (
+  userInterests: string[],
+  allMovies: string[],
+  promptInput?: string,
+) => {
   let basePrompt = "";
-  
+
   if (promptInput) {
     basePrompt = `User asks: "${promptInput}". Recommendation from: ${allMovies.join(", ")}`;
   } else {
@@ -58,7 +64,10 @@ const generateMovieRecommendation = async (userInterests: string[], allMovies: s
   `;
 
   const text = await generateWithFallback(finalPrompt);
-  const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+  const cleanText = text
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
   const jsonMatch = cleanText.match(/\[.*\]/s);
   try {
     return jsonMatch ? JSON.parse(jsonMatch[0]) : [];
