@@ -8,6 +8,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
 import SearchBar from "@/components/shared/SearchBar";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import {
   Menu,
   X,
@@ -136,6 +137,8 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
           {/* Search Bar */}
           <SearchBar />
+          {/* Theme Toggle */}
+          <ThemeToggle />
           {/* Subscription Button — always visible */}
           <Link
             href="/subscription"
@@ -275,14 +278,19 @@ export default function Navbar() {
             <SearchBar />
           </div>
 
-          {/* Subscription in mobile menu */}
-          <Link
-            href="/subscription"
-            className="flex items-center gap-2 text-xl font-bold text-purple-400"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <Crown className="w-5 h-5" /> Premium
-          </Link>
+          <div className="flex items-center gap-6">
+            {/* Theme Toggle inside mobile menu */}
+            <ThemeToggle />
+
+            {/* Subscription in mobile menu */}
+            <Link
+              href="/subscription"
+              className="flex items-center gap-2 text-xl font-bold text-purple-400"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Crown className="w-5 h-5" /> Premium
+            </Link>
+          </div>
 
           <div className="h-px w-20 bg-border my-2" />
 

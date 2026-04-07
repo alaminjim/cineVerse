@@ -43,7 +43,7 @@ export default function AdminMoviesPage() {
       const res = await moviesService.getAllMovies({ 
         page, 
         limit, 
-        searchTerm: debouncedSearch 
+        searchTerms: debouncedSearch 
       });
       setMovies(res?.data || []);
       setTotalPages(res?.meta?.totalPages || 1);
