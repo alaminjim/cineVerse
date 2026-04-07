@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 /**
  * AI Service: Handles all communication with Google Gemini.
@@ -56,8 +56,16 @@ const generateMovieRecommendation = async (userInterests: string[], allMovies: s
   const response = await result.response;
   const text = response.text();
   
-  const jsonMatch = text.match(/\[.*\]/s);
-  return jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+  // Clean up the response from Gemini in case it includes markdown code blocks
+  const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+  
+  const jsonMatch = cleanText.match(/\[.*\]/s);
+  try {
+    return jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+  } catch (parseErr) {
+    console.error("AI JSON Parse Error:", parseErr, "Original Text:", cleanText);
+    return [];
+  }
 };
 
 const generateSynopsis = async (title: string, director: string) => {

@@ -74,7 +74,10 @@ const getRecommendations = async (req: Request, res: Response) => {
       console.error("AI Service Error:", aiErr);
       res.status(200).json({ 
         success: true, 
-        data: { movies: [], recommendation: "I'm having trouble thinking right now. Please try again later!" } 
+        data: { 
+          movies: [], 
+          recommendation: `CineBuddy Error: ${aiErr.message || "Unknown issue"}. Please try again later!` 
+        } 
       });
     }
   } catch (error: any) {
