@@ -13,11 +13,13 @@ import { prisma } from "../../lib/prisma.js";
 const getRecommendations = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user?.id;
+    const { prompt } = req.body;
+
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    // Fetch user interests (movies they reviewed or added to watchlist)
+    // Fetch user interests
     const [reviews, watchlist] = await Promise.all([
       prisma.review.findMany({ where: { userId }, select: { movie: { select: { title: true } } } }),
       prisma.watchlist.findMany({ where: { userId }, select: { movie: { select: { title: true } } } }),
@@ -28,19 +30,26 @@ const getRecommendations = async (req: Request, res: Response) => {
       ...watchlist.map((w: any) => w.movie.title)
     ];
 
-    // Get all available movie titles for AI to choose from
     const allMovies = await prisma.movie.findMany({ select: { title: true } });
     const movieTitles = allMovies.map(m => m.title);
 
-    const recommendedTitles = await aiService.generateMovieRecommendation(userInterests, movieTitles);
+    // If there's a prompt, we treat it as a conversational/smart search query
+    // Otherwise, we do standard personalized recommendations
+    const recommendedTitles = await aiService.generateMovieRecommendation(userInterests, movieTitles, prompt);
 
-    // Fetch full movie details for the recommended titles
+    // Fetch full details
     const recommendedMovies = await prisma.movie.findMany({
       where: { title: { in: recommendedTitles } },
       select: { id: true, title: true, thumbnail: true, avgRating: true, genre: true }
     });
 
-    res.json({ success: true, data: recommendedMovies });
+    res.json({ 
+      success: true, 
+      data: {
+        movies: recommendedMovies,
+        recommendation: recommendedTitles.length > 0 ? (prompt ? `Here are some recommendations for "${prompt}"` : "Based on your history...") : "No matches found."
+      } 
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }

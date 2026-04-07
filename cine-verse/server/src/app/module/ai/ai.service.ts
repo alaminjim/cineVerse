@@ -28,21 +28,34 @@ const analyzeReviewSentiment = async (content: string) => {
   return response.text().trim();
 };
 
-const generateMovieRecommendation = async (userInterests: string[], allMovies: string[]) => {
-  const prompt = `
-    Based on the user's preferred genres/movies: ${userInterests.join(", ")},
-    recommend 3 movies from the following list that they would enjoy:
-    ${allMovies.join(", ")}
-    
+const generateMovieRecommendation = async (userInterests: string[], allMovies: string[], promptInput?: string) => {
+  let basePrompt = "";
+  
+  if (promptInput) {
+    basePrompt = `
+      The user is asking: "${promptInput}". 
+      From the following list of movies: ${allMovies.join(", ")},
+      recommend 3 movies that best match their question.
+    `;
+  } else {
+    basePrompt = `
+      Based on the user's preferred genres/movies: ${userInterests.join(", ")},
+      recommend 3 movies from the following list that they would enjoy:
+      ${allMovies.join(", ")}
+    `;
+  }
+
+  const finalPrompt = `
+    ${basePrompt}
+    Only recommend movies from the provided list. 
     Return the result as a JSON array of strings containing only the movie titles.
     Example: ["Movie A", "Movie B", "Movie C"]
   `;
 
-  const result = await model.generateContent(prompt);
+  const result = await model.generateContent(finalPrompt);
   const response = await result.response;
   const text = response.text();
   
-  // Basic JSON extraction
   const jsonMatch = text.match(/\[.*\]/s);
   return jsonMatch ? JSON.parse(jsonMatch[0]) : [];
 };
