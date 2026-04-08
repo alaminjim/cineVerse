@@ -7,7 +7,7 @@ const noStoreConfig = {
 };
 
 export const subscriptionService = {
-  createSubscription: async (planType: "MONTHLY" | "YEARLY") => {
+  createSubscription: async (planType: "MONTHLY" | "YEARLY" | "FAMILY" | "FREE") => {
     const res = await axiosInstance.post("/subscription", { planType });
     return res.data;
   },

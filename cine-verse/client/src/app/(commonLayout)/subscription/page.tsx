@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { subscriptionService } from "@/services/subscription.service";
 import { useAuthStore } from "@/lib/store";
+import { motion } from "framer-motion";
 import {
   Crown,
   Check,
@@ -18,23 +19,42 @@ import toast from "react-hot-toast";
 
 const plans = [
   {
+    id: "FREE",
+    name: "Free",
+    price: "৳0",
+    period: "/forever",
+    description: "Start exploring the community",
+    features: [
+      "Standard quality (480p)",
+      "Ad-supported streaming",
+      "1 device support",
+      "Basic watchlist",
+      "Public reviews",
+    ],
+    icon: Star,
+    popular: false,
+    gradient: "from-gray-600 to-gray-500",
+    borderColor: "border-gray-500/20",
+    bgGlow: "bg-gray-500/5",
+  },
+  {
     id: "MONTHLY",
     name: "Monthly",
     price: "৳999",
     period: "/month",
-    description: "Perfect for casual viewers",
+    description: "Full cinematic experience",
     features: [
-      "Unlimited movie streaming",
       "HD quality playback",
-      "Watch on any device",
-      "Cancel anytime",
+      "Ad-free experience",
+      "2 devices support",
       "New releases included",
+      "Exclusive badges",
     ],
     icon: Zap,
     popular: false,
-    gradient: "from-blue-600 to-cyan-500",
-    borderColor: "border-blue-500/20",
-    bgGlow: "bg-blue-500/5",
+    gradient: "from-purple-600 to-indigo-500",
+    borderColor: "border-purple-500/20",
+    bgGlow: "bg-purple-500/5",
   },
   {
     id: "YEARLY",
@@ -43,18 +63,38 @@ const plans = [
     period: "/year",
     description: "Best value — save 33%",
     features: [
-      "Everything in Monthly",
       "4K Ultra HD streaming",
-      "Offline downloads",
+      "No ads forever",
+      "4 devices support",
       "Priority support",
       "Exclusive early access",
-      "Family sharing (up to 4)",
+      "Offline downloads",
     ],
     icon: Crown,
     popular: true,
     gradient: "from-purple-600 to-pink-500",
     borderColor: "border-purple-500/30",
     bgGlow: "bg-purple-500/5",
+  },
+  {
+    id: "FAMILY",
+    name: "Family",
+    price: "৳5,999",
+    period: "/year",
+    description: "Share the love of cinema",
+    features: [
+      "Everything in Yearly",
+      "6 devices support",
+      "Kids safe profile",
+      "Family sharing hub",
+      "VIP event access",
+      "Physical merch discount",
+    ],
+    icon: Shield,
+    popular: false,
+    gradient: "from-pink-600 to-rose-500",
+    borderColor: "border-pink-500/20",
+    bgGlow: "bg-pink-500/5",
   },
 ];
 
@@ -78,7 +118,6 @@ export default function SubscriptionPage() {
           setActiveSub(res.data);
         }
       } catch {
-
       } finally {
         setChecking(false);
       }
@@ -86,7 +125,12 @@ export default function SubscriptionPage() {
     checkActive();
   }, [user]);
 
-  const handleSubscribe = async (planType: "MONTHLY" | "YEARLY") => {
+  const handleSubscribe = async (planType: "MONTHLY" | "YEARLY" | "FAMILY" | "FREE") => {
+    if (planType === "FREE") {
+      router.push("/register");
+      return;
+    }
+    
     if (!user) {
       toast.error("Please login first!");
       router.push("/login");
@@ -95,7 +139,7 @@ export default function SubscriptionPage() {
 
     try {
       setLoadingPlan(planType);
-      const res = await subscriptionService.createSubscription(planType);
+      const res = await subscriptionService.createSubscription(planType as any);
       if (res.checkoutUrl) {
         window.location.href = res.checkoutUrl;
       }
@@ -117,49 +161,33 @@ export default function SubscriptionPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white overflow-hidden">
+    <main className="min-h-screen bg-black text-white overflow-hidden pb-20">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[128px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[128px]" />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[128px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-pink-600/10 rounded-full blur-[128px]" />
       </div>
 
-      <div className="relative max-w-6xl mx-auto px-6 py-24">
-        {/* Header */}
-        <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-5 py-2 mb-8">
-            <Sparkles className="w-4 h-4 text-purple-400" />
-            <span className="text-purple-400 text-xs font-bold uppercase tracking-widest">
-              Premium Plans
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-6">
-            Unlock{" "}
-            <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Everything
-            </span>
-          </h1>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto font-light">
-            Subscribe once and get unlimited access to every movie in our
-            library. No per-movie charges, no restrictions.
-          </p>
-        </div>
-
+      <div className="relative max-w-7xl mx-auto px-6 pt-28">
         {/* Active Subscription Banner */}
         {activeSub && (
-          <div className="mb-16 max-w-2xl mx-auto">
-            <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-3xl p-8 text-center">
-              <Shield className="w-12 h-12 text-green-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-black uppercase italic mb-2">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-16 max-w-2xl mx-auto"
+          >
+            <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-3xl p-8 text-center backdrop-blur-md">
+              <Shield className="w-10 h-10 text-green-500 mx-auto mb-4" />
+              <h3 className="text-xl font-black uppercase italic mb-2">
                 You&apos;re Subscribed!
               </h3>
               <p className="text-gray-400 text-sm mb-1">
-                Plan:{" "}
-                <span className="text-green-400 font-bold">
+                Active Plan:{" "}
+                <span className="text-green-400 font-bold tracking-widest">
                   {activeSub.planType}
                 </span>
               </p>
-              <p className="text-gray-500 text-xs">
+              <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">
                 Valid until:{" "}
                 {new Date(activeSub.endDate).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -168,69 +196,98 @@ export default function SubscriptionPage() {
                 })}
               </p>
             </div>
-          </div>
+          </motion.div>
         )}
 
+        {/* Header */}
+        <div className="text-center mb-24">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full px-6 py-2.5 mb-10"
+          >
+            <Sparkles className="w-4 h-4 text-purple-400" />
+            <span className="text-purple-400 text-[10px] font-black uppercase tracking-[0.2em]">
+              Premium Cinematic Experience
+            </span>
+          </motion.div>
+          
+          <h1 className="text-6xl md:text-8xl font-black uppercase italic tracking-tight leading-tight mb-8">
+            <span className="block">Unlock</span>
+            <span className="bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent px-4">
+              Everything
+            </span>
+          </h1>
+          
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+            Choose your gateway to an infinite world of stories. 
+            <span className="block text-gray-500 text-sm mt-2">No hidden fees. Cancel anytime. Secure payments.</span>
+          </p>
+        </div>
+
         {/* Plans Grid */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {plans.map((plan) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8">
+          {plans.map((plan, idx) => {
             const Icon = plan.icon;
             const isCurrentPlan = activeSub?.planType === plan.id;
 
             return (
-              <div
+              <motion.div
                 key={plan.id}
-                className={`relative group rounded-[2.5rem] border ${plan.borderColor} ${plan.bgGlow} p-1 transition-all duration-500 hover:scale-[1.02]`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className={`relative group rounded-[2.5rem] border ${plan.borderColor} ${plan.bgGlow} p-1 transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(168,85,247,0.15)]`}
               >
                 {/* Popular Badge */}
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-full flex justify-center">
                     <div
-                      className={`bg-gradient-to-r ${plan.gradient} text-white text-[10px] font-black uppercase tracking-widest px-6 py-2 rounded-full shadow-lg`}
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[9px] font-black uppercase tracking-[0.15em] px-8 py-2 rounded-full shadow-2xl"
                     >
-                      <div className="flex items-center gap-1.5">
-                        <Star className="w-3 h-3" /> Most Popular
+                      <div className="flex items-center gap-2">
+                        <Star className="w-3 h-3 fill-white" /> Most Popular
                       </div>
                     </div>
                   </div>
                 )}
 
-                <div className="bg-[#0A0A0A] rounded-[2.3rem] p-10 h-full flex flex-col">
+                <div className="bg-[#0A0A0A]/80 backdrop-blur-xl rounded-[2.3rem] p-8 h-full flex flex-col items-center text-center">
                   {/* Plan Icon & Name */}
-                  <div className="flex items-center gap-4 mb-8">
+                  <div className="mb-8">
                     <div
-                      className={`bg-gradient-to-br ${plan.gradient} p-4 rounded-2xl shadow-lg`}
+                      className={`inline-flex bg-gradient-to-br ${plan.gradient} p-4 rounded-2xl shadow-xl mb-6 transform group-hover:rotate-12 transition-transform duration-500`}
                     >
-                      <Icon className="w-7 h-7 text-white" />
+                      <Icon className="w-8 h-8 text-white" />
                     </div>
-                    <div>
-                      <h3 className="text-2xl font-black uppercase italic">
-                        {plan.name}
-                      </h3>
-                      <p className="text-gray-500 text-xs">{plan.description}</p>
-                    </div>
+                    <h3 className="text-2xl font-black uppercase italic tracking-tight text-white mb-2">
+                      {plan.name}
+                    </h3>
+                    <p className="text-gray-500 text-[11px] font-bold uppercase tracking-widest">{plan.description}</p>
                   </div>
 
                   {/* Price */}
-                  <div className="mb-10">
-                    <span className="text-5xl font-black italic">
-                      {plan.price}
-                    </span>
-                    <span className="text-gray-500 text-sm font-medium">
-                      {plan.period}
-                    </span>
+                  <div className="mb-10 w-full py-6 border-y border-white/5">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-5xl font-black italic text-white tracking-tighter">
+                        {plan.price}
+                      </span>
+                      <span className="text-gray-500 text-xs font-black uppercase tracking-widest">
+                        {plan.period}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Features */}
-                  <div className="space-y-4 flex-1 mb-10">
+                  <div className="space-y-4 flex-1 mb-12 w-full text-left px-2">
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-center gap-3">
                         <div
-                          className={`bg-gradient-to-br ${plan.gradient} w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0`}
+                          className={`bg-gradient-to-br ${plan.gradient} w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}
                         >
-                          <Check className="w-3 h-3 text-white" />
+                          <Check className="w-3 h-3 text-white stroke-[3px]" />
                         </div>
-                        <span className="text-gray-300 text-sm font-medium">
+                        <span className="text-gray-400 text-[13px] font-semibold">
                           {feature}
                         </span>
                       </div>
@@ -240,52 +297,48 @@ export default function SubscriptionPage() {
                   {/* CTA Button */}
                   <button
                     disabled={
-                      isCurrentPlan || loadingPlan === plan.id || !!activeSub
+                      isCurrentPlan || loadingPlan === plan.id || (activeSub && plan.id !== "FREE")
                     }
                     onClick={() =>
-                      handleSubscribe(plan.id as "MONTHLY" | "YEARLY")
+                      handleSubscribe(plan.id as any)
                     }
-                    className={`w-full py-5 rounded-2xl font-black uppercase italic text-sm tracking-wider transition-all flex items-center justify-center gap-3 ${
+                    className={`w-full py-5 rounded-2xl font-black uppercase italic text-xs tracking-[0.15em] transition-all flex items-center justify-center gap-3 ${
                       isCurrentPlan
-                        ? "bg-green-500/10 text-green-500 border border-green-500/20 cursor-not-allowed"
-                        : activeSub
-                        ? "bg-gray-800 text-gray-500 cursor-not-allowed"
-                        : plan.popular
-                        ? `bg-gradient-to-r ${plan.gradient} text-white shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98]`
-                        : "bg-white text-black hover:bg-gray-200 active:scale-[0.98]"
+                        ? "bg-green-500/10 text-green-400 border border-green-500/30"
+                        : activeSub && plan.id !== "FREE"
+                        ? "bg-gray-800 text-gray-600"
+                        : plan.id === "FREE"
+                        ? "bg-white text-black hover:bg-gray-200"
+                        : `bg-gradient-to-r ${plan.gradient} text-white shadow-xl hover:brightness-110 active:scale-95`
                     }`}
                   >
                     {loadingPlan === plan.id ? (
                       <Loader2 className="animate-spin w-5 h-5" />
                     ) : isCurrentPlan ? (
-                      <>
-                        <Check className="w-5 h-5" /> Current Plan
-                      </>
-                    ) : activeSub ? (
-                      "Already Subscribed"
+                      "Current Plan"
+                    ) : plan.id === "FREE" ? (
+                      "Join Free"
                     ) : (
-                      <>
-                        <Zap className="w-5 h-5" /> Get {plan.name}
-                      </>
+                      "Get Started"
                     )}
                   </button>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
         {/* Bottom Trust Section */}
-        <div className="mt-20 text-center">
-          <div className="flex items-center justify-center gap-8 text-gray-600 text-xs font-bold uppercase tracking-widest">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4" /> Secure Payment
+        <div className="mt-32">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-12 text-gray-500 text-[10px] font-black uppercase tracking-[0.25em]">
+            <div className="flex items-center gap-3">
+              <Shield className="w-5 h-5 text-purple-500" /> Secure SSL Encryption
             </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4" /> Instant Access
+            <div className="flex items-center gap-3">
+              <Zap className="w-5 h-5 text-amber-500" /> Instant Plan Activation
             </div>
-            <div className="flex items-center gap-2">
-              <Star className="w-4 h-4" /> Cancel Anytime
+            <div className="flex items-center gap-3">
+              <Star className="w-5 h-5 text-pink-500" /> Quality Guaranteed
             </div>
           </div>
         </div>
