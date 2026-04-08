@@ -90,7 +90,6 @@ export default function Navbar() {
     { name: "Home", path: "/" },
     { name: "Movies", path: "/movies" },
     { name: "Trending", path: "/trending" },
-    { name: "Blog", path: "/blog" },
     { name: "About", path: "/about" },
   ];
 

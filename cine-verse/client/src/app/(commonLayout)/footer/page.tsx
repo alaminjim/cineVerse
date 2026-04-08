@@ -40,7 +40,6 @@ export default function Footer() {
       title: "Company",
       links: [
         { name: "About", href: "/about" },
-        { name: "Blog", href: "/blog" },
         { name: "Careers", href: "#" },
         { name: "Press", href: "#" },
         { name: "Partners", href: "#" },
@@ -108,7 +107,7 @@ export default function Footer() {
             <sup className="mr-1">2</sup> The AI CineBuddy feature utilizes advanced natural language models to ensure you find exactly the movie you want in milliseconds, outperforming standard search engines by 7X.
           </p>
           <p>
-            <sup className="mr-1">3</sup> There are now over 10 million movie lovers around the world using CineVerse. <a href="#" className="underline hover:text-gray-300 transition-colors">Read the blog post</a>.
+            <sup className="mr-1">3</sup> There are now over 10 million movie lovers around the world using CineVerse.
           </p>
         </div>
 
