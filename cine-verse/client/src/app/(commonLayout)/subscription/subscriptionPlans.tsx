@@ -59,9 +59,9 @@ export default function SubscriptionPlansSection() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-purple-600/5 to-transparent pointer-events-none" />
 
       <div className="text-center mb-16 relative z-10">
-        <h2 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter mb-4">
+        <h2 className="text-4xl md:text-5xl font-black uppercase italic tracking-tight leading-tight mb-4 text-white">
           Choose Your{" "}
-          <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+          <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-500 to-pink-600 px-2">
             Plan
           </span>
         </h2>

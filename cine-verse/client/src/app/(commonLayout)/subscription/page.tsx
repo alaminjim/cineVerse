@@ -19,25 +19,6 @@ import toast from "react-hot-toast";
 
 const plans = [
   {
-    id: "FREE",
-    name: "Free",
-    price: "৳0",
-    period: "/forever",
-    description: "Start exploring the community",
-    features: [
-      "Standard quality (480p)",
-      "Ad-supported streaming",
-      "1 device support",
-      "Basic watchlist",
-      "Public reviews",
-    ],
-    icon: Star,
-    popular: false,
-    gradient: "from-gray-600 to-gray-500",
-    borderColor: "border-gray-500/20",
-    bgGlow: "bg-gray-500/5",
-  },
-  {
     id: "MONTHLY",
     name: "Monthly",
     price: "৳999",
@@ -75,26 +56,6 @@ const plans = [
     gradient: "from-purple-600 to-pink-500",
     borderColor: "border-purple-500/30",
     bgGlow: "bg-purple-500/5",
-  },
-  {
-    id: "FAMILY",
-    name: "Family",
-    price: "৳5,999",
-    period: "/year",
-    description: "Share the love of cinema",
-    features: [
-      "Everything in Yearly",
-      "6 devices support",
-      "Kids safe profile",
-      "Family sharing hub",
-      "VIP event access",
-      "Physical merch discount",
-    ],
-    icon: Shield,
-    popular: false,
-    gradient: "from-pink-600 to-rose-500",
-    borderColor: "border-pink-500/20",
-    bgGlow: "bg-pink-500/5",
   },
 ];
 
@@ -226,7 +187,7 @@ export default function SubscriptionPage() {
         </div>
 
         {/* Plans Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto relative z-10">
           {plans.map((plan, idx) => {
             const Icon = plan.icon;
             const isCurrentPlan = activeSub?.planType === plan.id;
