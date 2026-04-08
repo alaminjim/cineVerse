@@ -162,8 +162,8 @@ const generateMovieRecommendation = async (
   }
 };
 
-const generateSynopsis = async (title: string, director: string) => {
-  const prompt = `Generate an engaging 2-3 sentence synopsis for "${title}" by "${director}".`;
+const generateSynopsis = async (title: string, director: string, type: string, genre: string) => {
+  const prompt = `Generate an engaging 2-3 sentence synopsis for a ${type} titled "${title}" directed by "${director}". The genres are ${genre}.`;
   return await generateWithOpenModel("You are an expert movie reviewer.", prompt);
 };
 

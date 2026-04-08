@@ -102,17 +102,34 @@ export default function FAQPage() {
           ))}
         </div>
 
-        <div className="mt-20 bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-[3rem] p-12 text-center">
-           <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-4">Still have questions?</h3>
-           <p className="text-gray-500 text-sm font-medium mb-8">
-             If you couldn't find the answer you're looking for, please contact our support team.
-           </p>
-           <button 
-             onClick={() => window.location.href = '/contact'}
-             className="px-10 py-5 bg-white text-black rounded-2xl font-black uppercase italic tracking-wider hover:bg-purple-600 hover:text-white transition-all shadow-xl"
-           >
-             Contact Support Team
-           </button>
+        {/* Enhanced Support Section */}
+        <div className="mt-32 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-pink-900/10 opacity-50 rounded-[3rem]" />
+          <div className="relative bg-[#050505] border border-white/5 rounded-[3rem] p-12 md:p-20 text-center shadow-2xl overflow-hidden group">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-purple-600/10 blur-[100px] rounded-full -translate-y-1/2" />
+            
+            <h3 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter mb-6 text-white">
+              Still have <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">questions?</span>
+            </h3>
+            <p className="text-gray-400 text-base md:text-lg font-medium max-w-xl mx-auto mb-12 leading-relaxed">
+              If you couldn't find the answer you're looking for, please contact our community support team. We're here 24/7.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button 
+                onClick={() => window.location.href = '/contact'}
+                className="px-12 py-5 bg-white text-black rounded-2xl font-black uppercase italic tracking-wider hover:bg-purple-600 hover:text-white hover:scale-105 transition-all duration-300 shadow-xl shadow-white/5"
+              >
+                Contact Support Team
+              </button>
+              <button 
+                onClick={() => window.location.href = '/about'}
+                className="px-12 py-5 bg-white/5 text-silver border border-white/10 rounded-2xl font-black uppercase italic tracking-wider hover:bg-white/10 transition-all duration-300"
+              >
+                Learn More
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </main>

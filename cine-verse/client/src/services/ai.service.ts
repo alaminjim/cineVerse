@@ -25,4 +25,15 @@ export const aiService = {
     });
     return response.data;
   },
+
+  // Admin: Generate synopsis based on movie details
+  generateSynopsis: async (title: string, director: string, type: string, genre: string) => {
+    const response = await axiosInstance.post(`/ai/generate-synopsis`, {
+      title,
+      director,
+      type,
+      genre
+    });
+    return response.data;
+  },
 };

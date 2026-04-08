@@ -118,19 +118,36 @@ export default function HomePage() {
         <FAQSection />
 
         {/* Contact Support CTA Block */}
-        <div className="bg-[#0b0f19] border border-white/5 rounded-3xl p-10 md:p-16 text-center shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-black uppercase italic tracking-tight text-white mb-4">
-            Still Have Questions?
-          </h2>
-          <p className="text-gray-400 text-sm md:text-base font-medium max-w-2xl mx-auto mb-10">
-            If you couldn't find the answer you're looking for, please contact our support team.
-          </p>
-          <Link
-            href="/contact"
-            className="inline-block bg-white text-black font-black uppercase italic tracking-wider px-8 py-4 rounded-2xl hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-          >
-            Contact Support Team
-          </Link>
+        {/* Enhanced Support Section */}
+        <div className="pt-20">
+          <div className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-pink-900/10 opacity-50 rounded-[3rem]" />
+            <div className="relative bg-[#050505] border border-white/5 rounded-[3rem] p-10 md:p-20 text-center shadow-2xl overflow-hidden group">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-purple-600/10 blur-[100px] rounded-full -translate-y-1/2" />
+              
+              <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter mb-6 text-white leading-tight">
+                Still have <br className="md:hidden" /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">questions?</span>
+              </h2>
+              <p className="text-gray-400 text-base md:text-lg font-medium max-w-xl mx-auto mb-12 leading-relaxed">
+                Our support team is always here to help you get the best cinematic experience.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  href="/contact"
+                  className="px-10 py-5 bg-white text-black rounded-2xl font-black uppercase italic tracking-wider hover:bg-purple-600 hover:text-white hover:scale-105 transition-all duration-300 shadow-xl shadow-white/5"
+                >
+                  Contact Support Team
+                </Link>
+                <Link
+                  href="/help"
+                  className="px-10 py-5 bg-white/5 text-gray-300 border border-white/10 rounded-2xl font-black uppercase italic tracking-wider hover:bg-white/10 transition-all duration-300"
+                >
+                  Visit Help Center
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
 
         {!newReleases.length && !featured.length && !allMovies.length && !comingSoon.length && (

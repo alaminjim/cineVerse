@@ -11,6 +11,7 @@ import { purchaseRoute } from "../module/purchase/purchase.route.js";
 import { adminAnalytics } from "../module/admin/analytics/analytics.routes.js";
 import { userRoute } from "../module/user/user.routes.js";
 import { aiRouter } from "../module/ai/ai.routes.js";
+import { blogRoutes } from "../module/blog/blog.route.js";
 
 const router = Router();
 
@@ -37,5 +38,7 @@ router.use("/admin-analytics", adminAnalytics);
 router.use("/user", userRoute);
 
 router.use("/ai", aiRouter);
+
+router.use("/blog", blogRoutes);
 
 export const indexRouter = router;

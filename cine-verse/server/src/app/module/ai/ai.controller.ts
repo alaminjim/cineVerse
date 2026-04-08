@@ -217,14 +217,14 @@ const getRecommendations = async (req: Request, res: Response) => {
 
 const generateSynopsis = async (req: Request, res: Response) => {
   try {
-    const { title, director } = req.body;
+    const { title, director, type, genre } = req.body;
     if (!title || !director) {
       return res
         .status(400)
         .json({ success: false, message: "Title and director are required" });
     }
 
-    const synopsis = await aiService.generateSynopsis(title, director);
+    const synopsis = await aiService.generateSynopsis(title, director, type || "movie", genre || "general");
     res.json({ success: true, data: synopsis });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });

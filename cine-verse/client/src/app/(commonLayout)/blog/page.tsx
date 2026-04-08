@@ -1,50 +1,42 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { blogService } from "@/services/blog.service";
+import { Loader2, Calendar, User, ArrowRight, TrendingUp, Search } from "lucide-react";
 import { motion } from "framer-motion";
-import { Calendar, User, ArrowRight, Tag, Search, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default function BlogPage() {
-  const posts = [
-    {
-      id: 1,
-      title: "The Evolution of IMAX: Beyond The Big Screen",
-      excerpt: "How 70mm film continues to set the standard for cinematic immersion in a digital world.",
-      category: "Cinematography",
-      author: "Alex Rivera",
-      date: "Oct 12, 2024",
-      image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 2,
-      title: "CineBuddy AI: Behind The Scenes of Our Movie Expert",
-      excerpt: "Exploring the neural networks that help our AI understand the emotional depth of cinema.",
-      category: "Technology",
-      author: "Sarah Chen",
-      date: "Oct 10, 2024",
-      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 3,
-      title: "Hidden Gems: 5 Indie Thrillers You Missed This Year",
-      excerpt: "Deep dives into the underground hits that are making waves in the world of independent film.",
-      category: "Recommendations",
-      author: "James Wilson",
-      date: "Oct 08, 2024",
-      image: "https://images.unsplash.com/photo-1542204113-e9354e712f51?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 4,
-      title: "The Art of the Long Take: Masterclasses in Flow",
-      excerpt: "A look at the most technically demanding tracking shots in modern cinematic history.",
-      category: "Directing",
-      author: "Marcus Thorne",
-      date: "Oct 05, 2024",
-      image: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=800",
-    },
-  ];
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = ["All", "Cinematography", "Directing", "Technology", "Reviews", "Indie", "Streaming"];
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const res = await blogService.getAllBlogs();
+        if (res.success) {
+          setPosts(res.data);
+        }
+      } catch (error) {
+        console.error("Fetch blogs error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  const categories = ["All", "Cinematography", "Directing", "Technology", "Recommendations", "Reviews", "Indie", "Streaming"];
+
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || post.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen bg-black text-white pt-32 pb-20 selection:bg-purple-500/30">
@@ -65,11 +57,13 @@ export default function BlogPage() {
             </h1>
           </motion.div>
 
-          <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl px-6 py-3 w-full md:w-auto">
+          <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl px-6 py-3 w-full md:w-auto focus-within:border-purple-500/50 transition-all">
             <Search className="w-5 h-5 text-gray-500" />
             <input 
               type="text" 
               placeholder="Search articles..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-transparent border-none outline-none text-sm font-medium placeholder:text-gray-600 w-full md:w-64"
             />
           </div>
@@ -80,8 +74,9 @@ export default function BlogPage() {
           {categories.map((cat) => (
             <button 
               key={cat} 
+              onClick={() => setSelectedCategory(cat)}
               className={`px-5 py-2 rounded-full text-xs font-black uppercase italic tracking-widest transition-all ${
-                cat === "All" 
+                selectedCategory === cat 
                 ? "bg-purple-600 text-white" 
                 : "bg-white/5 border border-white/10 text-gray-400 hover:border-purple-500/30 hover:text-white"
               }`}
@@ -94,52 +89,62 @@ export default function BlogPage() {
         <div className="grid lg:grid-cols-12 gap-16">
           {/* Main Content */}
           <div className="lg:col-span-8 space-y-16">
-            {posts.map((post, i) => (
-              <motion.article
-                key={post.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group cursor-pointer"
-              >
-                <div className="grid md:grid-cols-5 gap-8 items-start">
-                  <div className="md:col-span-2">
-                    <div className="aspect-[4/3] rounded-[32px] overflow-hidden border border-white/10 relative">
-                      <img 
-                        src={post.image} 
-                        alt={post.title} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute top-4 left-4">
-                        <span className="bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-purple-400 border border-purple-500/20">
-                          {post.category}
-                        </span>
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-10 h-10 text-purple-600 animate-spin" />
+              </div>
+            ) : filteredPosts.length > 0 ? (
+              filteredPosts.map((post, i) => (
+                <motion.article
+                  key={post.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group cursor-pointer"
+                >
+                  <div className="grid md:grid-cols-5 gap-8 items-start">
+                    <div className="md:col-span-2">
+                      <div className="aspect-[4/3] rounded-[32px] overflow-hidden border border-white/10 relative">
+                        <img 
+                          src={post.image} 
+                          alt={post.title} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-purple-400 border border-purple-500/20">
+                            {post.category}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="md:col-span-3 py-2">
-                    <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500 mb-4">
-                      <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {post.date}</div>
-                      <div className="w-1 h-1 bg-gray-600 rounded-full" />
-                      <div className="flex items-center gap-1.5"><User className="w-3 h-3" /> {post.author}</div>
+                    <div className="md:col-span-3 py-2">
+                      <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500 mb-4">
+                        <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {new Date(post.publishDate).toLocaleDateString()}</div>
+                        <div className="w-1 h-1 bg-gray-600 rounded-full" />
+                        <div className="flex items-center gap-1.5"><User className="w-3 h-3" /> {post.author}</div>
+                      </div>
+                      <h2 className="text-2xl md:text-3xl font-black italic uppercase tracking-tight mb-4 group-hover:text-purple-400 transition-colors">
+                        {post.title}
+                      </h2>
+                      <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                      <Link 
+                        href={`/blog/${post.id}`}
+                        className="inline-flex items-center gap-2 text-xs font-black uppercase italic tracking-widest text-white hover:gap-4 transition-all"
+                      >
+                        Read Full Article <ArrowRight className="w-4 h-4 text-purple-500" />
+                      </Link>
                     </div>
-                    <h2 className="text-2xl md:text-3xl font-black italic uppercase tracking-tight mb-4 group-hover:text-purple-400 transition-colors">
-                      {post.title}
-                    </h2>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                    <Link 
-                      href={`/blog/${post.id}`}
-                      className="inline-flex items-center gap-2 text-xs font-black uppercase italic tracking-widest text-white hover:gap-4 transition-all"
-                    >
-                      Read Full Article <ArrowRight className="w-4 h-4 text-purple-500" />
-                    </Link>
                   </div>
-                </div>
-              </motion.article>
-            ))}
+                </motion.article>
+              ))
+            ) : (
+              <div className="text-center py-20 text-gray-500 italic">
+                No articles found matching your criteria.
+              </div>
+            )}
 
             {/* Pagination */}
             <div className="flex justify-center pt-10">

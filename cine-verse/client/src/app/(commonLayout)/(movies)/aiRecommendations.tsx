@@ -16,8 +16,8 @@ export default function AIRecommendationsSection() {
         setLoading(true);
         // Using a general prompt to get diverse AI recommendations
         const res = await aiService.getMovieRecommendations("Recommend 4 trending blockbuster movies for a movie enthusiast.");
-        if (res && res.data) {
-          setRecommendations(res.data);
+        if (res && res.success && res.data?.movies) {
+          setRecommendations(res.data.movies);
         }
       } catch (error) {
         console.error("AI Recommendations fetch error:", error);

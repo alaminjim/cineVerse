@@ -1,7 +1,9 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { motion } from "framer-motion";
 import { Film, Users, Trophy, Zap, Play, Sparkles, Star } from "lucide-react";
+import Link from "next/link";
 
 export default function AboutPage() {
   const stats = [
@@ -14,25 +16,29 @@ export default function AboutPage() {
   const features = [
     {
       title: "AI-Powered Discovery",
-      description: "Our proprietary CineBuddy AI understands your taste better than your best friend.",
+      description:
+        "Our proprietary CineBuddy AI understands your taste better than your best friend.",
       icon: Sparkles,
       color: "from-purple-500 to-pink-500",
     },
     {
       title: "Ultra 4K Streaming",
-      description: "Experience cinema-grade quality from the comfort of your living room.",
+      description:
+        "Experience cinema-grade quality from the comfort of your living room.",
       icon: Play,
       color: "from-blue-500 to-cyan-500",
     },
     {
       title: "Community Driven",
-      description: "Join millions of film buffs in discussing and rating the latest releases.",
+      description:
+        "Join millions of film buffs in discussing and rating the latest releases.",
       icon: Users,
       color: "from-orange-500 to-red-500",
     },
     {
       title: "Expert Curation",
-      description: "Hand-picked collections from world-renowned directors and critics.",
+      description:
+        "Hand-picked collections from world-renowned directors and critics.",
       icon: Star,
       color: "from-green-500 to-emerald-500",
     },
@@ -57,7 +63,8 @@ export default function AboutPage() {
               Redefining <br /> The Cinema Experience
             </h1>
             <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
-              CineVerse isn't just a streaming platform. It's a universe built for those who live and breathe film.
+              CineVerse isn't just a streaming platform. It's a universe built
+              for those who live and breathe film.
             </p>
           </motion.div>
 
@@ -116,10 +123,14 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-6 text-gray-400 leading-relaxed">
                 <p>
-                  Founded in 2024, CineVerse was born out of a frustration with generic, algorithm-driven stores. We believed that technology should serve art, not stifle it.
+                  Founded in 2024, CineVerse was born out of a frustration with
+                  generic, algorithm-driven stores. We believed that technology
+                  should serve art, not stifle it.
                 </p>
                 <p>
-                  Today, we leverage cutting-edge AI to personalize every frame of your journey, while maintaining the human touch through curated collections and deep cinematic analysis.
+                  Today, we leverage cutting-edge AI to personalize every frame
+                  of your journey, while maintaining the human touch through
+                  curated collections and deep cinematic analysis.
                 </p>
                 <button className="px-8 py-3 rounded-full bg-white text-black font-black uppercase text-sm italic hover:bg-gray-200 transition-colors mt-4">
                   Explore The Collection
@@ -174,12 +185,16 @@ export default function AboutPage() {
               Ready to start your <br /> cinematic journey?
             </h2>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-              <button className="px-10 py-4 rounded-full bg-purple-600 text-white font-black uppercase italic hover:bg-purple-500 transition-all shadow-xl shadow-purple-600/20">
-                Join Premium
-              </button>
-              <button className="px-10 py-4 rounded-full bg-white/10 text-white font-black uppercase italic hover:bg-white/20 transition-all border border-white/10 backdrop-blur-sm">
-                Browse Content
-              </button>
+              <Link href={"/subscription"}>
+                <button className="px-10 py-4 rounded-full bg-purple-600 text-white font-black uppercase italic hover:bg-purple-500 transition-all shadow-xl shadow-purple-600/20">
+                  Join Premium
+                </button>
+              </Link>
+              <Link href={"/movies"}>
+                <button className="px-10 py-4 rounded-full bg-white/10 text-white font-black uppercase italic hover:bg-white/20 transition-all border border-white/10 backdrop-blur-sm">
+                  Browse Content
+                </button>
+              </Link>
             </div>
           </div>
         </div>
