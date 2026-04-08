@@ -1,99 +1,189 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Film, Users, Shield, Globe } from "lucide-react";
+import { Film, Users, Trophy, Zap, Play, Sparkles, Star } from "lucide-react";
 
 export default function AboutPage() {
   const stats = [
     { label: "Movies", value: "10K+", icon: Film },
-    { label: "Community", value: "50K+", icon: Users },
-    { label: "Privacy", value: "100%", icon: Shield },
-    { label: "Global", value: "150+", icon: Globe },
+    { label: "Users", value: "2M+", icon: Users },
+    { label: "Awards", value: "45+", icon: Trophy },
+    { label: "Speed", value: "0.2s", icon: Zap },
+  ];
+
+  const features = [
+    {
+      title: "AI-Powered Discovery",
+      description: "Our proprietary CineBuddy AI understands your taste better than your best friend.",
+      icon: Sparkles,
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      title: "Ultra 4K Streaming",
+      description: "Experience cinema-grade quality from the comfort of your living room.",
+      icon: Play,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      title: "Community Driven",
+      description: "Join millions of film buffs in discussing and rating the latest releases.",
+      icon: Users,
+      color: "from-orange-500 to-red-500",
+    },
+    {
+      title: "Expert Curation",
+      description: "Hand-picked collections from world-renowned directors and critics.",
+      icon: Star,
+      color: "from-green-500 to-emerald-500",
+    },
   ];
 
   return (
-    <div className="bg-black text-white min-h-screen pt-32 pb-20">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Hero Section */}
-        <div className="flex flex-col items-center text-center mb-24">
+    <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 overflow-hidden text-center">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-purple-600/20 blur-[120px] rounded-full" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-pink-600/10 blur-[100px] rounded-full" />
+        </div>
+
+        <div className="container mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-6"
+            transition={{ duration: 0.8 }}
           >
-            Our Story
+            <h1 className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter mb-6 bg-gradient-to-r from-white via-white to-gray-500 bg-clip-text text-transparent">
+              Redefining <br /> The Cinema Experience
+            </h1>
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
+              CineVerse isn't just a streaming platform. It's a universe built for those who live and breathe film.
+            </p>
           </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-8 max-w-4xl"
-          >
-            The Ultimate <span className="text-primary">Cinematic</span> Universe.
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-gray-400 text-lg md:text-xl font-medium max-w-2xl leading-relaxed"
-          >
-            CineVerse isn't just a streaming platform; it's a community for movie lovers, built with cutting-edge AI to personalize your cinematic journey.
-          </motion.p>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + i * 0.1 }}
+                className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-purple-500/30 transition-colors group"
+              >
+                <stat.icon className="w-8 h-8 text-purple-400 mb-4 mx-auto group-hover:scale-110 transition-transform" />
+                <div className="text-3xl font-black italic">{stat.value}</div>
+                <div className="text-gray-500 text-xs uppercase tracking-widest font-bold mt-1">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mission Section */}
+      <section className="py-24 bg-zinc-950/50 relative border-y border-white/5">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative group">
+                <img
+                  src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=1000"
+                  alt="Cinematic background"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                    <Play className="w-8 h-8 fill-white" />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-4xl font-black italic uppercase tracking-tight mb-6">
+                Our Mission is <span className="text-purple-500">Simple.</span>
+              </h2>
+              <div className="space-y-6 text-gray-400 leading-relaxed">
+                <p>
+                  Founded in 2024, CineVerse was born out of a frustration with generic, algorithm-driven stores. We believed that technology should serve art, not stifle it.
+                </p>
+                <p>
+                  Today, we leverage cutting-edge AI to personalize every frame of your journey, while maintaining the human touch through curated collections and deep cinematic analysis.
+                </p>
+                <button className="px-8 py-3 rounded-full bg-white text-black font-black uppercase text-sm italic hover:bg-gray-200 transition-colors mt-4">
+                  Explore The Collection
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-24 container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-black italic uppercase tracking-tight mb-4">
+            Why Choose CineVerse?
+          </h2>
+          <div className="w-20 h-1 bg-purple-600 mx-auto" />
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-32">
-          {stats.map((stat, i) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {features.map((feature, i) => (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 + 0.3 }}
-              key={stat.label}
-              className="bg-gray-900/40 border border-gray-800/50 rounded-3xl p-8 text-center hover:border-primary/30 transition-all group"
+              key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="p-8 rounded-3xl bg-zinc-900/50 border border-white/5 hover:border-white/10 transition-all relative overflow-hidden group"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-primary group-hover:scale-110 transition-transform">
-                <stat.icon className="w-6 h-6" />
+              <div
+                className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg shadow-black/40`}
+              >
+                <feature.icon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-3xl font-black mb-2">{stat.value}</h3>
-              <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">{stat.label}</p>
+              <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                {feature.description}
+              </p>
             </motion.div>
           ))}
         </div>
+      </section>
 
-        {/* Content Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-32">
-          <motion.div
-             initial={{ opacity: 0, x: -30 }}
-             whileInView={{ opacity: 1, x: 0 }}
-             viewport={{ once: true }}
-          >
-            <h2 className="text-4xl font-black uppercase italic tracking-tighter mb-8">
-              Redefining How You <span className="text-primary">Discover</span> Movies.
+      {/* CTA Section */}
+      <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto p-12 md:p-20 rounded-[40px] bg-gradient-to-br from-purple-900/40 to-pink-900/40 border border-purple-500/20 text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-10 opacity-10">
+            <Film className="w-64 h-64" />
+          </div>
+          <div className="relative z-10">
+            <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tight mb-6">
+              Ready to start your <br /> cinematic journey?
             </h2>
-            <div className="space-y-6 text-gray-400 font-medium text-lg leading-relaxed">
-              <p>
-                Founded in 2024, CineVerse was born from a simple idea: making movie discovery effortless and social. We believe every movie has a story to tell, and every viewer has a unique taste.
-              </p>
-              <p>
-                By combining a massive database of world cinema with sophisticated AI algorithms, we provide recommendations that actually matter. No more scrolling for hours.
-              </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+              <button className="px-10 py-4 rounded-full bg-purple-600 text-white font-black uppercase italic hover:bg-purple-500 transition-all shadow-xl shadow-purple-600/20">
+                Join Premium
+              </button>
+              <button className="px-10 py-4 rounded-full bg-white/10 text-white font-black uppercase italic hover:bg-white/20 transition-all border border-white/10 backdrop-blur-sm">
+                Browse Content
+              </button>
             </div>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
-            <img 
-              src="https://images.unsplash.com/photo-1485846234645-a62644ef7467?q=80&w=2000&auto=format&fit=crop" 
-              alt="Cinema" 
-              className="relative rounded-3xl border border-gray-800 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700"
-            />
-          </motion.div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

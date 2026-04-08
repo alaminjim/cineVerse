@@ -89,8 +89,9 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Movies", path: "/movies" },
-    { name: "Series", path: "/series" },
     { name: "Trending", path: "/trending" },
+    { name: "Blog", path: "/blog" },
+    { name: "About", path: "/about" },
   ];
 
   return (

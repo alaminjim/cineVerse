@@ -225,7 +225,7 @@ export default function UserDashboard() {
             </div>
             <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={activityData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                <AreaChart data={data?.analytics?.activityData || []} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorWatch" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
@@ -259,12 +259,12 @@ export default function UserDashboard() {
               </div>
             </div>
             <div className="flex items-end gap-2 mb-6">
-              <span className="text-3xl font-black">8.4k</span>
+              <span className="text-3xl font-black">{Math.floor(data?.analytics?.engagementData?.reduce((acc: number, curr: any) => acc + curr.score, 0) / 7 || 0)}.4k</span>
               <span className="text-emerald-400 text-xs font-bold mb-1 flex items-center"><ArrowUpRight className="w-3 h-3" /> 12%</span>
             </div>
             <div className="h-[180px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={engagementData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <BarChart data={data?.analytics?.engagementData || []} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                   <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 10 }} dy={10} />
                   <RechartsTooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ backgroundColor: "#18181b", border: "none", borderRadius: "8px" }} />
                   <Bar dataKey="score" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={24} />
@@ -283,14 +283,14 @@ export default function UserDashboard() {
                <ResponsiveContainer width="100%" height="100%">
                  <PieChart>
                    <Pie
-                     data={genreData}
+                     data={data?.analytics?.genreData || []}
                      innerRadius={60}
                      outerRadius={80}
                      paddingAngle={5}
                      dataKey="value"
                      stroke="none"
                    >
-                     {genreData.map((entry, index) => (
+                     {(data?.analytics?.genreData || []).map((entry: any, index: number) => (
                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                      ))}
                    </Pie>
@@ -299,12 +299,12 @@ export default function UserDashboard() {
                </ResponsiveContainer>
                {/* Center Text */}
                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                 <span className="text-2xl font-black text-white">4</span>
+                 <span className="text-2xl font-black text-white">{data?.analytics?.genreData?.length || 0}</span>
                  <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Top Genres</span>
                </div>
              </div>
              <div className="grid grid-cols-2 gap-4 mt-4">
-                {genreData.map((genre, i) => (
+                {(data?.analytics?.genreData || []).map((genre: any, i: number) => (
                   <div key={i} className="flex items-center gap-2">
                     <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: COLORS[i] }}></div>
                     <span className="text-xs text-gray-400 font-medium">{genre.name}</span>

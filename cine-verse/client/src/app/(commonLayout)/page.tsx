@@ -12,6 +12,7 @@ import AllMoviesSection from "./(movies)/allMovies";
 import EditorsPicksSection from "./(movies)/editorsPicks";
 import ComingSoonSection from "./(movies)/comingSoon";
 import CommunityHighlightsSection from "./(movies)/communityHighlights";
+import AIRecommendationsSection from "./(movies)/aiRecommendations";
 import SubscriptionPlansSection from "./subscription/subscriptionPlans";
 import FAQSection from "./faqSection";
 import StreamingMarquee from "@/components/StreamingMarquee";
@@ -98,8 +99,8 @@ export default function HomePage() {
   return (
     <main className="bg-black min-h-screen text-white">
       <Hero />
-
       <div className="max-w-7xl mx-auto px-6 space-y-24 pb-20">
+        <AIRecommendationsSection />
         {newReleases.length > 0 && <NewReleaseSection movies={newReleases} />}
 
         {featured.length > 0 && <TopRatedSection movies={featured} />}

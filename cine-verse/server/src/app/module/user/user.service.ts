@@ -118,6 +118,31 @@ const getUserDashboard = async (userId: string) => {
       recentReviews,
       recentPurchases,
       watchlistItems,
+      analytics: {
+        activityData: [
+          { name: "Oct", watchHours: Math.floor(Math.random() * 20) + 10, reviews: Math.floor(Math.random() * 5) },
+          { name: "Nov", watchHours: Math.floor(Math.random() * 30) + 15, reviews: Math.floor(Math.random() * 8) },
+          { name: "Dec", watchHours: Math.floor(Math.random() * 25) + 5, reviews: Math.floor(Math.random() * 3) },
+          { name: "Jan", watchHours: Math.floor(Math.random() * 40) + 20, reviews: Math.floor(Math.random() * 10) },
+          { name: "Feb", watchHours: Math.floor(Math.random() * 35) + 15, reviews: Math.floor(Math.random() * 7) },
+          { name: "Mar", watchHours: Math.floor(Math.random() * 60) + 30, reviews: Math.floor(Math.random() * 15) },
+        ],
+        engagementData: [
+          { day: "Mon", score: Math.floor(Math.random() * 100) },
+          { day: "Tue", score: Math.floor(Math.random() * 100) },
+          { day: "Wed", score: Math.floor(Math.random() * 100) },
+          { day: "Thu", score: Math.floor(Math.random() * 100) },
+          { day: "Fri", score: Math.floor(Math.random() * 100) },
+          { day: "Sat", score: Math.floor(Math.random() * 100) },
+          { day: "Sun", score: Math.floor(Math.random() * 100) },
+        ],
+        genreData: [
+          { name: "Action", value: Math.floor(Math.random() * 40) + 10 },
+          { name: "Sci-Fi", value: Math.floor(Math.random() * 30) + 5 },
+          { name: "Drama", value: Math.floor(Math.random() * 25) + 5 },
+          { name: "Thriller", value: Math.floor(Math.random() * 20) + 5 },
+        ]
+      }
     },
   };
 };

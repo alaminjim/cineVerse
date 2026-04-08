@@ -29,8 +29,8 @@ export default function Footer() {
     {
       title: "Support",
       links: [
-        { name: "Help Center", href: "#" },
-        { name: "FAQs", href: "/faq" },
+        { name: "Help Center", href: "/help" },
+        { name: "FAQs", href: "/help" },
         { name: "Contact Us", href: "/contact" },
         { name: "Billing", href: "#" },
         { name: "Status", href: "#" },
@@ -40,7 +40,7 @@ export default function Footer() {
       title: "Company",
       links: [
         { name: "About", href: "/about" },
-        { name: "Blog", href: "#" },
+        { name: "Blog", href: "/blog" },
         { name: "Careers", href: "#" },
         { name: "Press", href: "#" },
         { name: "Partners", href: "#" },
