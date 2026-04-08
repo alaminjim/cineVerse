@@ -75,7 +75,7 @@ export default function Navbar() {
     Cookies.remove("refreshToken");
     logout();
     toast.success("Logged out successfully");
-    router.push("/login");
+    window.location.href = "/login";
   };
 
   useEffect(() => {

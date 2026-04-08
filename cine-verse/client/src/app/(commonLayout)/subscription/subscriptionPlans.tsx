@@ -15,7 +15,7 @@ const plans = [
       "Basic watchlist",
     ],
     icon: Star,
-    color: "gray",
+    color: "purple",
     buttonText: "Get Started",
   },
   {
@@ -31,7 +31,7 @@ const plans = [
       "Exclusive badges",
     ],
     icon: Zap,
-    color: "blue",
+    color: "purple",
     buttonText: "Subscribe Monthly",
     recommended: true,
   },
@@ -89,10 +89,10 @@ export default function SubscriptionPlansSection() {
 
             <div className="mb-8">
               <div
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-${plan.color === "blue" ? "blue" : plan.color === "purple" ? "purple" : "gray"}-500/10`}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-purple-500/10"
               >
                 <plan.icon
-                  className={`w-7 h-7 text-${plan.color === "blue" ? "blue" : plan.color === "purple" ? "purple" : "gray"}-500`}
+                  className="w-7 h-7 text-purple-500"
                 />
               </div>
               <h3 className="text-2xl font-black uppercase italic tracking-tighter text-white mb-2">
@@ -119,10 +119,10 @@ export default function SubscriptionPlansSection() {
               {plan.features.map((feature) => (
                 <div key={feature} className="flex items-start gap-3">
                   <div
-                    className={`mt-1 bg-${plan.color === "blue" ? "blue" : plan.color === "purple" ? "purple" : "gray"}-500/20 rounded-full p-0.5`}
+                    className="mt-1 bg-purple-500/20 rounded-full p-0.5"
                   >
                     <Check
-                      className={`w-3.5 h-3.5 text-${plan.color === "blue" ? "blue" : plan.color === "purple" ? "purple" : "gray"}-500`}
+                      className="w-3.5 h-3.5 text-purple-500"
                     />
                   </div>
                   <span className="text-gray-300 text-sm font-medium">

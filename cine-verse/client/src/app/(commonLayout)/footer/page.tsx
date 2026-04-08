@@ -149,7 +149,7 @@ export default function Footer() {
             <span>&copy; {new Date().getFullYear()} CineVerse, Inc.</span>
             <Link href="/terms" className="hover:text-blue-400 transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-blue-400 transition-colors">Privacy</Link>
-            <Link href="/sitemap.xml" className="hover:text-blue-400 transition-colors">Sitemap</Link>
+            <a href="/sitemap.xml" className="hover:text-blue-400 transition-colors">Sitemap</a>
             <Link href="#" className="hover:text-blue-400 transition-colors">Manage cookies</Link>
             <Link href="#" className="hover:text-blue-400 transition-colors">Do not share my personal information</Link>
           </div>
