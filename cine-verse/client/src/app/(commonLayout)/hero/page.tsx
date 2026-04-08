@@ -79,7 +79,7 @@ export default function HeroSection() {
           </button>
           <button
             onClick={() => router.push("/subscription")}
-            className="flex-1 flex items-center justify-center gap-2 font-black uppercase italic py-6 px-6 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all whitespace-nowrap text-sm sm:text-base"
+            className="flex-1 flex items-center justify-center gap-2 font-black uppercase italic py-7 px-6 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all whitespace-nowrap text-sm sm:text-base"
           >
             <Crown className="w-5 h-5 text-purple-400" />
             Buy Premium
