@@ -72,14 +72,14 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-2xl mx-auto px-6 sm:px-0">
           <button
             onClick={() => router.push("/movies")}
-            className="flex-1 flex items-center justify-center gap-3 font-black uppercase italic py-4 px-6 rounded-full bg-gradient-to-r from-primary to-primary/80 hover:shadow-2xl hover:shadow-primary/40 text-primary-foreground transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-sm sm:text-base"
+            className="flex-1 flex items-center justify-center gap-3 font-black uppercase italic py-5 px-6 rounded-full bg-gradient-to-r from-primary to-primary/80 hover:shadow-2xl hover:shadow-primary/40 text-primary-foreground transition-all duration-300 transform hover:scale-105 whitespace-nowrap text-sm sm:text-base"
           >
             <Play fill="currentColor" className="w-5 h-5 sm:w-6 sm:h-6" /> Start
             Watching
           </button>
           <button
             onClick={() => router.push("/subscription")}
-            className="flex-1 flex items-center justify-center gap-2 font-black uppercase italic py-4 px-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all whitespace-nowrap text-sm sm:text-base"
+            className="flex-1 flex items-center justify-center gap-2 font-black uppercase italic py-5 px-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all whitespace-nowrap text-sm sm:text-base"
           >
             <Crown className="w-5 h-5 text-purple-400" /> Premium
           </button>
