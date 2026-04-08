@@ -25,6 +25,12 @@ To fully explore the admin dashboard, movie management, and review approval syst
 > **Email:** `admin123@gmail.com`  
 > **Password:** `12345678Jim`
 
+
+### 🔑 User Credentials
+To fully explore the user dashboard, movie management, and review approval systems, please log in with the following credentials:
+> **Email:** `tommy@gmail.com`  
+> **Password:** `12345678Jim`
+
 ---
 
 ## 🌟 Key Features
