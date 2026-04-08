@@ -116,12 +116,12 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden md:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2 items-center gap-8 lg:gap-16">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-10">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               href={link.path}
-              className={`relative text-[13px] lg:text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:text-primary ${
+              className={`relative text-[13px] xl:text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:text-primary ${
                 isActive(link.path) ? "text-primary border-b-2 border-primary pb-1" : "text-muted-foreground"
               }`}
             >
@@ -130,21 +130,20 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-6 lg:gap-8 shrink-0">
+        <div className="hidden md:flex items-center gap-3 lg:gap-5 shrink-0">
           {/* Search Bar */}
-          <div className="scale-110">
-             <SearchBar />
-          </div>
+          <SearchBar />
+          
           {/* Subscription Button — always visible */}
           <Link
             href="/subscription"
-            className={`flex items-center gap-3 text-[10px] lg:text-xs font-black uppercase tracking-[0.2em] px-5 py-3 lg:px-8 lg:py-4 rounded-2xl border transition-all ${
+            className={`flex items-center gap-2 text-[10px] lg:text-xs font-black uppercase tracking-[0.1em] px-4 py-2.5 lg:px-6 lg:py-3 rounded-xl border transition-all ${
               isActive("/subscription")
-                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white border-transparent shadow-[0_0_30px_rgba(147,51,234,0.3)]"
-                : "border-purple-500/30 bg-white/5 text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/60"
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white border-transparent shadow-[0_0_20px_rgba(147,51,234,0.2)]"
+                : "border-purple-500/20 bg-white/5 text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/40"
             }`}
           >
-            <Crown className="w-4 h-4" /> Premium
+            <Crown className="w-3.5 h-3.5" /> Premium
           </Link>
 
           {user ? (
