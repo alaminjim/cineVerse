@@ -102,15 +102,15 @@ export default function Navbar() {
       }`}
     >
       <div className="w-full max-w-7xl mx-auto px-6 md:px-8 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-1.5 md:gap-2 group z-50 shrink-0">
+        <Link href="/" className="flex items-center gap-1.5 md:gap-2 group z-[60] shrink-0">
           <div className="bg-primary/20 p-1 rounded-lg md:p-1.5 transition-colors group-hover:bg-primary/30">
             <img
               src="/logo.png"
               alt="CineVerse Logo"
-              className="w-6 h-6 md:w-8 md:h-8 object-contain rounded-md"
+              className="w-5 h-5 md:w-8 md:h-8 object-contain rounded-md"
             />
           </div>
-          <span className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-white">
+          <span className="text-lg md:text-2xl font-black uppercase italic tracking-tighter text-white">
             Cine<span className="text-primary italic">Verse</span>
           </span>
         </Link>
@@ -241,7 +241,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="md:hidden text-foreground p-2 z-50"
+          className="md:hidden text-foreground p-2 z-[60]"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? (
@@ -253,76 +253,81 @@ export default function Navbar() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-0 left-0 w-full h-screen bg-black flex flex-col items-center justify-center gap-8 animate-in slide-in-from-top duration-300">
-          {navLinks.map((link) => (
+        <div className="md:hidden fixed inset-0 w-full h-screen bg-black/95 backdrop-blur-2xl z-50 flex flex-col items-center justify-center gap-6 p-6 animate-in fade-in zoom-in duration-300">
+          <div className="flex flex-col items-center justify-center gap-6 w-full max-w-xs">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                href={link.path}
+                className={`text-2xl font-black uppercase italic tracking-tight transition-all active:scale-95 ${
+                  isActive(link.path) ? "text-primary scale-110" : "text-gray-400"
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+
+            <div className="w-full h-px bg-white/5 my-4" />
+
+            {/* Mobile Search - integrated trigger */}
+            <div className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+              <SearchBar />
+            </div>
+
             <Link
-              key={link.path}
-              href={link.path}
-              className={`text-2xl font-bold transition-colors ${
-                isActive(link.path) ? "text-primary" : "text-muted-foreground"
+              href="/subscription"
+              className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-black uppercase italic tracking-widest text-sm border-2 transition-all ${
+                isActive("/subscription")
+                  ? "bg-primary border-primary text-white shadow-xl shadow-primary/20"
+                  : "bg-white/5 border-purple-500/20 text-purple-400"
               }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {link.name}
+              <Crown className="w-5 h-5" /> Premium
             </Link>
-          ))}
 
-          {/* Search in mobile menu */}
-          <div onClick={() => setIsMobileMenuOpen(false)}>
-            <SearchBar />
+            <div className="w-full h-px bg-white/5 my-4" />
+
+            {user ? (
+              <div className="w-full flex flex-col gap-4">
+                <Link
+                  href={user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"}
+                  className="flex items-center justify-center gap-3 py-4 rounded-2xl bg-white/5 border border-white/10 text-xl font-bold text-blue-400"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center gap-3 py-4 rounded-2xl bg-destructive/10 border border-destructive/20 text-xl font-bold text-destructive"
+                >
+                  <LogOut className="w-6 h-6" /> Log Out
+                </button>
+              </div>
+            ) : (
+              <div className="w-full flex flex-col gap-4">
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center gap-3 py-4 text-xl font-bold text-gray-400"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <LogIn className="w-6 h-6 text-primary" /> Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="bg-primary text-primary-foreground text-center text-xl font-black uppercase italic py-4 rounded-2xl shadow-xl shadow-primary/20"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
-
-          {/* Subscription in mobile menu */}
-          <Link
-            href="/subscription"
-            className="flex items-center gap-2 text-xl font-bold text-purple-400"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <Crown className="w-5 h-5" /> Premium
-          </Link>
-
-          <div className="h-px w-20 bg-border my-2" />
-
-          {user ? (
-            <>
-              <Link
-                href={
-                  user.role === "ADMIN" ? "/admin/dashboard" : "/user/dashboard"
-                }
-                className="flex items-center gap-2 text-2xl font-bold text-blue-400"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <LayoutDashboard className="w-5 h-5" />
-                {user.role === "ADMIN" ? "Admin Panel" : "Dashboard"}
-              </Link>
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="flex items-center gap-2 text-2xl font-medium text-destructive"
-              >
-                <LogOut className="w-6 h-6" /> Log Out
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="flex items-center gap-2 text-2xl font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <LogIn className="w-6 h-6" /> Sign In
-              </Link>
-              <Link
-                href="/register"
-                className="bg-primary text-primary-foreground text-xl font-bold py-4 px-10 rounded-full shadow-lg"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
         </div>
       )}
     </nav>
