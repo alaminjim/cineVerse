@@ -70,13 +70,13 @@ export default function HeroSection() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-md mx-auto px-6 sm:px-0">
-          <button 
+          <button
             onClick={() => router.push("/movies")}
-            className="flex-1 flex items-center justify-center gap-2 text-sm sm:text-base font-black uppercase italic py-4 px-8 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-xl shadow-primary/20"
+            className="flex-1 flex items-center justify-center gap-3 text-base font-black uppercase italic py-4 px-6 rounded-full bg-gradient-to-r from-primary to-primary/80 hover:shadow-2xl hover:shadow-primary/40 text-primary-foreground transition-all duration-300 transform hover:scale-105"
           >
-            <Play fill="currentColor" className="w-5 h-5" /> Start Watching
+            <Play fill="currentColor" className="w-6 h-6" /> Start Watching
           </button>
-          <button 
+          <button
             onClick={() => router.push("/subscription")}
             className="flex-1 flex items-center justify-center gap-2 text-sm sm:text-base font-black uppercase italic py-4 px-8 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all"
           >
