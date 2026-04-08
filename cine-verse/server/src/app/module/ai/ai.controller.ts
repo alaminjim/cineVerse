@@ -84,7 +84,7 @@ const searchSuggestions = async (req: Request, res: Response) => {
   try {
     const { query } = req.query;
 
-    if (!query || typeof query !== "string" || query.trim().length < 2) {
+    if (!query || typeof query !== "string" || query.trim().length < 1) {
       return res.json({ success: true, data: [] });
     }
 

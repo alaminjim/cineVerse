@@ -30,7 +30,7 @@ export default function SearchBar() {
 
   // Debounced search
   const searchMovies = useCallback(async (searchQuery: string) => {
-    if (searchQuery.trim().length < 2) {
+    if (searchQuery.trim().length < 1) {
       setResults([]);
       setLoading(false);
       return;
@@ -52,7 +52,7 @@ export default function SearchBar() {
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
-    if (query.trim().length >= 2) {
+    if (query.trim().length >= 1) {
       setLoading(true);
       debounceRef.current = setTimeout(() => {
         searchMovies(query);
@@ -244,7 +244,7 @@ export default function SearchBar() {
                   )}
 
                   {/* Loading state */}
-                  {query.trim().length >= 2 && loading && results.length === 0 && (
+                  {query.trim().length >= 1 && loading && results.length === 0 && (
                     <div className="p-6 flex items-center justify-center gap-3">
                       <Loader2 className="w-5 h-5 text-purple-400 animate-spin" />
                       <span className="text-sm text-gray-400">
@@ -254,7 +254,7 @@ export default function SearchBar() {
                   )}
 
                   {/* No results */}
-                  {query.trim().length >= 2 &&
+                  {query.trim().length >= 1 &&
                     !loading &&
                     results.length === 0 && (
                       <div className="p-6 text-center">
