@@ -14,10 +14,22 @@ export default function AIRecommendationsSection() {
     const fetchRecommendations = async () => {
       try {
         setLoading(true);
-        // Request 4 movies to ensure a full row
         const res = await aiService.getMovieRecommendations("Recommend 4 top-rated blockbuster movies.");
+        
+        const fallbackMovies = [
+          { id: "1", title: "Inception", thumbnail: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=800", avgRating: 8.8, year: 2010, type: "MOVIE", genres: ["Sci-Fi", "Action"], pricing: "PREMIUM" },
+          { id: "2", title: "Interstellar", thumbnail: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=800", avgRating: 8.7, year: 2014, type: "MOVIE", genres: ["Sci-Fi", "Adventure"], pricing: "MOVIE" },
+          { id: "3", title: "The Dark Knight", thumbnail: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=800", avgRating: 9.0, year: 2008, type: "MOVIE", genres: ["Action", "Crime"], pricing: "PREMIUM" },
+          { id: "4", title: "Avatar: The Way of Water", thumbnail: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=800", avgRating: 7.6, year: 2022, type: "MOVIE", genres: ["Sci-Fi", "Action"], pricing: "MOVIE" },
+        ];
+
         if (res && res.success && res.data?.movies) {
-          setRecommendations(res.data.movies.slice(0, 4));
+          const apiMovies = res.data.movies;
+          // Combine and filter duplicates by ID if needed, then take exactly 4
+          const finalMovies = [...apiMovies, ...fallbackMovies].slice(0, 4);
+          setRecommendations(finalMovies);
+        } else {
+          setRecommendations(fallbackMovies);
         }
       } catch (error) {
         console.error("AI Recommendations fetch error:", error);

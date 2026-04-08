@@ -33,9 +33,6 @@ const plans = [
     ],
     icon: Zap,
     popular: false,
-    gradient: "from-purple-600 to-indigo-500",
-    borderColor: "border-purple-500/20",
-    bgGlow: "bg-purple-500/5",
   },
   {
     id: "YEARLY",
@@ -53,9 +50,6 @@ const plans = [
     ],
     icon: Crown,
     popular: true,
-    gradient: "from-purple-600 to-pink-500",
-    borderColor: "border-purple-500/30",
-    bgGlow: "bg-purple-500/5",
   },
 ];
 
@@ -122,13 +116,7 @@ export default function SubscriptionPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white overflow-hidden pb-20">
-      {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[128px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-pink-600/10 rounded-full blur-[128px]" />
-      </div>
-
+    <main className="min-h-screen bg-black text-white pb-20 overflow-x-hidden">
       <div className="relative max-w-7xl mx-auto px-6 pt-28">
         {/* Active Subscription Banner */}
         {activeSub && (
@@ -137,7 +125,7 @@ export default function SubscriptionPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="mb-16 max-w-2xl mx-auto"
           >
-            <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-3xl p-8 text-center backdrop-blur-md">
+            <div className="bg-green-500/5 border border-green-500/10 rounded-3xl p-8 text-center backdrop-blur-md">
               <Shield className="w-10 h-10 text-green-500 mx-auto mb-4" />
               <h3 className="text-xl font-black uppercase italic mb-2">
                 You&apos;re Subscribed!
@@ -161,28 +149,28 @@ export default function SubscriptionPage() {
         )}
 
         {/* Header */}
-        <div className="text-center mb-24">
+        <div className="text-center mb-20">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full px-6 py-2.5 mb-10"
+            className="inline-flex items-center gap-2 bg-purple-500/5 border border-purple-500/10 rounded-full px-5 py-2 mb-8"
           >
             <Sparkles className="w-4 h-4 text-purple-400" />
-            <span className="text-purple-400 text-[10px] font-black uppercase tracking-[0.2em]">
+            <span className="text-purple-400 text-[10px] font-bold uppercase tracking-[0.2em]">
               Premium Cinematic Experience
             </span>
           </motion.div>
           
           <h1 className="text-6xl md:text-8xl font-black uppercase italic tracking-tight leading-tight mb-8">
-            <span className="block">Unlock</span>
-            <span className="bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent px-4">
+            <span className="block text-white">Unlock</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 px-4">
               Everything
             </span>
           </h1>
           
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium leading-relaxed">
             Choose your gateway to an infinite world of stories. 
-            <span className="block text-gray-500 text-sm mt-2">No hidden fees. Cancel anytime. Secure payments.</span>
+            <span className="block text-gray-600 text-sm mt-2">No hidden fees. Cancel anytime.</span>
           </p>
         </div>
 
@@ -195,31 +183,25 @@ export default function SubscriptionPage() {
             return (
               <motion.div
                 key={plan.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className={`relative group rounded-[2.5rem] border ${plan.borderColor} ${plan.bgGlow} p-1 transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(168,85,247,0.15)]`}
+                className={`relative group rounded-[2.5rem] border border-white/5 bg-zinc-900/40 p-1 transition-all duration-300 hover:border-purple-500/30`}
               >
                 {/* Popular Badge */}
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 w-full flex justify-center">
-                    <div
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[9px] font-black uppercase tracking-[0.15em] px-8 py-2 rounded-full shadow-2xl"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Star className="w-3 h-3 fill-white" /> Most Popular
-                      </div>
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                    <div className="bg-purple-600 text-white text-[10px] font-black uppercase tracking-[0.1em] px-6 py-1.5 rounded-full shadow-xl">
+                      Most Popular
                     </div>
                   </div>
                 )}
 
-                <div className="bg-[#0A0A0A]/80 backdrop-blur-xl rounded-[2.3rem] p-8 h-full flex flex-col items-center text-center">
+                <div className="bg-black/50 backdrop-blur-xl rounded-[2.3rem] p-8 md:p-12 h-full flex flex-col items-center text-center">
                   {/* Plan Icon & Name */}
                   <div className="mb-8">
-                    <div
-                      className={`inline-flex bg-gradient-to-br ${plan.gradient} p-4 rounded-2xl shadow-xl mb-6 transform group-hover:rotate-12 transition-transform duration-500`}
-                    >
-                      <Icon className="w-8 h-8 text-white" />
+                    <div className="inline-flex bg-zinc-900 p-4 rounded-2xl border border-white/5 mb-6">
+                      <Icon className="w-8 h-8 text-purple-500" />
                     </div>
                     <h3 className="text-2xl font-black uppercase italic tracking-tight text-white mb-2">
                       {plan.name}
@@ -233,22 +215,18 @@ export default function SubscriptionPage() {
                       <span className="text-5xl font-black italic text-white tracking-tighter">
                         {plan.price}
                       </span>
-                      <span className="text-gray-500 text-xs font-black uppercase tracking-widest">
+                      <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">
                         {plan.period}
                       </span>
                     </div>
                   </div>
 
                   {/* Features */}
-                  <div className="space-y-4 flex-1 mb-12 w-full text-left px-2">
+                  <div className="space-y-4 flex-1 mb-12 w-full text-left">
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div
-                          className={`bg-gradient-to-br ${plan.gradient} w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg`}
-                        >
-                          <Check className="w-3 h-3 text-white stroke-[3px]" />
-                        </div>
-                        <span className="text-gray-400 text-[13px] font-semibold">
+                        <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                        <span className="text-gray-400 text-sm font-medium">
                           {feature}
                         </span>
                       </div>
@@ -263,22 +241,18 @@ export default function SubscriptionPage() {
                     onClick={() =>
                       handleSubscribe(plan.id as any)
                     }
-                    className={`w-full py-5 rounded-2xl font-black uppercase italic text-xs tracking-[0.15em] transition-all flex items-center justify-center gap-3 ${
+                    className={`w-full py-5 rounded-2xl font-black uppercase italic text-[11px] tracking-[0.15em] transition-all ${
                       isCurrentPlan
-                        ? "bg-green-500/10 text-green-400 border border-green-500/30"
+                        ? "bg-green-500/10 text-green-400 border border-green-500/20"
                         : activeSub && plan.id !== "FREE"
-                        ? "bg-gray-800 text-gray-600"
-                        : plan.id === "FREE"
-                        ? "bg-white text-black hover:bg-gray-200"
-                        : `bg-gradient-to-r ${plan.gradient} text-white shadow-xl hover:brightness-110 active:scale-95`
+                        ? "bg-zinc-900 text-gray-600 cursor-not-allowed"
+                        : "bg-purple-600 text-white hover:bg-purple-500 shadow-lg shadow-purple-600/10 active:scale-[0.98]"
                     }`}
                   >
                     {loadingPlan === plan.id ? (
-                      <Loader2 className="animate-spin w-5 h-5" />
+                      <Loader2 className="animate-spin w-5 h-5 mx-auto" />
                     ) : isCurrentPlan ? (
                       "Current Plan"
-                    ) : plan.id === "FREE" ? (
-                      "Join Free"
                     ) : (
                       "Get Started"
                     )}
@@ -290,16 +264,16 @@ export default function SubscriptionPage() {
         </div>
 
         {/* Bottom Trust Section */}
-        <div className="mt-32">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-12 text-gray-500 text-[10px] font-black uppercase tracking-[0.25em]">
+        <div className="mt-32 border-t border-white/5 pt-20">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-12 text-gray-600 text-[10px] font-bold uppercase tracking-[0.25em]">
             <div className="flex items-center gap-3">
-              <Shield className="w-5 h-5 text-purple-500" /> Secure SSL Encryption
+              <Shield className="w-4 h-4 text-purple-500" /> Secure SSL Encryption
             </div>
             <div className="flex items-center gap-3">
-              <Zap className="w-5 h-5 text-amber-500" /> Instant Plan Activation
+              <Zap className="w-4 h-4 text-amber-500" /> Instant Activation
             </div>
             <div className="flex items-center gap-3">
-              <Star className="w-5 h-5 text-pink-500" /> Quality Guaranteed
+              <Star className="w-4 h-4 text-pink-500" /> 24/7 Priority Support
             </div>
           </div>
         </div>
