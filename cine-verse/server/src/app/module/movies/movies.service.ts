@@ -1,0 +1,493 @@
+/* eslint-disable no-useless-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { uploadImage } from "../../config/cloudinary.config.js";
+import { stripe } from "../../config/stripe.js";
+import { prisma } from "../../lib/prisma.js";
+import { movieCache, featuredCache, getCachedData, setCachedData, invalidateMovieCaches } from "../../lib/cache.js";
+
+const formatTags = (tags: string[]) =>
+  tags.map(tag => {
+    const trimmed = tag.trim();
+    if (!trimmed) return "";
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+  }).filter(Boolean);
+
+const toNumber = (val: any) => {
+  if (val === undefined || val === null || val === "") return null;
+  const num = Number(val);
+  return isNaN(num) ? null : num;
+};
+
+const createMovie = async (payload: any, file?: Express.Multer.File) => {
+  let thumbnail = null;
+
+  if (file) {
+    thumbnail = await uploadImage(file);
+  }
+
+  if (!payload.title || !payload.director) {
+    throw new Error("Title and director are required");
+  }
+
+  if (!["MOVIE", "SERIES"].includes(payload.type)) {
+    throw new Error("Invalid type");
+  }
+
+  if (payload.type === "SERIES") {
+    if (!payload.seasons || !payload.episodes) {
+      throw new Error("Seasons and episodes required for series");
+    }
+  }
+
+  if (payload.type === "MOVIE") {
+    if (!payload.runtime) {
+      throw new Error("Runtime required for movies");
+    }
+  }
+
+  let stripeBuyPriceId = null;
+  let stripeRentPriceId = null;
+  let buyPrice = null;
+  let rentPrice = null;
+
+  if (payload.pricing === "PREMIUM") {
+    buyPrice = toNumber(payload.buyPrice) || 1500;
+    rentPrice = toNumber(payload.rentPrice) || 500;
+
+    const product = await stripe.products.create({
+      name: payload.title,
+      description: payload.synopsis,
+      images: thumbnail ? [thumbnail] : undefined,
+    });
+
+    const buyPriceObj = await stripe.prices.create({
+      product: product.id,
+      unit_amount: Math.round(buyPrice),
+      currency: "bdt",
+    });
+
+    const rentPriceObj = await stripe.prices.create({
+      product: product.id,
+      unit_amount: Math.round(rentPrice),
+      currency: "bdt",
+    });
+
+    stripeBuyPriceId = buyPriceObj.id;
+    stripeRentPriceId = rentPriceObj.id;
+  }
+
+  const movie = await prisma.movie.create({
+    data: {
+      title: payload.title,
+      synopsis: payload.synopsis,
+      thumbnail,
+      genre: payload.genre ? formatTags(payload.genre) : [],
+      language: payload.language ? formatTags(payload.language) : [],
+      releaseYear: payload.releaseYear,
+      director: payload.director,
+      cast: payload.cast ? formatTags(payload.cast) : [],
+      streamingPlatform: payload.streamingPlatform ? formatTags(payload.streamingPlatform) : [],
+
+      type: payload.type,
+
+      seasons: payload.type === "SERIES" ? toNumber(payload.seasons) : null,
+      episodes: payload.type === "SERIES" ? toNumber(payload.episodes) : null,
+      runtime: payload.type === "MOVIE" ? toNumber(payload.runtime) : null,
+
+      streamingLink: payload.streamingLink || null,
+
+      pricing: payload.pricing,
+      buyPrice,
+      rentPrice,
+      stripeBuyPriceId,
+      stripeRentPriceId,
+    },
+  });
+
+  // Invalidate caches when new movie is created
+  invalidateMovieCaches();
+
+  return movie;
+};
+
+const getAllMovies = async (queryParams: any) => {
+  const {
+    searchTerms,
+    genre,
+    type,
+    director,
+    releaseYear,
+    ratingFrom,
+    ratingTo,
+    popularity,
+    language,
+    sortBy = "avgRating",
+    sortOrder = "desc",
+    page = 1,
+    limit = 10,
+  } = queryParams;
+
+  const where: any = {};
+
+  if (type) where.type = type;
+
+  if (searchTerms) {
+    where.OR = [
+      { title: { contains: searchTerms, mode: "insensitive" } },
+      { director: { contains: searchTerms, mode: "insensitive" } },
+      { cast: { hasSome: [searchTerms] } },
+      { language: { hasSome: [searchTerms] } },
+    ];
+  }
+
+  if (genre) where.genre = { hasSome: [genre] };
+  if (director) where.director = { contains: director, mode: "insensitive" };
+  if (releaseYear) where.releaseYear = parseInt(releaseYear);
+
+  if (ratingFrom || ratingTo) {
+    where.avgRating = {};
+    if (ratingFrom) where.avgRating.gte = parseFloat(ratingFrom);
+    if (ratingTo) where.avgRating.lte = parseFloat(ratingTo);
+  }
+
+  if (popularity) where.reviewCount = { gte: parseInt(popularity) };
+  if (language) where.language = { hasSome: [language] };
+
+  if (queryParams.streamingPlatform) {
+    where.streamingPlatform = { hasSome: [queryParams.streamingPlatform] };
+  }
+
+
+  let orderBy: any = {};
+  switch (sortBy) {
+    case "avgRating":
+      orderBy = { avgRating: sortOrder };
+      break;
+    case "reviewCount":
+      orderBy = { reviewCount: sortOrder };
+      break;
+    case "createdAt":
+      orderBy = { createdAt: sortOrder };
+      break;
+    default:
+      orderBy = { avgRating: sortOrder };
+  }
+
+  const pageNum = parseInt(page) || 1;
+  const limitNum = parseInt(limit) || 10;
+  const skip = (pageNum - 1) * limitNum;
+
+  const [total, movies] = await Promise.all([
+    prisma.movie.count({ where }),
+    prisma.movie.findMany({
+      where,
+      orderBy,
+      skip,
+      take: limitNum,
+      select: {
+        id: true,
+        title: true,
+        synopsis: true,
+        thumbnail: true,
+        genre: true,
+        language: true,
+        releaseYear: true,
+        type: true,
+        pricing: true,
+        avgRating: true,
+        reviewCount: true,
+        director: true,
+        streamingPlatform: true,
+        streamingLink: true,
+        _count: {
+          select: {
+            reviews: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  return {
+    success: true,
+    data: movies,
+    meta: {
+      page: pageNum,
+      limit: limitNum,
+      total,
+      totalPages: Math.ceil(total / limitNum),
+    },
+  };
+};
+
+const getMovieById = async (id: string) => {
+  const movie = await prisma.movie.findUnique({
+    where: { id },
+    include: {
+      reviews: {
+        where: { status: "APPROVED" },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+            },
+          },
+          _count: {
+            select: {
+              comments: true,
+              likes: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      },
+    },
+  });
+
+  if (!movie) {
+    return null;
+  }
+
+  return {
+    success: true,
+    data: {
+      ...movie,
+      reviews: movie.reviews.map((review: any) => ({
+        id: review.id,
+        title: review.title,
+        rating: review.rating,
+        content: review.content,
+        hasSpoiler: review.hasSpoiler,
+        tags: review.tags,
+        createdAt: review.createdAt,
+        likesCount: review._count.likes,
+        commentsCount: review._count.comments,
+        user: review.user,
+      })),
+    },
+  };
+};
+
+const updateMovie = async (id: string, payload: any, file?: Express.Multer.File) => {
+  const movie = await prisma.movie.findUnique({
+    where: { id },
+  });
+
+  if (!movie) {
+    return null;
+  }
+
+  const updateData: any = {};
+
+  if (payload.title) updateData.title = payload.title;
+  if (payload.synopsis) updateData.synopsis = payload.synopsis;
+  let thumbnail = payload.thumbnail;
+  if (file) {
+    thumbnail = await uploadImage(file);
+  }
+  if (thumbnail) updateData.thumbnail = thumbnail;
+  if (payload.genre) updateData.genre = formatTags(payload.genre);
+  if (payload.language) updateData.language = formatTags(payload.language);
+  if (payload.cast) updateData.cast = formatTags(payload.cast);
+  if (payload.streamingPlatform) updateData.streamingPlatform = formatTags(payload.streamingPlatform);
+  if (payload.releaseYear) updateData.releaseYear = Number(payload.releaseYear);
+  if (payload.director) updateData.director = payload.director;
+  if (payload.streamingLink) updateData.streamingLink = payload.streamingLink;
+  if (payload.pricing) updateData.pricing = payload.pricing;
+
+  if (payload.pricing === "PREMIUM") {
+    if (payload.buyPrice) updateData.buyPrice = toNumber(payload.buyPrice);
+    if (payload.rentPrice) updateData.rentPrice = toNumber(payload.rentPrice);
+  } else if (payload.pricing === "FREE") {
+    updateData.buyPrice = null;
+    updateData.rentPrice = null;
+    updateData.stripeBuyPriceId = null;
+    updateData.stripeRentPriceId = null;
+  }
+
+  if (payload.type) {
+    updateData.type = payload.type;
+
+    if (payload.type === "SERIES") {
+      if (payload.seasons) updateData.seasons = toNumber(payload.seasons);
+      if (payload.episodes) updateData.episodes = toNumber(payload.episodes);
+      updateData.runtime = null;
+    }
+
+    if (payload.type === "MOVIE") {
+      if (payload.runtime) updateData.runtime = toNumber(payload.runtime);
+      updateData.seasons = null;
+      updateData.episodes = null;
+    }
+  }
+
+  const updated = await prisma.movie.update({
+    where: { id },
+    data: updateData,
+  });
+
+  // Invalidate caches when movie is updated
+  invalidateMovieCaches(id);
+
+  return updated;
+};
+
+const getFeaturedMovies = async () => {
+  const cacheKey = 'featured-movies';
+  const cached = getCachedData(featuredCache, cacheKey);
+  
+  if (cached) {
+    return cached;
+  }
+
+  const movies = await prisma.movie.findMany({
+    where: { avgRating: { gte: 1 } },
+    select: {
+      id: true,
+      title: true,
+      thumbnail: true,
+      avgRating: true,
+      reviewCount: true,
+      genre: true,
+      type: true,
+      pricing: true,
+    },
+    orderBy: { avgRating: "desc" },
+    take: 10,
+  });
+
+  setCachedData(featuredCache, cacheKey, movies);
+  return movies;
+};
+
+const getNewReleases = async () => {
+  const cacheKey = 'new-releases';
+  const cached = getCachedData(featuredCache, cacheKey);
+  
+  if (cached) {
+    return cached;
+  }
+
+  const movies = await prisma.movie.findMany({
+    select: {
+      id: true,
+      title: true,
+      thumbnail: true,
+      createdAt: true,
+      releaseYear: true,
+      genre: true,
+      type: true,
+      pricing: true,
+    },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
+
+  setCachedData(featuredCache, cacheKey, movies);
+  return movies;
+};
+
+const deleteMovie = async (id: string) => {
+  const movie = await prisma.movie.findUnique({
+    where: { id },
+  });
+
+  if (!movie) {
+    return null;
+  }
+
+  if (movie.stripeBuyPriceId) {
+    await stripe.prices.update(movie.stripeBuyPriceId, {
+      active: false,
+    });
+  }
+
+  if (movie.stripeRentPriceId) {
+    await stripe.prices.update(movie.stripeRentPriceId, {
+      active: false,
+    });
+  }
+
+  const deleted = await prisma.movie.delete({
+    where: { id },
+  });
+
+  // Invalidate caches when movie is deleted
+  invalidateMovieCaches(id);
+
+  return deleted;
+};
+
+const getComingSoon = async () => {
+  const cacheKey = 'coming-soon';
+  const cached = getCachedData(featuredCache, cacheKey);
+  
+  if (cached) {
+    return cached;
+  }
+
+  const currentYear = new Date().getFullYear();
+  const movies = await prisma.movie.findMany({
+    where: { releaseYear: { gt: currentYear } },
+    select: {
+      id: true,
+      title: true,
+      thumbnail: true,
+      releaseYear: true,
+      genre: true,
+      type: true,
+      pricing: true,
+    },
+    orderBy: { releaseYear: "asc" },
+    take: 10,
+  });
+
+  setCachedData(featuredCache, cacheKey, movies);
+  return movies;
+};
+
+const getEditorsPicks = async () => {
+  const cacheKey = 'editors-picks';
+  const cached = getCachedData(featuredCache, cacheKey);
+  
+  if (cached) {
+    return cached;
+  }
+
+  const movies = await prisma.movie.findMany({
+    where: { avgRating: { gte: 8.5 } },
+    select: {
+      id: true,
+      title: true,
+      thumbnail: true,
+      avgRating: true,
+      reviewCount: true,
+      genre: true,
+      type: true,
+      pricing: true,
+      createdAt: true,
+    },
+    orderBy: { avgRating: "desc" },
+    take: 10,
+  });
+
+  setCachedData(featuredCache, cacheKey, movies);
+  return movies;
+};
+
+export const movieService = {
+  createMovie,
+  getAllMovies,
+  getMovieById,
+  updateMovie,
+  getFeaturedMovies,
+  getNewReleases,
+  getComingSoon,
+  getEditorsPicks,
+  deleteMovie,
+};

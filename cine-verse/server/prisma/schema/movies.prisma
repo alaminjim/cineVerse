@@ -1,0 +1,50 @@
+model Movie {
+  id                String         @id @default(uuid())
+  title             String         @unique
+  synopsis          String         @db.Text
+  thumbnail         String?
+  genre             String[]
+  language          String[]
+  releaseYear       Int                         
+  director          String                      
+  cast              String[]                   
+  streamingPlatform String[]                    
+  
+  type              ContentType    
+  seasons           Int?
+  episodes          Int?
+  runtime           Int?
+  
+  streamingLink     String?
+  
+  pricing           PricingType    @default(FREE)  
+
+  buyPrice          Float?         
+  rentPrice         Float?        
+  
+  stripeBuyPriceId  String?
+  stripeRentPriceId String?
+  
+  avgRating         Float          @default(0)
+  reviewCount       Int            @default(0)
+  
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  reviews           Review[]
+  watchlists        Watchlist[]
+  purchases         Purchase[]
+
+  @@index([title], map: "movies_title_idx")
+  @@index([type], map: "movies_type_idx")
+  @@index([releaseYear], map: "movies_releaseYear_idx")
+  @@index([avgRating], map: "movies_avgRating_idx")
+  @@index([reviewCount], map: "movies_reviewCount_idx")
+  @@index([createdAt], map: "movies_createdAt_idx")
+  @@index([director], map: "movies_director_idx")
+  @@index([pricing], map: "movies_pricing_idx")
+  @@index([avgRating(sort: Desc)], map: "movies_avgRating_desc_idx")
+  @@index([createdAt(sort: Desc)], map: "movies_createdAt_desc_idx")
+  @@index([reviewCount(sort: Desc)], map: "movies_reviewCount_desc_idx")
+  @@map("movies")
+}
