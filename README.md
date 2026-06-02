@@ -17,8 +17,8 @@
 
 ## 🚀 Live Links & Credentials
 
-- **Live Application URL:** [CineVerse Live Site](https://cine-verse-client-rouge.vercel.app)
-- **Backend API URL:** [CineVerse API](https://cine-verse-server-pi.vercel.app)
+- **Live Application URL:** [https://cineverse98.netlify.app](https://cineverse98.netlify.app)
+- **Backend API URL:** [https://cineverse-server-alpha.vercel.app](https://cineverse-server-alpha.vercel.app)
 
 ### 🔑 Admin Credentials
 To fully explore the admin dashboard, movie management, and review approval systems, please log in with the following credentials:
