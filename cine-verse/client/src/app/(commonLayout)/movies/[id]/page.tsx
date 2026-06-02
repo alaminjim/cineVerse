@@ -833,7 +833,7 @@ export default function MovieDetailsPage({
                   ) : (
                     <Plus size={20} />
                   )}
-                  {isWatchlisted ? "In Watchlist" : "Add to Watchlist"}
+                  {isWatchlisted ? "Already Watchlisted" : "Add to Watchlist"}
                 </button>
                 
                 <p className="text-[9px] text-gray-700 mt-6 uppercase tracking-widest font-bold">
@@ -891,7 +891,7 @@ export default function MovieDetailsPage({
                   ) : (
                     <Plus size={20} />
                   )}
-                  {isWatchlisted ? "In Watchlist" : "Add to Watchlist"}
+                  {isWatchlisted ? "Already Watchlisted" : "Add to Watchlist"}
                 </button>
               </div>
             ) : (
