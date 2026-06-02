@@ -6,34 +6,57 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+const publicPaths = [
+  "/",
+  "/movies",
+  "/info",
+  "/about",
+  "/contact",
+  "/privacy",
+  "/terms",
+  "/faq",
+  "/series",
+  "/trending",
+  "/subscription",
+  "/login",
+  "/register",
+  "/forgot-password",
+];
+
+const isPublicPage = (pathname: string) =>
+  publicPaths.some((p) => pathname === p) ||
+  pathname.startsWith("/movies/") ||
+  pathname.startsWith("/login") ||
+  pathname.startsWith("/register") ||
+  pathname.startsWith("/forgot-password");
+
+// Request interceptor — attach token only if it's a real value
 axiosInstance.interceptors.request.use((config) => {
   const token = Cookies.get("accessToken");
-  if (token) {
+  // Guard: skip undefined/null/literal-string tokens
+  if (token && token !== "undefined" && token !== "null" && token.length > 10) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-const publicPaths = ["/", "/movies", "/info", "/about", "/contact", "/privacy", "/terms", "/faq", "/series", "/trending", "/subscription"];
-
+// Response interceptor — handle 401 gracefully
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       Cookies.remove("accessToken");
-      
-      // Only redirect to login if on a protected route
+      Cookies.remove("refreshToken");
+
       if (typeof window !== "undefined") {
         const currentPath = window.location.pathname;
-        const isPublicPage =
-          publicPaths.some((path) => currentPath === path) ||
-          currentPath.startsWith("/movies/") ||
-          currentPath.startsWith("/login") ||
-          currentPath.startsWith("/register");
-        
-        if (!isPublicPage) {
+
+        // Only redirect to login on protected pages
+        if (!isPublicPage(currentPath)) {
           window.location.href = "/login";
         }
+        // Silently swallow 401 on public pages — no redirect needed
+        return Promise.resolve({ data: null, status: 401, silenced: true });
       }
     }
     return Promise.reject(error);
@@ -41,4 +64,3 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
-
