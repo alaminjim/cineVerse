@@ -42,7 +42,7 @@ export default function MovieCard({
       try {
         setLoadingWatchlist(true);
         const res = await watchlistService.checkWatchlist(id);
-        setIsInWatchlist(res.success && res.isInWatchlist);
+        setIsInWatchlist(res.success && res.isInWatchList);
       } catch (error) {
         console.error("Watchlist check error:", error);
       } finally {

@@ -104,7 +104,7 @@ export default function MovieDetailsPage({
 
         if (user) {
           const wRes = await watchlistService.checkWatchlist(id).catch(() => null);
-          if (wRes?.isWatchlisted) setIsWatchlisted(true);
+          if (wRes?.isInWatchList) setIsWatchlisted(true);
         }
       } catch (error) {
         console.error("Fetch error:", error);
@@ -114,7 +114,7 @@ export default function MovieDetailsPage({
     };
 
     fetchData();
-  }, [id]);
+  }, [id, user]);
 
   // Fetch reviews
   useEffect(() => {
