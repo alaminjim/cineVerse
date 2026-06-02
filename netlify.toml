@@ -1,0 +1,4 @@
+[build]
+  base = "cine-verse/client"
+  command = "npm run build"
+  publish = ".next"
