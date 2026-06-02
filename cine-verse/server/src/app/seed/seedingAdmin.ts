@@ -13,19 +13,8 @@ const Admin = async () => {
     });
 
     if (existingAdmin) {
-      console.log(
-        "Admin already exists - deleting and recreating with password...",
-      );
-
-      await prisma.admin.deleteMany({
-        where: { email: envConfig.ADMIN_EMAIL },
-      });
-
-      await prisma.user.deleteMany({
-        where: { email: envConfig.ADMIN_EMAIL },
-      });
-
-      console.log("Existing admin deleted");
+      console.log("Admin user already exists. Skipping seeding.");
+      return;
     }
 
     const { auth } = await import("../lib/auth.js");
