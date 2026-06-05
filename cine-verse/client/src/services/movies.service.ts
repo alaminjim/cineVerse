@@ -19,7 +19,8 @@ const cacheConfig = {
 
 export const pingServer = async (): Promise<void> => {
   try {
-    await axiosInstance.get("/ping", { timeout: 5000 });
+    // /warmup fires SELECT 1 — wakes both Vercel cold start AND Neon DB pool
+    await axiosInstance.get("/warmup", { timeout: 8000 });
   } catch {
     // Ignore — this is just a warm-up call
   }

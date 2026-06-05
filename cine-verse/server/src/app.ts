@@ -8,6 +8,7 @@ import { auth } from "./app/lib/auth.js";
 import notFound from "./app/middleware/notFound.js";
 import path from "path";
 import errorHandler from "./app/middleware/errorHandler.js";
+import { prisma } from "./app/lib/prisma.js";
 
 const app: Application = express();
 
@@ -58,6 +59,16 @@ app.get("/", (req: Request, res: Response) => {
 // Health check / warm-up ping — returns immediately without DB hit
 app.get("/api/v1/ping", (_req: Request, res: Response) => {
   res.status(200).json({ ok: true, ts: Date.now() });
+});
+
+// DB warm-up — fires a minimal SELECT 1 to wake Neon connection pool
+app.get("/api/v1/warmup", async (_req: Request, res: Response) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(200).json({ ok: true, db: "warm" });
+  } catch {
+    res.status(200).json({ ok: true, db: "error" });
+  }
 });
 
 app.use(notFound);
