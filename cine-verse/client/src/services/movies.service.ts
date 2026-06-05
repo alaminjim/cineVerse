@@ -21,8 +21,16 @@ export const pingServer = async (): Promise<void> => {
   try {
     // /warmup fires SELECT 1 — wakes both Vercel cold start AND Neon DB pool
     await axiosInstance.get("/warmup", { timeout: 8000 });
-  } catch {
-    // Ignore — this is just a warm-up call
+  } catch (err: any) {
+    // If /warmup doesn't exist (old server deployment), fall back to /ping
+    if (err?.response?.status === 404) {
+      try {
+        await axiosInstance.get("/ping", { timeout: 5000 });
+      } catch {
+        // Ignore — warm-up is best-effort
+      }
+    }
+    // Any other error (network, timeout, etc.) — ignore silently
   }
 };
 
