@@ -17,6 +17,14 @@ const cacheConfig = {
   },
 };
 
+export const pingServer = async (): Promise<void> => {
+  try {
+    await axiosInstance.get("/ping", { timeout: 5000 });
+  } catch {
+    // Ignore — this is just a warm-up call
+  }
+};
+
 export const moviesService = {
   getFeatured: async () => {
     const response = await axiosInstance.get("/movies/featured", cacheConfig);

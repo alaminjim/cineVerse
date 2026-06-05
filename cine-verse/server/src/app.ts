@@ -55,6 +55,11 @@ app.get("/", (req: Request, res: Response) => {
   res.send("api is working....!");
 });
 
+// Health check / warm-up ping — returns immediately without DB hit
+app.get("/api/v1/ping", (_req: Request, res: Response) => {
+  res.status(200).json({ ok: true, ts: Date.now() });
+});
+
 app.use(notFound);
 
 app.use(errorHandler);

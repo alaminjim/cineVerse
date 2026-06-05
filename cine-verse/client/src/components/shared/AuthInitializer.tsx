@@ -4,6 +4,13 @@ import { useEffect } from "react";
 import { useAuthStore } from "@/lib/store";
 import { authService } from "@/services/auth.service";
 import Cookies from "js-cookie";
+import { pingServer } from "@/services/movies.service";
+
+// Fire warm-up ping immediately on every page load (module import time).
+// This wakes the Vercel serverless function before auth or data requests start.
+if (typeof window !== "undefined") {
+  pingServer();
+}
 
 export default function AuthInitializer() {
   const { initializeAuth, setUser, setInitialized } = useAuthStore();
