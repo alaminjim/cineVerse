@@ -14,8 +14,11 @@ interface User {
 interface AuthState {
   user: User | null;
   isLoading: boolean;
+  /** true once AuthInitializer has completed its first auth check */
+  isInitialized: boolean;
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
+  setInitialized: (initialized: boolean) => void;
   logout: () => void;
   initializeAuth: () => void;
 }
@@ -24,9 +27,11 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      isLoading: true,
-      setUser: (user) => set({ user, isLoading: false }),
+      isLoading: false,
+      isInitialized: false,
+      setUser: (user) => set({ user, isLoading: false, isInitialized: true }),
       setLoading: (isLoading) => set({ isLoading }),
+      setInitialized: (isInitialized) => set({ isInitialized }),
       logout: () => {
         // Clear cookies
         Cookies.remove("accessToken");
@@ -46,18 +51,19 @@ export const useAuthStore = create<AuthState>()(
           if (storedUser) {
             try {
               const user = JSON.parse(storedUser);
-              set({ user, isLoading: false });
+              set({ user, isLoading: false, isInitialized: true });
             } catch {
               // Invalid stored data, clear everything
               get().logout();
+              set({ isInitialized: true });
             }
           } else {
             // No stored user, but tokens exist - set loading to false
-            set({ isLoading: false });
+            set({ isLoading: false, isInitialized: true });
           }
         } else {
           // No tokens, user is not authenticated
-          set({ user: null, isLoading: false });
+          set({ user: null, isLoading: false, isInitialized: true });
         }
       },
     }),

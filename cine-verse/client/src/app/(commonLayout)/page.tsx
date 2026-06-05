@@ -25,11 +25,12 @@ export default function HomePage() {
   const [editorsPicks, setEditorsPicks] = useState<any[]>([]);
   const [recentReviews, setRecentReviews] = useState<any[]>([]);
   const [allMovies, setAllMovies] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingCritical, setLoadingCritical] = useState(true);
+  const [loadingBackground, setLoadingBackground] = useState(true);
 
   const loadData = async () => {
     try {
-      setLoading(true);
+      setLoadingCritical(true);
 
       // Load critical data first
       const [nRes, fRes] = await Promise.all([
@@ -41,7 +42,7 @@ export default function HomePage() {
       setFeatured(Array.isArray(fRes) ? fRes : (fRes?.data || []));
       
       // Update loading state to show initial content
-      setLoading(false);
+      setLoadingCritical(false);
 
       // Load remaining data in background
       setTimeout(async () => {
@@ -64,14 +65,17 @@ export default function HomePage() {
           } else {
             setAllMovies(aRes?.data || []);
           }
+          setLoadingBackground(false);
         } catch (error) {
           console.error("Background data loading error:", error);
+          setLoadingBackground(false);
         }
-      }, 1000); // Load remaining data after 1 second
+      }, 50); // Load remaining data after 50ms
 
     } catch (error) {
       console.error("Fetch error on HomePage:", error);
-      setLoading(false);
+      setLoadingCritical(false);
+      setLoadingBackground(false);
     }
   };
 
@@ -79,22 +83,45 @@ export default function HomePage() {
     loadData();
   }, []);
 
-  if (loading) {
-    return (
-      <main className="bg-black min-h-screen pt-20">
-        <div className="max-w-7xl mx-auto px-6 space-y-24 pb-20">
-          <div className="animate-pulse space-y-8">
-             <div className="h-64 bg-gray-900/50 rounded-[40px] w-full mb-12" />
-             <div className="flex items-center justify-between">
-                <div className="h-8 bg-gray-800 rounded w-1/4" />
-                <div className="h-4 bg-gray-800 rounded w-20" />
-             </div>
-             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="aspect-[2/3] bg-gray-900/50 rounded-xl" />
-                ))}
-             </div>
+  return (
+    <main className="bg-black min-h-screen text-white">
+      <Hero />
+      <div className="max-w-7xl mx-auto px-6 space-y-24 pb-20">
+        {/* Critical sections load first */}
+        {loadingCritical ? (
+          <div className="animate-pulse space-y-24">
+            <div className="space-y-8">
+               <div className="flex items-center justify-between">
+                  <div className="h-8 bg-gray-800 rounded w-1/4" />
+                  <div className="h-4 bg-gray-800 rounded w-20" />
+               </div>
+               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <div key={i} className="aspect-[2/3] bg-gray-900/50 rounded-xl" />
+                  ))}
+               </div>
+            </div>
+            <div className="space-y-8 pt-12">
+               <div className="flex items-center justify-between">
+                  <div className="h-8 bg-gray-800 rounded w-1/5" />
+                  <div className="h-4 bg-gray-800 rounded w-20" />
+               </div>
+               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="aspect-[2/3] bg-gray-900/50 rounded-xl" />
+                  ))}
+               </div>
+            </div>
           </div>
+        ) : (
+          <>
+            {newReleases.length > 0 && <NewReleaseSection movies={newReleases} />}
+            {featured.length > 0 && <TopRatedSection movies={featured} />}
+          </>
+        )}
+        
+        {/* Load less critical sections */}
+        {loadingBackground ? (
           <div className="animate-pulse space-y-8 pt-12">
              <div className="flex items-center justify-between">
                 <div className="h-8 bg-gray-800 rounded w-1/5" />
@@ -106,27 +133,23 @@ export default function HomePage() {
                 ))}
              </div>
           </div>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className="bg-black min-h-screen text-white">
-      <Hero />
-      <div className="max-w-7xl mx-auto px-6 space-y-24 pb-20">
-        {/* Critical sections load first */}
-        {newReleases.length > 0 && <NewReleaseSection movies={newReleases} />}
-        {featured.length > 0 && <TopRatedSection movies={featured} />}
-        
-        {/* Load less critical sections */}
-        {editorsPicks.length > 0 && <EditorsPicksSection movies={editorsPicks} />}
-        {allMovies.length > 0 && <AllMoviesSection movies={allMovies} />}
+        ) : (
+          <>
+            {editorsPicks.length > 0 && <EditorsPicksSection movies={editorsPicks} />}
+            {allMovies.length > 0 && <AllMoviesSection movies={allMovies} />}
+          </>
+        )}
         
         {/* Load heavy components */}
         <SubscriptionPlansSection />
-        {recentReviews.length > 0 && <CommunityHighlightsSection reviews={recentReviews} />}
-        {comingSoon.length > 0 && <ComingSoonSection movies={comingSoon} />}
+        
+        {!loadingBackground && (
+          <>
+            {recentReviews.length > 0 && <CommunityHighlightsSection reviews={recentReviews} />}
+            {comingSoon.length > 0 && <ComingSoonSection movies={comingSoon} />}
+          </>
+        )}
+        
         <FAQSection />
 
         {/* Contact Support CTA Block */}
@@ -162,7 +185,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {!newReleases.length && !featured.length && !allMovies.length && !comingSoon.length && (
+        {!loadingCritical && !newReleases.length && !featured.length && !allMovies.length && !comingSoon.length && (
           <div className="text-center py-20">
             <p className="text-gray-500 text-lg font-light italic">
               No movies available in the catalog yet.

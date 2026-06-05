@@ -64,6 +64,8 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Important: prevents page refresh
 
+    if (isLoading) return; // Prevent duplicate submissions
+
     if (!validateForm()) {
       toast.error("Please fix the errors in the form");
       return;

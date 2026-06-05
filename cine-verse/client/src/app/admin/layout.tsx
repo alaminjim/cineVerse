@@ -19,12 +19,12 @@ import {
   Loader2,
   Settings as SettingsIcon,
 } from "lucide-react";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
-import { authService } from "@/services/auth.service";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { authService } from "@/services/auth.service";
 
 const sidebarLinks = [
   { href: "/admin/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -46,54 +46,37 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, setUser, logout } = useAuthStore();
+  const { user, logout, isInitialized } = useAuthStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
 
-  // Client-side auth + ADMIN role guard
+  // Client-side auth + ADMIN role guard — wait for AuthInitializer to finish
   useEffect(() => {
-    const checkAuth = async () => {
-      if (user) {
-        if (user.role !== "ADMIN") {
-          toast.error("Access denied! Admin only.");
-          router.replace("/");
-          return;
-        }
-        setAuthChecked(true);
-        return;
-      }
-      try {
-        const res = await authService.getMe();
-        if (res?.success && res.data) {
-          setUser(res.data);
-          if (res.data.role !== "ADMIN") {
-            toast.error("Access denied! Admin only.");
-            router.replace("/");
-            return;
-          }
-          setAuthChecked(true);
-        } else {
-          Cookies.remove("accessToken");
-          Cookies.remove("refreshToken");
-          logout();
-          toast.error("Please login to access admin panel");
-          router.replace("/login");
-        }
-      } catch {
-        Cookies.remove("accessToken");
-        Cookies.remove("refreshToken");
-        logout();
-        router.replace("/login");
-      }
-    };
-    checkAuth();
-  }, [user, setUser, logout, router]);
+    if (!isInitialized) return; // still waiting for AuthInitializer
+    if (!user) {
+      toast.error("Please login to access admin panel");
+      router.replace("/login");
+    } else if (user.role !== "ADMIN") {
+      toast.error("Access denied! Admin only.");
+      router.replace("/");
+    }
+  }, [isInitialized, user, router]);
 
-  if (!authChecked) {
+  // Show loading spinner until auth is resolved
+  if (!isInitialized || !user) {
     return (
       <div className="h-screen flex flex-col items-center justify-center bg-black">
         <Loader2 className="animate-spin text-purple-500 w-12 h-12 mb-4" />
         <p className="text-gray-500 font-medium animate-pulse">Verifying admin access...</p>
+      </div>
+    );
+  }
+
+  // Don't render admin UI if user is not ADMIN (redirect is in progress)
+  if (user.role !== "ADMIN") {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-black">
+        <Loader2 className="animate-spin text-purple-500 w-12 h-12 mb-4" />
+        <p className="text-gray-500 font-medium animate-pulse">Redirecting...</p>
       </div>
     );
   }

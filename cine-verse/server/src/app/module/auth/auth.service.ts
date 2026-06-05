@@ -97,8 +97,17 @@ const authMe = async (user: IRequestUser) => {
     where: {
       id: user.userId,
     },
-    include: {
-      comments: true,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true,
+      image: true,
+      emailVerified: true,
+      isDeleted: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
   if (!userExists) {
